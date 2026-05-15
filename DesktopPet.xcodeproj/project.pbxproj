@@ -1,0 +1,874 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		001122334455667788990001 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991001 /* main.m */; };
+		001122334455667788990002 /* PETAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991002 /* PETAppDelegate.m */; };
+		001122334455667788990003 /* PETAppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991004 /* PETAppConfig.m */; };
+		001122334455667788990004 /* PETAnimationFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991006 /* PETAnimationFrame.m */; };
+		001122334455667788990005 /* PETPetProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991008 /* PETPetProfile.m */; };
+		001122334455667788990006 /* PETWebPDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991010 /* PETWebPDecoder.m */; };
+		001122334455667788990007 /* PETOCRService.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991012 /* PETOCRService.m */; };
+		001122334455667788990008 /* PETAIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991014 /* PETAIService.m */; };
+		001122334455667788990009 /* PETPetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991016 /* PETPetView.m */; };
+		00112233445566778899000A /* PETPetWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991018 /* PETPetWindow.m */; };
+		00112233445566778899000B /* PETPetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991020 /* PETPetManager.m */; };
+		00112233445566778899000C /* PETAssetImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991022 /* PETAssetImportManager.m */; };
+		00112233445566778899000D /* PETManagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991027 /* PETManagerViewController.m */; };
+		00112233445566778899000E /* PETManagerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991029 /* PETManagerWindowController.m */; };
+		00112233445566778899000F /* PETPetAssetLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991031 /* PETPetAssetLoader.m */; };
+		001122334455667788990010 /* PETCharacterSnapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991032 /* PETCharacterSnapshot.m */; };
+		001122334455667788990011 /* PETCharacterIntent.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991034 /* PETCharacterIntent.m */; };
+		001122334455667788990012 /* PETCharacterEmotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991036 /* PETCharacterEmotion.m */; };
+		001122334455667788990013 /* PETBehaviorDecision.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991038 /* PETBehaviorDecision.m */; };
+		001122334455667788990014 /* PETCharacterGoal.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991040 /* PETCharacterGoal.m */; };
+		001122334455667788990015 /* PETCharacterTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991042 /* PETCharacterTask.m */; };
+		001122334455667788990016 /* PETCharacterMemoryEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991044 /* PETCharacterMemoryEvent.m */; };
+		001122334455667788990017 /* PETStructuredCognitionSuggestion.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991046 /* PETStructuredCognitionSuggestion.m */; };
+		00AA11001100110011000001 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AA11001100110011001001 /* main.m */; };
+		00AA11001100110011000002 /* PETIOSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AA11001100110011001003 /* PETIOSAppDelegate.m */; };
+		00AA11001100110011000003 /* PETIOSAnimatedPetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AA11001100110011001005 /* PETIOSAnimatedPetView.m */; };
+		00AA11001100110011000004 /* PETIOSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00AA11001100110011001007 /* PETIOSViewController.m */; };
+		00AA11001100110011000005 /* PETAppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991004 /* PETAppConfig.m */; };
+		00AA11001100110011000006 /* PETAnimationFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991006 /* PETAnimationFrame.m */; };
+		00AA11001100110011000007 /* PETPetProfile.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991008 /* PETPetProfile.m */; };
+		00AA11001100110011000008 /* PETWebPDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991010 /* PETWebPDecoder.m */; };
+		00AA11001100110011000009 /* PETAIService.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991014 /* PETAIService.m */; };
+		00AA1100110011001100000A /* PETPetAssetLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991031 /* PETPetAssetLoader.m */; };
+		00AA1100110011001100000B /* PETCharacterSnapshot.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991032 /* PETCharacterSnapshot.m */; };
+		00AA1100110011001100000C /* PETCharacterIntent.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991034 /* PETCharacterIntent.m */; };
+		00AA1100110011001100000D /* PETCharacterEmotion.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991036 /* PETCharacterEmotion.m */; };
+		00AA1100110011001100000E /* PETBehaviorDecision.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991038 /* PETBehaviorDecision.m */; };
+		00AA1100110011001100000F /* PETCharacterGoal.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991040 /* PETCharacterGoal.m */; };
+		00AA11001100110011000010 /* PETCharacterTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991042 /* PETCharacterTask.m */; };
+		00AA11001100110011000011 /* PETCharacterMemoryEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991044 /* PETCharacterMemoryEvent.m */; };
+		00AA11001100110011000012 /* PETStructuredCognitionSuggestion.m in Sources */ = {isa = PBXBuildFile; fileRef = 001122334455667788991046 /* PETStructuredCognitionSuggestion.m */; };
+		00AA11001100110011000013 /* PETCharacterRuntimeController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001001 /* PETCharacterRuntimeController.m */; };
+		00AA11001100110011000014 /* PETIntentEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001003 /* PETIntentEngine.m */; };
+		00AA11001100110011000015 /* PETEmotionEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001005 /* PETEmotionEngine.m */; };
+		00AA11001100110011000016 /* PETBehaviorPlanner.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001007 /* PETBehaviorPlanner.m */; };
+		00AA11001100110011000017 /* PETCharacterSemanticConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001009 /* PETCharacterSemanticConfig.m */; };
+		00AA11001100110011000018 /* PETGoalEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001011 /* PETGoalEngine.m */; };
+		00AA11001100110011000019 /* PETTaskEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001013 /* PETTaskEngine.m */; };
+		00AA1100110011001100001A /* PETMemoryEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001015 /* PETMemoryEngine.m */; };
+		00AA1100110011001100001B /* PETStructuredCognitionEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001017 /* PETStructuredCognitionEngine.m */; };
+		00AA1100110011001100001C /* PETCharacterSemanticMappings.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001006 /* PETCharacterSemanticMappings.plist */; };
+		00AA1100110011001100001D /* pet.json in Resources */ = {isa = PBXBuildFile; fileRef = 4CBF6AD62FAC851D0017053E /* pet.json */; };
+		00AA1100110011001100001E /* spritesheet.webp in Resources */ = {isa = PBXBuildFile; fileRef = 4CBF6AD52FAC851D0017053E /* spritesheet.webp */; };
+		00AA1100110011001100001F /* PETAnimationSourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1000000000000000001001 /* PETAnimationSourceLoader.m */; };
+		00AA11001100110011000020 /* PETIOSSpineMetalView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 00AA11001100110011001009 /* PETIOSSpineMetalView.mm */; };
+		00AA11001100110011000021 /* PETSpineRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3000000000000000001002 /* PETSpineRuntime.mm */; };
+		00AA11001100110011000022 /* PETSpineRuntimeCompilationUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3000000000000000001003 /* PETSpineRuntimeCompilationUnit.mm */; };
+		00AA11001100110011000023 /* PETSpineShaders.metal in Resources */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001003 /* PETSpineShaders.metal */; };
+		00AA11001100110011000024 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001004 /* Metal.framework */; };
+		00AA11001100110011000025 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001005 /* MetalKit.framework */; };
+		5733249D2ADD8E8C823CFF99 /* Pods_DesktopPet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB1246E2966462CDC376139D /* Pods_DesktopPet.framework */; };
+		AA1000000000000000000001 /* PETAnimationSourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1000000000000000001001 /* PETAnimationSourceLoader.m */; };
+		AA1000000000000000000002 /* PETAnimationExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1000000000000000001003 /* PETAnimationExporter.m */; };
+		AA1000000000000000000003 /* PETAnimationExportWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1000000000000000001005 /* PETAnimationExportWindowController.m */; };
+		AA1000000000000000000004 /* PETAnimationExportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1000000000000000001007 /* PETAnimationExportViewController.m */; };
+		AA2000000000000000000001 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2000000000000000001001 /* WebKit.framework */; };
+		AA2000000000000000000002 /* pixi.min.js in Resources */ = {isa = PBXBuildFile; fileRef = AA2000000000000000001002 /* pixi.min.js */; };
+		AA2000000000000000000003 /* pixi-spine-3.8.umd.js in Resources */ = {isa = PBXBuildFile; fileRef = AA2000000000000000001003 /* pixi-spine-3.8.umd.js */; };
+		AA3000000000000000000001 /* PETSpineRuntime.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3000000000000000001002 /* PETSpineRuntime.mm */; };
+		AA3000000000000000000002 /* PETSpineRuntimeCompilationUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA3000000000000000001003 /* PETSpineRuntimeCompilationUnit.mm */; };
+		AA4000000000000000000001 /* PETSpineMetalView.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001002 /* PETSpineMetalView.mm */; };
+		AA4000000000000000000002 /* PETSpineShaders.metal in Resources */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001003 /* PETSpineShaders.metal */; };
+		AA4000000000000000000003 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001004 /* Metal.framework */; };
+		AA4000000000000000000004 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001005 /* MetalKit.framework */; };
+		AA4000000000000000000005 /* PETCharacterSemanticMappings.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA4000000000000000001006 /* PETCharacterSemanticMappings.plist */; };
+		AA5000000000000000000001 /* PETCharacterRuntimeController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001001 /* PETCharacterRuntimeController.m */; };
+		AA5000000000000000000002 /* PETIntentEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001003 /* PETIntentEngine.m */; };
+		AA5000000000000000000003 /* PETEmotionEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001005 /* PETEmotionEngine.m */; };
+		AA5000000000000000000004 /* PETBehaviorPlanner.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001007 /* PETBehaviorPlanner.m */; };
+		AA5000000000000000000005 /* PETCharacterSemanticConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001009 /* PETCharacterSemanticConfig.m */; };
+		AA5000000000000000000006 /* PETGoalEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001011 /* PETGoalEngine.m */; };
+		AA5000000000000000000007 /* PETTaskEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001013 /* PETTaskEngine.m */; };
+		AA5000000000000000000008 /* PETMemoryEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001015 /* PETMemoryEngine.m */; };
+		AA5000000000000000000009 /* PETStructuredCognitionEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5000000000000000001017 /* PETStructuredCognitionEngine.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		001122334455667788991001 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		001122334455667788991002 /* PETAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAppDelegate.m; sourceTree = "<group>"; };
+		001122334455667788991003 /* PETAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAppDelegate.h; sourceTree = "<group>"; };
+		001122334455667788991004 /* PETAppConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAppConfig.m; sourceTree = "<group>"; };
+		001122334455667788991005 /* PETAppConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAppConfig.h; sourceTree = "<group>"; };
+		001122334455667788991006 /* PETAnimationFrame.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAnimationFrame.m; sourceTree = "<group>"; };
+		001122334455667788991007 /* PETAnimationFrame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAnimationFrame.h; sourceTree = "<group>"; };
+		001122334455667788991008 /* PETPetProfile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETPetProfile.m; sourceTree = "<group>"; };
+		001122334455667788991009 /* PETPetProfile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETPetProfile.h; sourceTree = "<group>"; };
+		001122334455667788991010 /* PETWebPDecoder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETWebPDecoder.m; sourceTree = "<group>"; };
+		001122334455667788991011 /* PETWebPDecoder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETWebPDecoder.h; sourceTree = "<group>"; };
+		001122334455667788991012 /* PETOCRService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETOCRService.m; sourceTree = "<group>"; };
+		001122334455667788991013 /* PETOCRService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETOCRService.h; sourceTree = "<group>"; };
+		001122334455667788991014 /* PETAIService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAIService.m; sourceTree = "<group>"; };
+		001122334455667788991015 /* PETAIService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAIService.h; sourceTree = "<group>"; };
+		001122334455667788991016 /* PETPetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETPetView.m; sourceTree = "<group>"; };
+		001122334455667788991017 /* PETPetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETPetView.h; sourceTree = "<group>"; };
+		001122334455667788991018 /* PETPetWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETPetWindow.m; sourceTree = "<group>"; };
+		001122334455667788991019 /* PETPetWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETPetWindow.h; sourceTree = "<group>"; };
+		001122334455667788991020 /* PETPetManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETPetManager.m; sourceTree = "<group>"; };
+		001122334455667788991021 /* PETPetManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETPetManager.h; sourceTree = "<group>"; };
+		001122334455667788991022 /* PETAssetImportManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAssetImportManager.m; sourceTree = "<group>"; };
+		001122334455667788991023 /* PETAssetImportManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAssetImportManager.h; sourceTree = "<group>"; };
+		001122334455667788991024 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		001122334455667788991025 /* DesktopPet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DesktopPet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		001122334455667788991026 /* PETManagerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETManagerViewController.h; sourceTree = "<group>"; };
+		001122334455667788991027 /* PETManagerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETManagerViewController.m; sourceTree = "<group>"; };
+		001122334455667788991028 /* PETManagerWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETManagerWindowController.h; sourceTree = "<group>"; };
+		001122334455667788991029 /* PETManagerWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETManagerWindowController.m; sourceTree = "<group>"; };
+		001122334455667788991030 /* PETPetAssetLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETPetAssetLoader.h; sourceTree = "<group>"; };
+		001122334455667788991031 /* PETPetAssetLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETPetAssetLoader.m; sourceTree = "<group>"; };
+		001122334455667788991032 /* PETCharacterSnapshot.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterSnapshot.m; sourceTree = "<group>"; };
+		001122334455667788991033 /* PETCharacterSnapshot.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterSnapshot.h; sourceTree = "<group>"; };
+		001122334455667788991034 /* PETCharacterIntent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterIntent.m; sourceTree = "<group>"; };
+		001122334455667788991035 /* PETCharacterIntent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterIntent.h; sourceTree = "<group>"; };
+		001122334455667788991036 /* PETCharacterEmotion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterEmotion.m; sourceTree = "<group>"; };
+		001122334455667788991037 /* PETCharacterEmotion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterEmotion.h; sourceTree = "<group>"; };
+		001122334455667788991038 /* PETBehaviorDecision.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETBehaviorDecision.m; sourceTree = "<group>"; };
+		001122334455667788991039 /* PETBehaviorDecision.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETBehaviorDecision.h; sourceTree = "<group>"; };
+		001122334455667788991040 /* PETCharacterGoal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterGoal.m; sourceTree = "<group>"; };
+		001122334455667788991041 /* PETCharacterGoal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterGoal.h; sourceTree = "<group>"; };
+		001122334455667788991042 /* PETCharacterTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterTask.m; sourceTree = "<group>"; };
+		001122334455667788991043 /* PETCharacterTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterTask.h; sourceTree = "<group>"; };
+		001122334455667788991044 /* PETCharacterMemoryEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterMemoryEvent.m; sourceTree = "<group>"; };
+		001122334455667788991045 /* PETCharacterMemoryEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterMemoryEvent.h; sourceTree = "<group>"; };
+		001122334455667788991046 /* PETStructuredCognitionSuggestion.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETStructuredCognitionSuggestion.m; sourceTree = "<group>"; };
+		001122334455667788991047 /* PETStructuredCognitionSuggestion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETStructuredCognitionSuggestion.h; sourceTree = "<group>"; };
+		00AA11001100110011001001 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		00AA11001100110011001002 /* PETIOSAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETIOSAppDelegate.h; sourceTree = "<group>"; };
+		00AA11001100110011001003 /* PETIOSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETIOSAppDelegate.m; sourceTree = "<group>"; };
+		00AA11001100110011001004 /* PETIOSAnimatedPetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETIOSAnimatedPetView.h; sourceTree = "<group>"; };
+		00AA11001100110011001005 /* PETIOSAnimatedPetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETIOSAnimatedPetView.m; sourceTree = "<group>"; };
+		00AA11001100110011001006 /* PETIOSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETIOSViewController.h; sourceTree = "<group>"; };
+		00AA11001100110011001007 /* PETIOSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETIOSViewController.m; sourceTree = "<group>"; };
+		00AA11001100110011001008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00AA11001100110011001009 /* PETIOSSpineMetalView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PETIOSSpineMetalView.mm; sourceTree = "<group>"; };
+		00AA1100110011001100100A /* PETIOSSpineMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETIOSSpineMetalView.h; sourceTree = "<group>"; };
+		00AA1100110011001100100C /* DesktopPetiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DesktopPetiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		17C66FA5E094B114CB201759 /* Pods-DesktopPet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DesktopPet.release.xcconfig"; path = "Target Support Files/Pods-DesktopPet/Pods-DesktopPet.release.xcconfig"; sourceTree = "<group>"; };
+		2E3900625DF687C7B4BB53B6 /* Pods-DesktopPet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DesktopPet.debug.xcconfig"; path = "Target Support Files/Pods-DesktopPet/Pods-DesktopPet.debug.xcconfig"; sourceTree = "<group>"; };
+		4CBF6AD52FAC851D0017053E /* spritesheet.webp */ = {isa = PBXFileReference; lastKnownFileType = file; path = spritesheet.webp; sourceTree = "<group>"; };
+		4CBF6AD62FAC851D0017053E /* pet.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pet.json; sourceTree = "<group>"; };
+		AA1000000000000000001000 /* PETAnimationSourceLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAnimationSourceLoader.h; sourceTree = "<group>"; };
+		AA1000000000000000001001 /* PETAnimationSourceLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAnimationSourceLoader.m; sourceTree = "<group>"; };
+		AA1000000000000000001002 /* PETAnimationExporter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAnimationExporter.h; sourceTree = "<group>"; };
+		AA1000000000000000001003 /* PETAnimationExporter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAnimationExporter.m; sourceTree = "<group>"; };
+		AA1000000000000000001004 /* PETAnimationExportWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAnimationExportWindowController.h; sourceTree = "<group>"; };
+		AA1000000000000000001005 /* PETAnimationExportWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAnimationExportWindowController.m; sourceTree = "<group>"; };
+		AA1000000000000000001006 /* PETAnimationExportViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAnimationExportViewController.h; sourceTree = "<group>"; };
+		AA1000000000000000001007 /* PETAnimationExportViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAnimationExportViewController.m; sourceTree = "<group>"; };
+		AA2000000000000000001001 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		AA2000000000000000001002 /* pixi.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = pixi.min.js; sourceTree = "<group>"; };
+		AA2000000000000000001003 /* pixi-spine-3.8.umd.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "pixi-spine-3.8.umd.js"; sourceTree = "<group>"; };
+		AA3000000000000000001001 /* PETSpineRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSpineRuntime.h; sourceTree = "<group>"; };
+		AA3000000000000000001002 /* PETSpineRuntime.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PETSpineRuntime.mm; sourceTree = "<group>"; };
+		AA3000000000000000001003 /* PETSpineRuntimeCompilationUnit.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PETSpineRuntimeCompilationUnit.mm; sourceTree = "<group>"; };
+		AA4000000000000000001001 /* PETSpineMetalView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSpineMetalView.h; sourceTree = "<group>"; };
+		AA4000000000000000001002 /* PETSpineMetalView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PETSpineMetalView.mm; sourceTree = "<group>"; };
+		AA4000000000000000001003 /* PETSpineShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PETSpineShaders.metal; sourceTree = "<group>"; };
+		AA4000000000000000001004 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		AA4000000000000000001005 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		AA4000000000000000001006 /* PETCharacterSemanticMappings.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PETCharacterSemanticMappings.plist; sourceTree = "<group>"; };
+		AA5000000000000000001000 /* PETCharacterRuntimeController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterRuntimeController.h; sourceTree = "<group>"; };
+		AA5000000000000000001001 /* PETCharacterRuntimeController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterRuntimeController.m; sourceTree = "<group>"; };
+		AA5000000000000000001002 /* PETIntentEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETIntentEngine.h; sourceTree = "<group>"; };
+		AA5000000000000000001003 /* PETIntentEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETIntentEngine.m; sourceTree = "<group>"; };
+		AA5000000000000000001004 /* PETEmotionEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETEmotionEngine.h; sourceTree = "<group>"; };
+		AA5000000000000000001005 /* PETEmotionEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETEmotionEngine.m; sourceTree = "<group>"; };
+		AA5000000000000000001006 /* PETBehaviorPlanner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETBehaviorPlanner.h; sourceTree = "<group>"; };
+		AA5000000000000000001007 /* PETBehaviorPlanner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETBehaviorPlanner.m; sourceTree = "<group>"; };
+		AA5000000000000000001008 /* PETCharacterSemanticConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCharacterSemanticConfig.h; sourceTree = "<group>"; };
+		AA5000000000000000001009 /* PETCharacterSemanticConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETCharacterSemanticConfig.m; sourceTree = "<group>"; };
+		AA5000000000000000001010 /* PETGoalEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETGoalEngine.h; sourceTree = "<group>"; };
+		AA5000000000000000001011 /* PETGoalEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETGoalEngine.m; sourceTree = "<group>"; };
+		AA5000000000000000001012 /* PETTaskEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETTaskEngine.h; sourceTree = "<group>"; };
+		AA5000000000000000001013 /* PETTaskEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETTaskEngine.m; sourceTree = "<group>"; };
+		AA5000000000000000001014 /* PETMemoryEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETMemoryEngine.h; sourceTree = "<group>"; };
+		AA5000000000000000001015 /* PETMemoryEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETMemoryEngine.m; sourceTree = "<group>"; };
+		AA5000000000000000001016 /* PETStructuredCognitionEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETStructuredCognitionEngine.h; sourceTree = "<group>"; };
+		AA5000000000000000001017 /* PETStructuredCognitionEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETStructuredCognitionEngine.m; sourceTree = "<group>"; };
+		CB1246E2966462CDC376139D /* Pods_DesktopPet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DesktopPet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		001122334455667788992001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA4000000000000000000003 /* Metal.framework in Frameworks */,
+				AA4000000000000000000004 /* MetalKit.framework in Frameworks */,
+				AA2000000000000000000001 /* WebKit.framework in Frameworks */,
+				5733249D2ADD8E8C823CFF99 /* Pods_DesktopPet.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00AA11001100110011002001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00AA11001100110011000024 /* Metal.framework in Frameworks */,
+				00AA11001100110011000025 /* MetalKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		001122334455667788993000 = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788993001 /* DesktopPet */,
+				00AA11001100110011003001 /* DesktopPetiOS */,
+				001122334455667788993010 /* Products */,
+				4940E25CAE83CF79B20C2A5C /* Pods */,
+				104E7517D373B69C6DF7FEF2 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		001122334455667788993001 /* DesktopPet */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788993002 /* App */,
+				001122334455667788993003 /* Config */,
+				001122334455667788993004 /* Managers */,
+				001122334455667788993005 /* Models */,
+				001122334455667788993006 /* Services */,
+				001122334455667788993007 /* UI */,
+				001122334455667788993008 /* Resources */,
+			);
+			path = DesktopPet;
+			sourceTree = "<group>";
+		};
+		001122334455667788993002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991001 /* main.m */,
+				001122334455667788991003 /* PETAppDelegate.h */,
+				001122334455667788991002 /* PETAppDelegate.m */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		001122334455667788993003 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991005 /* PETAppConfig.h */,
+				001122334455667788991004 /* PETAppConfig.m */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		001122334455667788993004 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991021 /* PETPetManager.h */,
+				001122334455667788991020 /* PETPetManager.m */,
+				001122334455667788991023 /* PETAssetImportManager.h */,
+				001122334455667788991022 /* PETAssetImportManager.m */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		001122334455667788993005 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991007 /* PETAnimationFrame.h */,
+				001122334455667788991006 /* PETAnimationFrame.m */,
+				001122334455667788991009 /* PETPetProfile.h */,
+				001122334455667788991008 /* PETPetProfile.m */,
+				001122334455667788991033 /* PETCharacterSnapshot.h */,
+				001122334455667788991032 /* PETCharacterSnapshot.m */,
+				001122334455667788991035 /* PETCharacterIntent.h */,
+				001122334455667788991034 /* PETCharacterIntent.m */,
+				001122334455667788991037 /* PETCharacterEmotion.h */,
+				001122334455667788991036 /* PETCharacterEmotion.m */,
+				001122334455667788991039 /* PETBehaviorDecision.h */,
+				001122334455667788991038 /* PETBehaviorDecision.m */,
+				001122334455667788991041 /* PETCharacterGoal.h */,
+				001122334455667788991040 /* PETCharacterGoal.m */,
+				001122334455667788991043 /* PETCharacterTask.h */,
+				001122334455667788991042 /* PETCharacterTask.m */,
+				001122334455667788991045 /* PETCharacterMemoryEvent.h */,
+				001122334455667788991044 /* PETCharacterMemoryEvent.m */,
+				001122334455667788991047 /* PETStructuredCognitionSuggestion.h */,
+				001122334455667788991046 /* PETStructuredCognitionSuggestion.m */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		001122334455667788993006 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991010 /* PETWebPDecoder.m */,
+				001122334455667788991011 /* PETWebPDecoder.h */,
+				001122334455667788991030 /* PETPetAssetLoader.h */,
+				001122334455667788991031 /* PETPetAssetLoader.m */,
+				AA1000000000000000001000 /* PETAnimationSourceLoader.h */,
+				AA1000000000000000001001 /* PETAnimationSourceLoader.m */,
+				AA1000000000000000001002 /* PETAnimationExporter.h */,
+				AA1000000000000000001003 /* PETAnimationExporter.m */,
+				AA3000000000000000001001 /* PETSpineRuntime.h */,
+				AA3000000000000000001002 /* PETSpineRuntime.mm */,
+				AA3000000000000000001003 /* PETSpineRuntimeCompilationUnit.mm */,
+				001122334455667788991013 /* PETOCRService.h */,
+				001122334455667788991012 /* PETOCRService.m */,
+				001122334455667788991015 /* PETAIService.h */,
+				001122334455667788991014 /* PETAIService.m */,
+				AA5000000000000000001000 /* PETCharacterRuntimeController.h */,
+				AA5000000000000000001001 /* PETCharacterRuntimeController.m */,
+				AA5000000000000000001002 /* PETIntentEngine.h */,
+				AA5000000000000000001003 /* PETIntentEngine.m */,
+				AA5000000000000000001004 /* PETEmotionEngine.h */,
+				AA5000000000000000001005 /* PETEmotionEngine.m */,
+				AA5000000000000000001006 /* PETBehaviorPlanner.h */,
+				AA5000000000000000001007 /* PETBehaviorPlanner.m */,
+				AA5000000000000000001008 /* PETCharacterSemanticConfig.h */,
+				AA5000000000000000001009 /* PETCharacterSemanticConfig.m */,
+				AA5000000000000000001010 /* PETGoalEngine.h */,
+				AA5000000000000000001011 /* PETGoalEngine.m */,
+				AA5000000000000000001012 /* PETTaskEngine.h */,
+				AA5000000000000000001013 /* PETTaskEngine.m */,
+				AA5000000000000000001014 /* PETMemoryEngine.h */,
+				AA5000000000000000001015 /* PETMemoryEngine.m */,
+				AA5000000000000000001016 /* PETStructuredCognitionEngine.h */,
+				AA5000000000000000001017 /* PETStructuredCognitionEngine.m */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		001122334455667788993007 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991026 /* PETManagerViewController.h */,
+				001122334455667788991027 /* PETManagerViewController.m */,
+				001122334455667788991028 /* PETManagerWindowController.h */,
+				001122334455667788991029 /* PETManagerWindowController.m */,
+				AA1000000000000000001004 /* PETAnimationExportWindowController.h */,
+				AA1000000000000000001005 /* PETAnimationExportWindowController.m */,
+				AA1000000000000000001006 /* PETAnimationExportViewController.h */,
+				AA1000000000000000001007 /* PETAnimationExportViewController.m */,
+				AA4000000000000000001001 /* PETSpineMetalView.h */,
+				AA4000000000000000001002 /* PETSpineMetalView.mm */,
+				001122334455667788991017 /* PETPetView.h */,
+				001122334455667788991016 /* PETPetView.m */,
+				001122334455667788991019 /* PETPetWindow.h */,
+				001122334455667788991018 /* PETPetWindow.m */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		001122334455667788993008 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991024 /* Info.plist */,
+				AA4000000000000000001003 /* PETSpineShaders.metal */,
+				AA4000000000000000001006 /* PETCharacterSemanticMappings.plist */,
+				AA2000000000000000001002 /* pixi.min.js */,
+				AA2000000000000000001003 /* pixi-spine-3.8.umd.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		001122334455667788993010 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				001122334455667788991025 /* DesktopPet.app */,
+				00AA1100110011001100100C /* DesktopPetiOS.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		00AA11001100110011003001 /* DesktopPetiOS */ = {
+			isa = PBXGroup;
+			children = (
+				00AA11001100110011003002 /* App */,
+				00AA11001100110011003003 /* UI */,
+				00AA11001100110011003004 /* Resources */,
+				4CBF6AD72FAC851D0017053E /* silverwolf-master */,
+			);
+			path = DesktopPetiOS;
+			sourceTree = "<group>";
+		};
+		00AA11001100110011003002 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				00AA11001100110011001001 /* main.m */,
+				00AA11001100110011001002 /* PETIOSAppDelegate.h */,
+				00AA11001100110011001003 /* PETIOSAppDelegate.m */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		00AA11001100110011003003 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				00AA11001100110011001004 /* PETIOSAnimatedPetView.h */,
+				00AA11001100110011001005 /* PETIOSAnimatedPetView.m */,
+				00AA1100110011001100100A /* PETIOSSpineMetalView.h */,
+				00AA11001100110011001009 /* PETIOSSpineMetalView.mm */,
+				00AA11001100110011001006 /* PETIOSViewController.h */,
+				00AA11001100110011001007 /* PETIOSViewController.m */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		00AA11001100110011003004 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				00AA11001100110011001008 /* Info.plist */,
+				4CBF6AD52FAC851D0017053E /* spritesheet.webp */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		104E7517D373B69C6DF7FEF2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AA4000000000000000001004 /* Metal.framework */,
+				AA4000000000000000001005 /* MetalKit.framework */,
+				AA2000000000000000001001 /* WebKit.framework */,
+				CB1246E2966462CDC376139D /* Pods_DesktopPet.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4940E25CAE83CF79B20C2A5C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				2E3900625DF687C7B4BB53B6 /* Pods-DesktopPet.debug.xcconfig */,
+				17C66FA5E094B114CB201759 /* Pods-DesktopPet.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		4CBF6AD72FAC851D0017053E /* silverwolf-master */ = {
+			isa = PBXGroup;
+			children = (
+				4CBF6AD62FAC851D0017053E /* pet.json */,
+			);
+			path = "silverwolf-master";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		001122334455667788994000 /* DesktopPet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 001122334455667788995002 /* Build configuration list for PBXNativeTarget "DesktopPet" */;
+			buildPhases = (
+				03A95D630BA3565E0FB35041 /* [CP] Check Pods Manifest.lock */,
+				001122334455667788992002 /* Sources */,
+				001122334455667788992001 /* Frameworks */,
+				AA2000000000000000002001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DesktopPet;
+			productName = DesktopPet;
+			productReference = 001122334455667788991025 /* DesktopPet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		00AA11001100110011004000 /* DesktopPetiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00AA11001100110011005002 /* Build configuration list for PBXNativeTarget "DesktopPetiOS" */;
+			buildPhases = (
+				00AA11001100110011002002 /* Sources */,
+				00AA11001100110011002001 /* Frameworks */,
+				00AA11001100110011002003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DesktopPetiOS;
+			productName = DesktopPetiOS;
+			productReference = 00AA1100110011001100100C /* DesktopPetiOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		001122334455667788995000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					001122334455667788994000 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					00AA11001100110011004000 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+				};
+			};
+			buildConfigurationList = 001122334455667788995001 /* Build configuration list for PBXProject "DesktopPet" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 001122334455667788993000;
+			productRefGroup = 001122334455667788993010 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				001122334455667788994000 /* DesktopPet */,
+				00AA11001100110011004000 /* DesktopPetiOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		00AA11001100110011002003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00AA1100110011001100001C /* PETCharacterSemanticMappings.plist in Resources */,
+				00AA1100110011001100001D /* pet.json in Resources */,
+				00AA1100110011001100001E /* spritesheet.webp in Resources */,
+				00AA11001100110011000023 /* PETSpineShaders.metal in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA2000000000000000002001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA4000000000000000000002 /* PETSpineShaders.metal in Resources */,
+				AA4000000000000000000005 /* PETCharacterSemanticMappings.plist in Resources */,
+				AA2000000000000000000002 /* pixi.min.js in Resources */,
+				AA2000000000000000000003 /* pixi-spine-3.8.umd.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		03A95D630BA3565E0FB35041 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-DesktopPet-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		001122334455667788992002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				001122334455667788990001 /* main.m in Sources */,
+				001122334455667788990002 /* PETAppDelegate.m in Sources */,
+				001122334455667788990003 /* PETAppConfig.m in Sources */,
+				001122334455667788990004 /* PETAnimationFrame.m in Sources */,
+				001122334455667788990005 /* PETPetProfile.m in Sources */,
+				001122334455667788990010 /* PETCharacterSnapshot.m in Sources */,
+				001122334455667788990011 /* PETCharacterIntent.m in Sources */,
+				001122334455667788990012 /* PETCharacterEmotion.m in Sources */,
+				001122334455667788990013 /* PETBehaviorDecision.m in Sources */,
+				001122334455667788990014 /* PETCharacterGoal.m in Sources */,
+				001122334455667788990015 /* PETCharacterTask.m in Sources */,
+				001122334455667788990016 /* PETCharacterMemoryEvent.m in Sources */,
+				001122334455667788990017 /* PETStructuredCognitionSuggestion.m in Sources */,
+				001122334455667788990006 /* PETWebPDecoder.m in Sources */,
+				001122334455667788990007 /* PETOCRService.m in Sources */,
+				001122334455667788990008 /* PETAIService.m in Sources */,
+				001122334455667788990009 /* PETPetView.m in Sources */,
+				00112233445566778899000A /* PETPetWindow.m in Sources */,
+				00112233445566778899000B /* PETPetManager.m in Sources */,
+				00112233445566778899000C /* PETAssetImportManager.m in Sources */,
+				00112233445566778899000D /* PETManagerViewController.m in Sources */,
+				00112233445566778899000E /* PETManagerWindowController.m in Sources */,
+				00112233445566778899000F /* PETPetAssetLoader.m in Sources */,
+				AA1000000000000000000001 /* PETAnimationSourceLoader.m in Sources */,
+				AA1000000000000000000002 /* PETAnimationExporter.m in Sources */,
+				AA1000000000000000000003 /* PETAnimationExportWindowController.m in Sources */,
+				AA1000000000000000000004 /* PETAnimationExportViewController.m in Sources */,
+				AA3000000000000000000001 /* PETSpineRuntime.mm in Sources */,
+				AA3000000000000000000002 /* PETSpineRuntimeCompilationUnit.mm in Sources */,
+				AA4000000000000000000001 /* PETSpineMetalView.mm in Sources */,
+				AA5000000000000000000001 /* PETCharacterRuntimeController.m in Sources */,
+				AA5000000000000000000002 /* PETIntentEngine.m in Sources */,
+				AA5000000000000000000003 /* PETEmotionEngine.m in Sources */,
+				AA5000000000000000000004 /* PETBehaviorPlanner.m in Sources */,
+				AA5000000000000000000005 /* PETCharacterSemanticConfig.m in Sources */,
+				AA5000000000000000000006 /* PETGoalEngine.m in Sources */,
+				AA5000000000000000000007 /* PETTaskEngine.m in Sources */,
+				AA5000000000000000000008 /* PETMemoryEngine.m in Sources */,
+				AA5000000000000000000009 /* PETStructuredCognitionEngine.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00AA11001100110011002002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00AA11001100110011000001 /* main.m in Sources */,
+				00AA11001100110011000002 /* PETIOSAppDelegate.m in Sources */,
+				00AA11001100110011000003 /* PETIOSAnimatedPetView.m in Sources */,
+				00AA11001100110011000004 /* PETIOSViewController.m in Sources */,
+				00AA11001100110011000020 /* PETIOSSpineMetalView.mm in Sources */,
+				00AA11001100110011000005 /* PETAppConfig.m in Sources */,
+				00AA11001100110011000006 /* PETAnimationFrame.m in Sources */,
+				00AA11001100110011000007 /* PETPetProfile.m in Sources */,
+				00AA11001100110011000008 /* PETWebPDecoder.m in Sources */,
+				00AA11001100110011000009 /* PETAIService.m in Sources */,
+				00AA1100110011001100000A /* PETPetAssetLoader.m in Sources */,
+				00AA1100110011001100001F /* PETAnimationSourceLoader.m in Sources */,
+				00AA11001100110011000021 /* PETSpineRuntime.mm in Sources */,
+				00AA11001100110011000022 /* PETSpineRuntimeCompilationUnit.mm in Sources */,
+				00AA1100110011001100000B /* PETCharacterSnapshot.m in Sources */,
+				00AA1100110011001100000C /* PETCharacterIntent.m in Sources */,
+				00AA1100110011001100000D /* PETCharacterEmotion.m in Sources */,
+				00AA1100110011001100000E /* PETBehaviorDecision.m in Sources */,
+				00AA1100110011001100000F /* PETCharacterGoal.m in Sources */,
+				00AA11001100110011000010 /* PETCharacterTask.m in Sources */,
+				00AA11001100110011000011 /* PETCharacterMemoryEvent.m in Sources */,
+				00AA11001100110011000012 /* PETStructuredCognitionSuggestion.m in Sources */,
+				00AA11001100110011000013 /* PETCharacterRuntimeController.m in Sources */,
+				00AA11001100110011000014 /* PETIntentEngine.m in Sources */,
+				00AA11001100110011000015 /* PETEmotionEngine.m in Sources */,
+				00AA11001100110011000016 /* PETBehaviorPlanner.m in Sources */,
+				00AA11001100110011000017 /* PETCharacterSemanticConfig.m in Sources */,
+				00AA11001100110011000018 /* PETGoalEngine.m in Sources */,
+				00AA11001100110011000019 /* PETTaskEngine.m in Sources */,
+				00AA1100110011001100001A /* PETMemoryEngine.m in Sources */,
+				00AA1100110011001100001B /* PETStructuredCognitionEngine.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		001122334455667788996000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		001122334455667788996001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		001122334455667788996002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2E3900625DF687C7B4BB53B6 /* Pods-DesktopPet.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = MA8YY74FVW;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/vendor/spine-cpp-3.8.95/spine-cpp/include",
+				);
+				INFOPLIST_FILE = DesktopPet/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codex.desktoppet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 6;
+			};
+			name = Debug;
+		};
+		001122334455667788996003 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 17C66FA5E094B114CB201759 /* Pods-DesktopPet.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = MA8YY74FVW;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/vendor/spine-cpp-3.8.95/spine-cpp/include",
+				);
+				INFOPLIST_FILE = DesktopPet/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codex.desktoppet;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = 6;
+			};
+			name = Release;
+		};
+		00AA11001100110011006000 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = MA8YY74FVW;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/vendor/spine-cpp-3.8.95/spine-cpp/include",
+				);
+				INFOPLIST_FILE = DesktopPetiOS/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codex.desktoppet.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		00AA11001100110011006001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = MA8YY74FVW;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/vendor/spine-cpp-3.8.95/spine-cpp/include",
+				);
+				INFOPLIST_FILE = DesktopPetiOS/Resources/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.codex.desktoppet.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		001122334455667788995001 /* Build configuration list for PBXProject "DesktopPet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				001122334455667788996000 /* Debug */,
+				001122334455667788996001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		001122334455667788995002 /* Build configuration list for PBXNativeTarget "DesktopPet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				001122334455667788996002 /* Debug */,
+				001122334455667788996003 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00AA11001100110011005002 /* Build configuration list for PBXNativeTarget "DesktopPetiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00AA11001100110011006000 /* Debug */,
+				00AA11001100110011006001 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 001122334455667788995000 /* Project object */;
+}

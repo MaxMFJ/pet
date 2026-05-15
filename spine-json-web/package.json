@@ -1,0 +1,9 @@
+{
+  "name": "spine-json-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local web prototype for converting Spine skeleton files with a third-party converter.",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

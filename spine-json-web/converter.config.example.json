@@ -1,0 +1,15 @@
+{
+  "executablePath": "",
+  "argumentsTemplate": [
+    "{input}",
+    "{output}"
+  ],
+  "workingDirectory": "",
+  "lockOutputVersion": false,
+  "outputVersion": "3.8.75",
+  "modelApiEndpoint": "https://api.openai.com/v1/chat/completions",
+  "modelApiKey": "",
+  "modelName": "gpt-4.1-mini",
+  "modelSystemPrompt": "You are a Spine animation generator that follows the spine-animation-ai workflow. Return strict JSON only. Reuse only existing bone names. Produce one valid Spine animation object that can be inserted into the source skeleton JSON under animations.<name>. Favor clean keyframes, clear anticipation, action, and settle timing.",
+  "notes": "Copy this file to converter.config.json and set local-only paths and credentials there."
+}

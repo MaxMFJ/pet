@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spine JSON Web</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Local Converter</p>
+          <h1>Spine JSON Web</h1>
+          <p class="subtle">
+            本地 web 壳，负责上传文件、调用第三方转换器、回传 JSON。
+          </p>
+        </div>
+        <button id="refreshStatusButton" class="icon-button" type="button">刷新</button>
+      </section>
+
+      <section class="band grid-two">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>转换器配置</h2>
+            <span id="statusBadge" class="badge">检测中</span>
+          </div>
+          <label class="field">
+            <span>可执行文件路径</span>
+            <input id="executablePathInput" type="text" placeholder="/absolute/path/to/converter" />
+          </label>
+          <label class="field">
+            <span>参数模板</span>
+            <input id="argumentsTemplateInput" type="text" placeholder="{input} {output}" />
+          </label>
+          <label class="field">
+            <span>工作目录</span>
+            <input id="workingDirectoryInput" type="text" placeholder="留空则使用可执行文件所在目录" />
+          </label>
+          <label class="checkbox-row">
+            <input id="lockOutputVersionInput" type="checkbox" />
+            <span>锁定输出版本</span>
+          </label>
+          <label class="field">
+            <span>输出版本</span>
+            <input id="outputVersionInput" type="text" placeholder="3.8.75" />
+          </label>
+          <label class="field">
+            <span>模型接口</span>
+            <input id="modelApiEndpointInput" type="text" placeholder="https://api.openai.com/v1/chat/completions" />
+          </label>
+          <label class="field">
+            <span>模型名称</span>
+            <input id="modelNameInput" type="text" placeholder="gpt-4.1-mini" />
+          </label>
+          <label class="field">
+            <span>API Key</span>
+            <input id="modelApiKeyInput" type="text" placeholder="sk-..." />
+          </label>
+          <label class="field">
+            <span>系统提示</span>
+            <textarea id="modelSystemPromptInput" rows="6" placeholder="spine-animation-ai 风格系统提示"></textarea>
+          </label>
+          <div class="action-row">
+            <button id="saveConfigButton" type="button">保存配置</button>
+          </div>
+          <div class="hint-block">
+            <p>占位符：<code>{input}</code> <code>{output}</code> <code>{mode}</code> <code>{filename}</code></p>
+            <p>默认参数模板只是占位，具体参数要按第三方工具 CLI 实际写法填写。</p>
+            <p>开启锁定输出版本后，后端会自动追加 <code>-v 3.8.75</code> 这类参数。</p>
+            <p>模型接口按 OpenAI 兼容的 <code>chat/completions</code> 请求格式发送。</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>第三方候选</h2>
+          </div>
+          <div id="recommendationsList" class="stack"></div>
+        </div>
+      </section>
+
+      <section class="band grid-two">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>转换任务</h2>
+          </div>
+          <div class="segmented">
+            <button class="segment is-active" data-mode="skel_to_json" type="button">skel -> json</button>
+            <button class="segment" data-mode="json_to_skel" type="button">json -> skel</button>
+          </div>
+          <label id="dropZone" class="drop-zone">
+            <input id="fileInput" type="file" multiple />
+            <span id="dropZoneLabel">拖入 3 个文件，或点击选择主文件、atlas、png</span>
+          </label>
+          <div class="file-grid">
+            <label class="field">
+              <span>主文件</span>
+              <input id="primaryFileInput" type="file" />
+            </label>
+            <label class="field">
+              <span>Atlas</span>
+              <input id="atlasFileInput" type="file" accept=".atlas" />
+            </label>
+            <label class="field">
+              <span>PNG</span>
+              <input id="pngFileInput" type="file" accept=".png" />
+            </label>
+          </div>
+          <div class="file-meta" id="fileMeta">未选择完整文件组</div>
+          <div class="action-row">
+            <button id="convertButton" type="button">开始转换</button>
+            <button id="downloadButton" type="button" disabled>下载 ZIP</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>输出预览</h2>
+          </div>
+          <pre id="previewPane" class="preview-pane">等待转换结果…</pre>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>动作生成</h2>
+          </div>
+          <div class="stack">
+            <label class="field">
+              <span>新动作名</span>
+              <input id="animationNameInput" type="text" placeholder="jump_ai_v2" />
+            </label>
+            <label class="field">
+              <span>动作提示词</span>
+              <textarea id="animationPromptInput" rows="7" placeholder="例如：给小火龙生成一个完整跳跃动作，包含下蹲、起跳、滞空、落地缓冲，尾巴有跟随摆动。"></textarea>
+            </label>
+            <div class="action-row">
+              <button id="generateAnimationButton" type="button">生成动作</button>
+              <button id="downloadGeneratedButton" type="button" disabled>下载生成包</button>
+            </div>
+            <p class="subtle">
+              支持直接上传 <code>.json</code> 或 <code>.skel</code> 作为主文件。若主文件是
+              <code>.skel</code>，后端会先转成 JSON，再调用模型，最后尽量回转成
+              <code>.skel</code>。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>执行日志</h2>
+          </div>
+          <pre id="logPane" class="log-pane">等待操作…</pre>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+  </html>

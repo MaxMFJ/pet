@@ -1,0 +1,6 @@
+{
+  "id": "silverwolf-master",
+  "displayName": "Silverwolf Master",
+  "description": "A Silver Wolf Codex pet built from a labeled master animation sheet with text removed.",
+  "spritesheetPath": "spritesheet.webp"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "silverwolf-generic-master",
+  "displayName": "Silverwolf Generic Master",
+  "description": "A Silver Wolf Codex pet built from a structured master sheet with labels removed and reusable layout.",
+  "spritesheetPath": "spritesheet.webp"
+}
