@@ -7,3 +7,4 @@ xcuserdata/
 spine-json-web/converter.config.json
 spine-json-web/tmp/
 spine-json-web/vendor-build/
+spine-json-web/vendor-src/SpineSkeletonDataConverter-main/data/
