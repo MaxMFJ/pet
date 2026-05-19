@@ -2,8 +2,8 @@ const state = {
   mode: "skel_to_json",
   files: {
     primary: null,
-    atlas: null,
-    png: null
+    atlases: [],
+    pngs: []
   },
   output: null,
   generatedOutput: null
@@ -24,6 +24,7 @@ const elements = {
   refreshStatusButton: document.getElementById("refreshStatusButton"),
   recommendationsList: document.getElementById("recommendationsList"),
   fileInput: document.getElementById("fileInput"),
+  projectDirInput: document.getElementById("projectDirInput"),
   primaryFileInput: document.getElementById("primaryFileInput"),
   atlasFileInput: document.getElementById("atlasFileInput"),
   pngFileInput: document.getElementById("pngFileInput"),
@@ -69,20 +70,22 @@ function splitArgumentsTemplate(value) {
 }
 
 function updateFileMeta() {
-  const { primary, atlas, png } = state.files;
-  if (!primary && !atlas && !png) {
+  const { primary, atlases, pngs } = state.files;
+  const atlasCount = atlases.length;
+  const pngCount = pngs.length;
+  if (!primary && atlasCount === 0 && pngCount === 0) {
     elements.fileMeta.textContent = "未选择完整文件组";
-    elements.dropZoneLabel.textContent = "拖入 3 个文件，或点击选择主文件、atlas、png";
+    elements.dropZoneLabel.textContent = "拖入主文件、atlas 和所有 png，或直接选择工程目录";
     return;
   }
 
   const labels = [
     primary ? `主文件: ${primary.name}` : "主文件: 未选",
-    atlas ? `Atlas: ${atlas.name}` : "Atlas: 未选",
-    png ? `PNG: ${png.name}` : "PNG: 未选"
+    atlasCount ? `Atlas: ${atlasCount} 个 (${atlases.map((file) => file.name).join(", ")})` : "Atlas: 未选",
+    pngCount ? `PNG: ${pngCount} 个 (${pngs.map((file) => file.name).join(", ")})` : "PNG: 未选"
   ];
   elements.fileMeta.textContent = labels.join(" | ");
-  elements.dropZoneLabel.textContent = primary && atlas && png ? "文件组已就绪" : "还缺文件，继续补齐";
+  elements.dropZoneLabel.textContent = primary && atlasCount && pngCount ? "文件组已就绪" : "还缺文件，继续补齐";
 }
 
 async function refreshStatus() {
@@ -181,9 +184,9 @@ function base64ToBlob(base64, mimeType) {
 }
 
 async function convertSelectedFile() {
-  const { primary, atlas, png } = state.files;
-  if (!primary || !atlas || !png) {
-    throw new Error("请同时选择主文件、atlas 和 png。");
+  const { primary, atlases, pngs } = state.files;
+  if (!primary || atlases.length === 0 || pngs.length === 0) {
+    throw new Error("请同时选择主文件、至少一个 atlas 和至少一个 png。");
   }
 
   setLog("正在调用本地转换器…");
@@ -199,14 +202,18 @@ async function convertSelectedFile() {
       filename: primary.name,
       fileBase64: await fileToBase64(primary),
       companionFiles: [
-        {
-          filename: atlas.name,
-          fileBase64: await fileToBase64(atlas)
-        },
-        {
-          filename: png.name,
-          fileBase64: await fileToBase64(png)
-        }
+        ...(await Promise.all(
+          atlases.map(async (atlas) => ({
+            filename: atlas.webkitRelativePath || atlas.name,
+            fileBase64: await fileToBase64(atlas)
+          }))
+        )),
+        ...(await Promise.all(
+          pngs.map(async (png) => ({
+            filename: png.webkitRelativePath || png.name,
+            fileBase64: await fileToBase64(png)
+          }))
+        ))
       ]
     })
   });
@@ -255,11 +262,15 @@ function expectedPrimaryExtension() {
   return state.mode === "json_to_skel" ? ".json" : ".skel";
 }
 
+function fileIdentity(file) {
+  return file?.webkitRelativePath || file?.name || "";
+}
+
 function classifyFiles(files) {
   const nextFiles = {
     primary: state.files.primary,
-    atlas: state.files.atlas,
-    png: state.files.png
+    atlases: [...state.files.atlases],
+    pngs: [...state.files.pngs]
   };
   const primaryExtension = expectedPrimaryExtension();
 
@@ -268,9 +279,19 @@ function classifyFiles(files) {
     if (lower.endsWith(primaryExtension)) {
       nextFiles.primary = file;
     } else if (lower.endsWith(".atlas")) {
-      nextFiles.atlas = file;
+      const existingIndex = nextFiles.atlases.findIndex((atlas) => fileIdentity(atlas) === fileIdentity(file));
+      if (existingIndex >= 0) {
+        nextFiles.atlases[existingIndex] = file;
+      } else {
+        nextFiles.atlases.push(file);
+      }
     } else if (lower.endsWith(".png")) {
-      nextFiles.png = file;
+      const existingIndex = nextFiles.pngs.findIndex((png) => fileIdentity(png) === fileIdentity(file));
+      if (existingIndex >= 0) {
+        nextFiles.pngs[existingIndex] = file;
+      } else {
+        nextFiles.pngs.push(file);
+      }
     }
   }
 
@@ -288,9 +309,9 @@ function handleFilesUpdate(files) {
 }
 
 async function generateAnimation() {
-  const { primary, atlas, png } = state.files;
-  if (!primary || !atlas || !png) {
-    throw new Error("请同时选择主文件、atlas 和 png。");
+  const { primary, atlases, pngs } = state.files;
+  if (!primary || atlases.length === 0 || pngs.length === 0) {
+    throw new Error("请同时选择主文件、至少一个 atlas 和至少一个 png。");
   }
 
   const prompt = elements.animationPromptInput.value.trim();
@@ -312,14 +333,18 @@ async function generateAnimation() {
       animationName: elements.animationNameInput.value.trim(),
       prompt,
       companionFiles: [
-        {
-          filename: atlas.name,
-          fileBase64: await fileToBase64(atlas)
-        },
-        {
-          filename: png.name,
-          fileBase64: await fileToBase64(png)
-        }
+        ...(await Promise.all(
+          atlases.map(async (atlas) => ({
+            filename: atlas.webkitRelativePath || atlas.name,
+            fileBase64: await fileToBase64(atlas)
+          }))
+        )),
+        ...(await Promise.all(
+          pngs.map(async (png) => ({
+            filename: png.webkitRelativePath || png.name,
+            fileBase64: await fileToBase64(png)
+          }))
+        ))
       ]
     })
   });
@@ -373,14 +398,18 @@ elements.primaryFileInput.addEventListener("change", (event) => {
 elements.atlasFileInput.addEventListener("change", (event) => {
   handleFilesUpdate({
     ...state.files,
-    atlas: event.target.files?.[0] || null
+    atlases: Array.from(event.target.files || [])
   });
+});
+
+elements.projectDirInput.addEventListener("change", (event) => {
+  handleFilesUpdate(classifyFiles(Array.from(event.target.files || [])));
 });
 
 elements.pngFileInput.addEventListener("change", (event) => {
   handleFilesUpdate({
     ...state.files,
-    png: event.target.files?.[0] || null
+    pngs: Array.from(event.target.files || [])
   });
 });
 
@@ -424,8 +453,8 @@ for (const segment of elements.segments) {
     setMode(segment.dataset.mode);
     handleFilesUpdate({
       primary: null,
-      atlas: state.files.atlas,
-      png: state.files.png
+      atlases: state.files.atlases,
+      pngs: state.files.pngs
     });
   });
 }

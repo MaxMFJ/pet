@@ -1,0 +1,4 @@
+Toolbar PNG icons in this folder are from Icons8 (https://icons8.com).
+See https://icons8.com/license for the applicable license and attribution requirements.
+
+Slugs used (Icons8 iOS filled style, 64px): import, save, animation-rig, trash, visible, invisible, hide, play, home, opened-folder, stack-of-photos, gif.

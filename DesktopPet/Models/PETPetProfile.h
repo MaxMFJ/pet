@@ -52,6 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable NSString *)baseInteractionAnimationStateForActionKey:(NSString *)actionKey;
 - (void)setDefaultAnimationState:(NSString *)defaultState;
 - (void)setInteractionAlias:(nullable NSString *)animationState forActionKey:(NSString *)actionKey;
+- (void)setMetadataValue:(nullable id)value forKey:(NSString *)key;
 
 @end
 

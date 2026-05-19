@@ -1,5 +1,7 @@
 #import "PETPetView.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "../Models/PETAnimationFrame.h"
 #import "../Models/PETPetProfile.h"
 
@@ -9,7 +11,14 @@
 @property (nonatomic, copy, readwrite) NSString *currentState;
 @property (nonatomic, copy) NSArray<PETAnimationFrame *> *currentFrames;
 @property (nonatomic, assign) NSUInteger currentFrameIndex;
-@property (nonatomic, strong, nullable) NSTimer *frameTimer;
+@property (nonatomic, assign) CFTimeInterval accumulatedFrameTime;
+@property (nonatomic, assign) CFTimeInterval lastAnimationTickTimestamp;
+@property (nonatomic, assign, getter=isAnimationActive) BOOL animationActive;
+@property (nonatomic, assign) NSUInteger profilingFrameAdvanceCount;
+@property (nonatomic, assign) NSUInteger profilingDrawCount;
+@property (nonatomic, assign) NSUInteger profilingWindowEventCount;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *profilingWindowEventBreakdown;
+@property (nonatomic, assign) CFTimeInterval profilingLastReportTimestamp;
 @property (nonatomic, assign) NSPoint dragStartPoint;
 @property (nonatomic, assign) BOOL didDragDuringMouseSession;
 @property (nonatomic, assign) BOOL dragEligibleForCurrentMouseSession;
@@ -17,6 +26,59 @@
 @end
 
 @implementation PETPetView
+
+static NSTimer *PETPetViewSharedDisplayTimer = nil;
+static NSHashTable<PETPetView *> *PETPetViewRegisteredViews = nil;
+
+static void PETPetViewRegisterForSharedAnimationTick(PETPetView *view) {
+    if (view == nil) {
+        return;
+    }
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        PETPetViewRegisteredViews = [NSHashTable weakObjectsHashTable];
+    });
+
+    [PETPetViewRegisteredViews addObject:view];
+    if (PETPetViewSharedDisplayTimer != nil) {
+        return;
+    }
+
+    PETPetViewSharedDisplayTimer = [NSTimer timerWithTimeInterval:(1.0 / 60.0)
+                                                          repeats:YES
+                                                            block:^(__unused NSTimer *timer) {
+        NSArray<PETPetView *> *views = PETPetViewRegisteredViews.allObjects;
+        BOOL hasActiveViews = NO;
+        for (PETPetView *registeredView in views) {
+            if (registeredView == nil || !registeredView.isAnimationActive) {
+                continue;
+            }
+            hasActiveViews = YES;
+            [registeredView handleSharedAnimationTick];
+        }
+
+        if (hasActiveViews) {
+            return;
+        }
+
+        [PETPetViewSharedDisplayTimer invalidate];
+        PETPetViewSharedDisplayTimer = nil;
+    }];
+    PETPetViewSharedDisplayTimer.tolerance = 1.0 / 120.0;
+    [[NSRunLoop mainRunLoop] addTimer:PETPetViewSharedDisplayTimer forMode:NSRunLoopCommonModes];
+}
+
+static void PETPetViewUnregisterFromSharedAnimationTick(PETPetView *view) {
+    if (view == nil || PETPetViewRegisteredViews == nil) {
+        return;
+    }
+    [PETPetViewRegisteredViews removeObject:view];
+    if (PETPetViewRegisteredViews.allObjects.count > 0 || PETPetViewSharedDisplayTimer == nil) {
+        return;
+    }
+    [PETPetViewSharedDisplayTimer invalidate];
+    PETPetViewSharedDisplayTimer = nil;
+}
 
 static BOOL PETBitmapRepHasVisibleAlphaAtPoint(NSBitmapImageRep *bitmap, NSInteger pixelX, NSInteger pixelY) {
     if (bitmap == nil) {
@@ -61,6 +123,39 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
     return PETBitmapRepHasVisibleAlphaAtPoint(bitmap, pixelX, flippedY);
 }
 
+static CGRect PETVisibleAlphaBoundsForImage(NSImage *image) {
+    CGImageRef cgImage = [image CGImageForProposedRect:NULL context:nil hints:nil];
+    if (cgImage == NULL) {
+        return CGRectZero;
+    }
+
+    NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithCGImage:cgImage];
+    if (bitmap == nil) {
+        return CGRectZero;
+    }
+
+    NSInteger minX = bitmap.pixelsWide;
+    NSInteger minY = bitmap.pixelsHigh;
+    NSInteger maxX = -1;
+    NSInteger maxY = -1;
+    for (NSInteger y = 0; y < bitmap.pixelsHigh; y += 1) {
+        for (NSInteger x = 0; x < bitmap.pixelsWide; x += 1) {
+            if (!PETBitmapRepHasVisibleAlphaAtPoint(bitmap, x, y)) {
+                continue;
+            }
+            minX = MIN(minX, x);
+            minY = MIN(minY, y);
+            maxX = MAX(maxX, x);
+            maxY = MAX(maxY, y);
+        }
+    }
+
+    if (maxX < minX || maxY < minY) {
+        return CGRectZero;
+    }
+    return CGRectMake(minX, minY, (maxX - minX) + 1.0, (maxY - minY) + 1.0);
+}
+
 - (instancetype)initWithProfile:(PETPetProfile *)profile {
     self = [super initWithFrame:NSMakeRect(0, 0, profile.canvasSize.width, profile.canvasSize.height)];
     if (self) {
@@ -68,9 +163,14 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
         _currentState = [profile.defaultState copy];
         _currentFrames = [profile framesForState:_currentState];
         _facingRight = YES;
+        _profilingWindowEventBreakdown = [NSMutableDictionary dictionary];
         self.wantsLayer = YES;
     }
     return self;
+}
+
+- (void)dealloc {
+    [self pauseAnimation];
 }
 
 - (BOOL)isFlipped {
@@ -86,6 +186,8 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
+    self.profilingDrawCount += 1;
+    [self maybeEmitProfilingReport];
     [[NSColor clearColor] setFill];
     NSRectFill(dirtyRect);
 
@@ -109,7 +211,7 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
 }
 
 - (void)startAnimating {
-    [self scheduleNextFrame];
+    [self restartAnimationTick];
 }
 
 - (void)playState:(NSString *)state {
@@ -118,15 +220,21 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
         return;
     }
 
+    BOOL stateChanged = ![self.currentState isEqualToString:state] || self.currentFrames != frames;
     self.currentState = [state copy];
     self.currentFrames = frames;
-    self.currentFrameIndex = 0;
-    [self scheduleNextFrame];
+    if (stateChanged || self.currentFrameIndex >= frames.count) {
+        self.currentFrameIndex = 0;
+        self.accumulatedFrameTime = 0.0;
+    }
+    [self restartAnimationTick];
+    [self setNeedsDisplay:YES];
 }
 
 - (void)pauseAnimation {
-    [self.frameTimer invalidate];
-    self.frameTimer = nil;
+    self.animationActive = NO;
+    self.lastAnimationTickTimestamp = 0.0;
+    PETPetViewUnregisterFromSharedAnimationTick(self);
 }
 
 - (void)resumeDefaultAnimation {
@@ -215,31 +323,93 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
     }
 }
 
-- (void)scheduleNextFrame {
-    [self.frameTimer invalidate];
-
+- (void)restartAnimationTick {
     if (self.currentFrames.count == 0) {
+        [self pauseAnimation];
         return;
     }
-
-    PETAnimationFrame *frame = self.currentFrames[self.currentFrameIndex];
-    __weak typeof(self) weakSelf = self;
-    self.frameTimer = [NSTimer scheduledTimerWithTimeInterval:MAX(frame.duration, 0.02)
-                                                      repeats:NO
-                                                        block:^(NSTimer * _Nonnull timer) {
-        (void)timer;
-        [weakSelf advanceFrame];
-    }];
-    [self setNeedsDisplay:YES];
+    self.animationActive = YES;
+    self.lastAnimationTickTimestamp = 0.0;
+    PETPetViewRegisterForSharedAnimationTick(self);
 }
 
-- (void)advanceFrame {
-    if (self.currentFrames.count == 0) {
+- (void)handleSharedAnimationTick {
+    if (!self.isAnimationActive || self.currentFrames.count == 0) {
         return;
     }
 
-    self.currentFrameIndex = (self.currentFrameIndex + 1) % self.currentFrames.count;
-    [self scheduleNextFrame];
+    CFTimeInterval now = CACurrentMediaTime();
+    if (self.lastAnimationTickTimestamp <= 0.0) {
+        self.lastAnimationTickTimestamp = now;
+        return;
+    }
+
+    CFTimeInterval deltaTime = MAX(0.0, now - self.lastAnimationTickTimestamp);
+    self.lastAnimationTickTimestamp = now;
+    self.accumulatedFrameTime += deltaTime;
+
+    BOOL didAdvanceFrame = NO;
+    NSUInteger safetyCounter = 0;
+    while (self.currentFrames.count > 0 && safetyCounter < self.currentFrames.count) {
+        PETAnimationFrame *frame = self.currentFrames[self.currentFrameIndex];
+        NSTimeInterval frameDuration = MAX(frame.duration, 0.02);
+        if (self.accumulatedFrameTime + 0.0001 < frameDuration) {
+            break;
+        }
+        self.accumulatedFrameTime -= frameDuration;
+        self.currentFrameIndex = (self.currentFrameIndex + 1) % self.currentFrames.count;
+        didAdvanceFrame = YES;
+        safetyCounter += 1;
+    }
+
+    if (didAdvanceFrame) {
+        self.profilingFrameAdvanceCount += 1;
+        [self setNeedsDisplay:YES];
+    }
+    [self maybeEmitProfilingReport];
+}
+
+- (void)recordProfilingWindowEventWithName:(NSString *)eventName {
+    NSString *resolvedEventName = eventName.length > 0 ? eventName : @"unknown";
+    self.profilingWindowEventCount += 1;
+    NSUInteger existingCount = [self.profilingWindowEventBreakdown[resolvedEventName] unsignedIntegerValue];
+    self.profilingWindowEventBreakdown[resolvedEventName] = @(existingCount + 1);
+    [self maybeEmitProfilingReport];
+}
+
+- (void)maybeEmitProfilingReport {
+    CFTimeInterval now = CACurrentMediaTime();
+    if (self.profilingLastReportTimestamp <= 0.0) {
+        self.profilingLastReportTimestamp = now;
+        return;
+    }
+
+    CFTimeInterval interval = now - self.profilingLastReportTimestamp;
+    if (interval < 1.0) {
+        return;
+    }
+
+    NSMutableArray<NSString *> *eventParts = [NSMutableArray array];
+    NSArray<NSString *> *sortedKeys = [[self.profilingWindowEventBreakdown allKeys] sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    for (NSString *key in sortedKeys) {
+        [eventParts addObject:[NSString stringWithFormat:@"%@=%lu", key, (unsigned long)[self.profilingWindowEventBreakdown[key] unsignedIntegerValue]]];
+    }
+
+    NSLog(@"[DesktopPet][PETPetViewProfile] pet=%@ name=%@ state=%@ interval=%.2fs frameAdvances=%lu draws=%lu windowEvents=%lu breakdown={%@}",
+          self.profile.identifier ?: @"",
+          self.profile.displayName ?: @"",
+          self.currentState ?: @"",
+          interval,
+          (unsigned long)self.profilingFrameAdvanceCount,
+          (unsigned long)self.profilingDrawCount,
+          (unsigned long)self.profilingWindowEventCount,
+          [eventParts componentsJoinedByString:@", "]);
+
+    self.profilingLastReportTimestamp = now;
+    self.profilingFrameAdvanceCount = 0;
+    self.profilingDrawCount = 0;
+    self.profilingWindowEventCount = 0;
+    [self.profilingWindowEventBreakdown removeAllObjects];
 }
 
 - (NSString *)titleForState:(NSString *)state {
@@ -258,6 +428,10 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
 }
 
 - (BOOL)containsInteractiveContentAtPoint:(NSPoint)point {
+    return [self containsOpaqueRenderedContentAtPoint:point];
+}
+
+- (BOOL)containsOpaqueRenderedContentAtPoint:(NSPoint)point {
     if (!NSPointInRect(point, self.bounds) || self.currentFrames.count == 0) {
         return NO;
     }
@@ -291,6 +465,39 @@ static BOOL PETImageHasVisibleAlphaAtPoint(NSImage *image, NSPoint imagePoint) {
 
     NSRect dragZone = NSInsetRect(self.bounds, self.bounds.size.width * 0.18, self.bounds.size.height * 0.14);
     return NSPointInRect(point, dragZone);
+}
+
+- (NSRect)visibleRenderedContentRect {
+    if (self.currentFrames.count == 0 || self.bounds.size.width <= 0.0 || self.bounds.size.height <= 0.0) {
+        return NSZeroRect;
+    }
+
+    PETAnimationFrame *frame = self.currentFrames[self.currentFrameIndex];
+    NSImage *image = frame.image;
+    if (image == nil || image.size.width <= 0.0 || image.size.height <= 0.0) {
+        return NSZeroRect;
+    }
+
+    CGRect imageBounds = PETVisibleAlphaBoundsForImage(image);
+    if (CGRectIsEmpty(imageBounds)) {
+        return self.bounds;
+    }
+
+    CGFloat scaleX = self.bounds.size.width / image.size.width;
+    CGFloat scaleY = self.bounds.size.height / image.size.height;
+    CGFloat minX = CGRectGetMinX(imageBounds) * scaleX;
+    CGFloat maxX = CGRectGetMaxX(imageBounds) * scaleX;
+    CGFloat minY = CGRectGetMinY(imageBounds) * scaleY;
+    CGFloat maxY = CGRectGetMaxY(imageBounds) * scaleY;
+
+    if (!self.facingRight) {
+        CGFloat flippedMinX = self.bounds.size.width - maxX;
+        CGFloat flippedMaxX = self.bounds.size.width - minX;
+        minX = flippedMinX;
+        maxX = flippedMaxX;
+    }
+
+    return NSIntersectionRect(NSMakeRect(minX, minY, MAX(0.0, maxX - minX), MAX(0.0, maxY - minY)), self.bounds);
 }
 
 @end

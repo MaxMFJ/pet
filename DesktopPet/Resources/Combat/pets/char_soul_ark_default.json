@@ -1,0 +1,68 @@
+{
+  "formatVersion": 1,
+  "characterId": "__soul_ark_char_default__",
+  "displayName": "Soul Ark Character Default",
+  "sourceStem": "__soul_ark_char_default__",
+  "appliesToSourceStemPrefix": "char_",
+  "notes": [
+    "Default ACT bindings for all char_* Soul Ark pets",
+    "Per-character overrides: place combat-bindings.json next to the Spine JSON"
+  ],
+  "interactionAliases": {
+    "combat.primary": "attack",
+    "combat.secondary": "attack_skill_link01",
+    "combat.skill.1": "attack_skill_link02",
+    "combat.ultimate": "attack_skill_special",
+    "combat.quick": "dash",
+    "combat.cancel": "return",
+    "combat.idle": "battle_idle",
+    "combat.hit": "hit",
+    "combat.hitstun": "stun",
+    "combat.knockeddown": "down",
+    "combat.getup": "getup",
+    "combat.launched": "knockback"
+  },
+  "bindings": [
+    {
+      "key": "j",
+      "label": "Attack",
+      "commandType": "skill.cast",
+      "skillId": "soul_ark_attack",
+      "actionKey": "combat.primary"
+    },
+    {
+      "key": "k",
+      "label": "Skill 1",
+      "commandType": "skill.cast",
+      "skillId": "soul_ark_skill_1",
+      "actionKey": "combat.secondary"
+    },
+    {
+      "key": "l",
+      "label": "Skill 2",
+      "commandType": "skill.cast",
+      "skillId": "soul_ark_skill_2",
+      "actionKey": "combat.skill.1"
+    },
+    {
+      "key": "u",
+      "label": "Special",
+      "commandType": "skill.cast",
+      "skillId": "soul_ark_special",
+      "actionKey": "combat.ultimate"
+    },
+    {
+      "key": "i",
+      "label": "Dash",
+      "commandType": "skill.cast",
+      "skillId": "soul_ark_dash",
+      "actionKey": "combat.quick"
+    },
+    {
+      "key": "o",
+      "label": "Cancel",
+      "commandType": "skill.cancel",
+      "actionKey": "combat.cancel"
+    }
+  ]
+}

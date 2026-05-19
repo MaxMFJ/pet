@@ -1,0 +1,450 @@
+{
+  "formatVersion": 1,
+  "lastUpdated": "2026-05-16",
+  "notes": [
+    "v1 declarative skill table for ACT runtime",
+    "keep this file data-driven and avoid embedded script logic"
+  ],
+  "reactions": [
+    {
+      "reactionId": "hit_stun_light",
+      "combatState": "combat.hitstun",
+      "animationState": "hit_light",
+      "duration": 0.22,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "air_launch_suspend",
+      "combatState": "combat.launched",
+      "animationState": "hit_air_hold",
+      "duration": 0.65,
+      "gravityScale": 0.18,
+      "lockHorizontal": true,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "knockdown_heavy",
+      "combatState": "combat.knockeddown",
+      "animationState": "hit_knockdown",
+      "duration": 0.8,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": true,
+      "knockdown": true
+    },
+    {
+      "reactionId": "munjoong_hit",
+      "combatState": "combat.hitstun",
+      "animationState": "hit",
+      "duration": 0.33,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "munjoong_combo_hold",
+      "combatState": "combat.hitstun",
+      "animationState": "hit",
+      "duration": 0.48,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "munjoong_knockback",
+      "combatState": "combat.launched",
+      "animationState": "knockback",
+      "duration": 0.45,
+      "gravityScale": 1.0,
+      "lockHorizontal": false,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "munjoong_launch",
+      "combatState": "combat.launched",
+      "animationState": "knockback",
+      "duration": 0.68,
+      "gravityScale": 1.0,
+      "lockHorizontal": false,
+      "lockVertical": false,
+      "knockdown": false,
+      "launchVector": {
+        "dx": 88.0,
+        "dy": 235.0
+      }
+    },
+    {
+      "reactionId": "munjoong_knockdown",
+      "combatState": "combat.knockeddown",
+      "animationState": "down",
+      "duration": 0.83,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": true,
+      "knockdown": true
+    }
+  ],
+  "skills": [
+    {
+      "skillId": "basic_primary_strike",
+      "displayName": "Basic Primary Strike",
+      "castType": "primary",
+      "entryPhase": "strike",
+      "tags": ["starter", "ground"],
+      "phases": [
+        {
+          "phaseId": "strike",
+          "startTime": 0.0,
+          "duration": 0.36,
+          "animationState": "attack_primary",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "strike_hit",
+              "startTime": 0.08,
+              "endTime": 0.18,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "hit_stun_light",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": [
+            {
+              "type": "onPhaseComplete",
+              "toPhase": "recovery"
+            }
+          ]
+        },
+        {
+          "phaseId": "recovery",
+          "startTime": 0.36,
+          "duration": 0.12,
+          "animationState": "attack_primary_recovery",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "spear_sky_pierce",
+      "displayName": "Spear Sky Pierce",
+      "castType": "skill",
+      "entryPhase": "cast",
+      "tags": ["launcher", "air-control", "return-hit", "projectile-like"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 0.18,
+          "animationState": "skill_spear_cast",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [],
+          "effects": [
+            {
+              "type": "emitDebugMarker",
+              "markerId": "spear_cast_begin"
+            }
+          ],
+          "transitions": [
+            {
+              "type": "onPhaseComplete",
+              "toPhase": "launch_hit"
+            }
+          ]
+        },
+        {
+          "phaseId": "launch_hit",
+          "startTime": 0.18,
+          "duration": 0.16,
+          "animationState": "skill_spear_up",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "launch_window",
+              "startTime": 0.0,
+              "endTime": 0.12,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 3.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "air_launch_suspend",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [
+            {
+              "type": "launchTarget",
+              "vector": {
+                "dx": 120.0,
+                "dy": 220.0
+              }
+            },
+            {
+              "type": "airSuspendTarget",
+              "duration": 0.65
+            }
+          ],
+          "transitions": [
+            {
+              "type": "onHit",
+              "toPhase": "air_hold"
+            },
+            {
+              "type": "onPhaseComplete",
+              "toPhase": "air_hold"
+            }
+          ]
+        },
+        {
+          "phaseId": "air_hold",
+          "startTime": 0.34,
+          "duration": 0.42,
+          "animationState": "skill_spear_hold",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [],
+          "effects": [
+            {
+              "type": "spawnProjectile",
+              "projectileId": "spear_return_path",
+              "mode": "linger"
+            }
+          ],
+          "transitions": [
+            {
+              "type": "onTimer",
+              "time": 0.42,
+              "toPhase": "return_hit"
+            }
+          ]
+        },
+        {
+          "phaseId": "return_hit",
+          "startTime": 0.76,
+          "duration": 0.18,
+          "animationState": "skill_spear_return",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "return_window",
+              "startTime": 0.02,
+              "endTime": 0.16,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 3.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "knockdown_heavy",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [
+            {
+              "type": "returnProjectile",
+              "projectileId": "spear_return_path"
+            },
+            {
+              "type": "knockdownTarget",
+              "duration": 0.8
+            }
+          ],
+          "transitions": [
+            {
+              "type": "onPhaseComplete",
+              "toPhase": "recovery"
+            }
+          ]
+        },
+        {
+          "phaseId": "recovery",
+          "startTime": 0.94,
+          "duration": 0.22,
+          "animationState": "skill_spear_recovery",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_attack",
+      "displayName": "Munjoong Attack",
+      "castType": "primary",
+      "entryPhase": "attack",
+      "tags": ["munjoong", "ground"],
+      "phases": [
+        {
+          "phaseId": "attack",
+          "startTime": 0.0,
+          "duration": 1.4,
+          "animationState": "attack",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "attack_hit",
+              "startTime": 0.12,
+              "endTime": 0.55,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_skill_link01",
+      "displayName": "Munjoong Skill Link 01",
+      "castType": "skill",
+      "entryPhase": "cast",
+      "tags": ["munjoong", "combo"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 4.17,
+          "animationState": "attack_skill_link01",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "link01_hit",
+              "startTime": 0.35,
+              "endTime": 3.05,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 6,
+              "rehitInterval": 0.45,
+              "reactionId": "munjoong_combo_hold",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_skill_link02",
+      "displayName": "Munjoong Skill Link 02",
+      "castType": "skill",
+      "entryPhase": "cast",
+      "tags": ["munjoong", "combo"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 3.1,
+          "animationState": "attack_skill_link02",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "casterMotion": {
+            "startTime": 0.08,
+            "endTime": 0.62,
+            "dx": 0.0,
+            "dy": 0.0,
+            "relativeToFacing": true
+          },
+          "hitWindows": [
+            {
+              "windowId": "link02_hit",
+              "startTime": 0.18,
+              "endTime": 0.95,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_launch",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_skill_special",
+      "displayName": "Munjoong Special",
+      "castType": "ultimate",
+      "entryPhase": "cast",
+      "tags": ["munjoong", "ultimate"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 4.67,
+          "animationState": "attack_skill_special",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "special_hit",
+              "startTime": 0.5,
+              "endTime": 2.0,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 3.0,
+              "maxHitsPerTarget": 2,
+              "rehitInterval": 0.7,
+              "reactionId": "munjoong_knockdown",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_dash",
+      "displayName": "Munjoong Dash",
+      "castType": "skill",
+      "entryPhase": "dash",
+      "tags": ["munjoong", "mobility"],
+      "phases": [
+        {
+          "phaseId": "dash",
+          "startTime": 0.0,
+          "duration": 0.2,
+          "animationState": "dash",
+          "movementLock": false,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "dash_hit",
+              "startTime": 0.02,
+              "endTime": 0.16,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 5.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    }
+  ]
+}

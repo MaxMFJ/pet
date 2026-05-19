@@ -1,0 +1,198 @@
+{
+  "formatVersion": 1,
+  "notes": [
+    "movementLock: true blocks WASD during this phase",
+    "allowMovementDuringCast: true lets the pet slide without switching to run"
+  ],
+  "reactions": [
+    {
+      "reactionId": "munjoong_hit",
+      "combatState": "combat.hitstun",
+      "animationState": "hit",
+      "duration": 0.33,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "munjoong_knockback",
+      "combatState": "combat.launched",
+      "animationState": "knockback",
+      "duration": 0.45,
+      "gravityScale": 1.0,
+      "lockHorizontal": false,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "munjoong_knockdown",
+      "combatState": "combat.knockeddown",
+      "animationState": "down",
+      "duration": 0.83,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": true,
+      "knockdown": true
+    }
+  ],
+  "skills": [
+    {
+      "skillId": "munjoong_attack",
+      "displayName": "Munjoong Attack",
+      "castType": "primary",
+      "entryPhase": "attack",
+      "tags": ["munjoong", "ground"],
+      "phases": [
+        {
+          "phaseId": "attack",
+          "startTime": 0.0,
+          "duration": 1.4,
+          "animationState": "attack",
+          "movementLock": true,
+          "allowMovementDuringCast": false,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "attack_hit",
+              "startTime": 0.12,
+              "endTime": 0.55,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_skill_link01",
+      "displayName": "Munjoong Skill Link 01",
+      "castType": "skill",
+      "entryPhase": "cast",
+      "tags": ["munjoong", "combo"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 4.17,
+          "animationState": "attack_skill_link01",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "link01_hit",
+              "startTime": 0.35,
+              "endTime": 1.2,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_skill_link02",
+      "displayName": "Munjoong Skill Link 02",
+      "castType": "skill",
+      "entryPhase": "cast",
+      "tags": ["munjoong", "combo"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 3.1,
+          "animationState": "attack_skill_link02",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "link02_hit",
+              "startTime": 0.25,
+              "endTime": 1.0,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_knockback",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_skill_special",
+      "displayName": "Munjoong Special",
+      "castType": "ultimate",
+      "entryPhase": "cast",
+      "tags": ["munjoong", "ultimate"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 4.67,
+          "animationState": "attack_skill_special",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "special_hit",
+              "startTime": 0.5,
+              "endTime": 2.0,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 3.0,
+              "maxHitsPerTarget": 2,
+              "reactionId": "munjoong_knockdown",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "munjoong_dash",
+      "displayName": "Munjoong Dash",
+      "castType": "skill",
+      "entryPhase": "dash",
+      "tags": ["munjoong", "mobility"],
+      "phases": [
+        {
+          "phaseId": "dash",
+          "startTime": 0.0,
+          "duration": 0.2,
+          "animationState": "dash",
+          "movementLock": false,
+          "allowMovementDuringCast": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "dash_hit",
+              "startTime": 0.02,
+              "endTime": 0.16,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 5.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    }
+  ]
+}

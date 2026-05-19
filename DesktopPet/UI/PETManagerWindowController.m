@@ -7,7 +7,7 @@
 - (instancetype)initWithPetManager:(PETPetManager *)petManager
                      configuration:(PETAppConfig *)configuration
                 assetImportManager:(PETAssetImportManager *)assetImportManager {
-    NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 760, 520)
+    NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 960, 560)
                                                    styleMask:(NSWindowStyleMaskTitled |
                                                               NSWindowStyleMaskClosable |
                                                               NSWindowStyleMaskMiniaturizable |
@@ -16,8 +16,8 @@
                                                        defer:NO];
     self = [super initWithWindow:window];
     if (self) {
-        window.title = @"Desktop Pet Manager";
-        window.minSize = NSMakeSize(720, 460);
+        window.title = @"桌面宠物管理器";
+        window.minSize = NSMakeSize(680, 420);
         window.releasedWhenClosed = NO;
         window.contentViewController = [[PETManagerViewController alloc] initWithPetManager:petManager
                                                                                configuration:configuration

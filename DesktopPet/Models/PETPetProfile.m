@@ -156,6 +156,20 @@
     _metadata = metadata.copy;
 }
 
+- (void)setMetadataValue:(id)value forKey:(NSString *)key {
+    if (key.length == 0) {
+        return;
+    }
+
+    NSMutableDictionary<NSString *, id> *metadata = [self.metadata mutableCopy] ?: [NSMutableDictionary dictionary];
+    if (value != nil) {
+        metadata[key] = value;
+    } else {
+        [metadata removeObjectForKey:key];
+    }
+    _metadata = metadata.copy;
+}
+
 - (void)setDefaultAnimationState:(NSString *)defaultState {
     if (defaultState.length == 0 || ![self.supportedStates containsObject:defaultState]) {
         return;

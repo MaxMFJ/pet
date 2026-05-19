@@ -91,20 +91,24 @@
           </div>
           <label id="dropZone" class="drop-zone">
             <input id="fileInput" type="file" multiple />
-            <span id="dropZoneLabel">拖入 3 个文件，或点击选择主文件、atlas、png</span>
+            <span id="dropZoneLabel">拖入主文件、atlas 和所有 png</span>
           </label>
           <div class="file-grid">
+            <label class="field">
+              <span>工程目录</span>
+              <input id="projectDirInput" type="file" webkitdirectory directory multiple />
+            </label>
             <label class="field">
               <span>主文件</span>
               <input id="primaryFileInput" type="file" />
             </label>
             <label class="field">
               <span>Atlas</span>
-              <input id="atlasFileInput" type="file" accept=".atlas" />
+              <input id="atlasFileInput" type="file" accept=".atlas" multiple />
             </label>
             <label class="field">
               <span>PNG</span>
-              <input id="pngFileInput" type="file" accept=".png" />
+              <input id="pngFileInput" type="file" accept=".png" multiple />
             </label>
           </div>
           <div class="file-meta" id="fileMeta">未选择完整文件组</div>

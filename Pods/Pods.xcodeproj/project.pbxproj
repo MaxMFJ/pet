@@ -7,23 +7,134 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0336550AA19FDC8FF61A39FD055A86FD /* mz_crypt_apple.c in Sources */ = {isa = PBXBuildFile; fileRef = 1FD7927EC1C5729F1565B45ECD24A9BD /* mz_crypt_apple.c */; };
+		0D2DE2A92B5D17DAD04867D82F3EA46A /* mz_strm_pkcrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DC8908238CF192D71A59A9E40E36B05 /* mz_strm_pkcrypt.c */; };
+		1A18BD7C78569B2D19B9D2AA8365B301 /* SSZipArchive-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = FAE037F032341AA58ADFCAAB5BE4452C /* SSZipArchive-dummy.m */; };
+		1D2E08CDDA997FC61A326D8228D97631 /* mz_os_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = 02A6B34C33E5E3E328096FD0E6F72262 /* mz_os_posix.c */; };
+		28E2293428B011797BFFB1C7EDA7EF97 /* mz_zip_rw.h in Headers */ = {isa = PBXBuildFile; fileRef = 7D8163CE62D5F00CF56282A85642FA30 /* mz_zip_rw.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		29E3AD0766AA273E48E8ED71F34A79B1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE00D34B275026D4656C738BED5A001 /* Cocoa.framework */; };
-		86907A8E5A5165554D1F2E3C5264562E /* Pods-DesktopPet-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E096714A91BE9357C76BFCBB5C741F6E /* Pods-DesktopPet-dummy.m */; };
-		B4D0E7E82C74298888774CB274150AC7 /* Pods-DesktopPet-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A005992E73104E6BD8E0E237CEC6662B /* Pods-DesktopPet-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		371E7E785E2F5FDFC8ED5D2B96771109 /* ZipArchive.h in Headers */ = {isa = PBXBuildFile; fileRef = FF0C68D28275CD99261E9487AA3C0985 /* ZipArchive.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		39F42009A46AAEFBCD7448658398E2EA /* mz_os.h in Headers */ = {isa = PBXBuildFile; fileRef = 9AFA9FBEA4F6F228AA903B8B5D970607 /* mz_os.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		3B41143592BB3963BEAFC1A5FC1E6BEE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE00D34B275026D4656C738BED5A001 /* Cocoa.framework */; };
+		3C8790362E0C1DD48A7769B9D8BBA451 /* mz_strm_mem.h in Headers */ = {isa = PBXBuildFile; fileRef = B7D9F770817FD0FD5A2AC69CDDDAAF76 /* mz_strm_mem.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		3E0DD8DC130D68925E02BC9040576A37 /* mz_strm_wzaes.h in Headers */ = {isa = PBXBuildFile; fileRef = B4761B2DD776E6D941A2C5D13492F33B /* mz_strm_wzaes.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		4DDD91154412B7C9C946E2D4B8A98CD6 /* Pods-DesktopPetiOS-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2694E28C223830F3A2B8D54E26FC8706 /* Pods-DesktopPetiOS-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		52FAC14560684333D389DADD1ED0B8CE /* mz_compat.c in Sources */ = {isa = PBXBuildFile; fileRef = AF651FEA3AFBF170813A7F22FF620B43 /* mz_compat.c */; };
+		530162AA71E6AD947C1B12171FA83267 /* mz_strm_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 873C83BCD8A23D19D4E730F8E5EA1535 /* mz_strm_mem.c */; };
+		56EA0474697ABAA3DFDF8820A65359F4 /* mz_strm.c in Sources */ = {isa = PBXBuildFile; fileRef = 51F2EBB48FA8E6FCE9B2AE249633B351 /* mz_strm.c */; };
+		5A812F1F047DCD798CD1E199E219CB17 /* SSZipArchive.h in Headers */ = {isa = PBXBuildFile; fileRef = C93377059BB91E3AD0B2E50823979892 /* SSZipArchive.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6F9804F6089FE0D45B44478B343D221E /* Pods-DesktopPetiOS-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EB32E08F2A2AD6D0DF54A9731D091C4 /* Pods-DesktopPetiOS-dummy.m */; };
+		711867B5FB1C7880632FB96063908E86 /* mz_strm_buf.h in Headers */ = {isa = PBXBuildFile; fileRef = 383DA5977ABE5FA2EEC3B98A7FFD5A93 /* mz_strm_buf.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		8169DC6F27F16023EE18686A5492F421 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE00D34B275026D4656C738BED5A001 /* Cocoa.framework */; };
+		8317398F8B935081647384695F741CA9 /* mz_strm_pkcrypt.h in Headers */ = {isa = PBXBuildFile; fileRef = 3EEE8BE4E24F79E99D9E2D737444B60A /* mz_strm_pkcrypt.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		8594237C2E3936790D688F35493EB88C /* mz_zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 5D02B1B87FA64B2BF1CA5CD596E94C1F /* mz_zip.c */; };
+		86907A8E5A5165554D1F2E3C5264562E /* Pods-DesktopPet-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B268661C3A076CCEC948ED126A9C0F3A /* Pods-DesktopPet-dummy.m */; };
+		8AD76C6DAEAAC661E3A86F9D9F699E56 /* mz_crypt.h in Headers */ = {isa = PBXBuildFile; fileRef = 27CDF49A053DC51CEB3159974445DCA7 /* mz_crypt.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		A1CEBEC27391A559A30C3CD5072B7172 /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = 283FB4C9BCEEA458D64CA544D7A1C4E5 /* SSZipArchive.m */; };
+		AA3F32B76953C38B7B01D0044C62E725 /* mz_strm_wzaes.c in Sources */ = {isa = PBXBuildFile; fileRef = D372A235896356A50F0304C7AB30B920 /* mz_strm_wzaes.c */; };
+		B2E5D44B86C88B9706F79249AA920413 /* mz_compat.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CD94E5F1924351AD768091D909FD4A /* mz_compat.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B4B951D7E23788CE74828E55EFABE315 /* mz_zip.h in Headers */ = {isa = PBXBuildFile; fileRef = 52AEBAA81A7E261CCD0932E4DD01E3A8 /* mz_zip.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B4D0E7E82C74298888774CB274150AC7 /* Pods-DesktopPet-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F09103C192FEF49848881BD63379C4D /* Pods-DesktopPet-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BDA7AAF724006FBFB394B019B5FD5FA3 /* mz_strm_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 3ACAE629AEB9BB57F0D182DD71F6846D /* mz_strm_buf.c */; };
+		BE4FB8AB746816293E1B54B2A2CA86B5 /* mz_strm_split.h in Headers */ = {isa = PBXBuildFile; fileRef = 8EAF080D32DFAD3ACA47DE5108A756DD /* mz_strm_split.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		C28B1668DF4529ADEF35DA69E2A4D52F /* SSZipArchive-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2FFEB5ADB09A533B9B2CA751CBCFFAC9 /* SSZipArchive-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C49988C9B155ACC8EEABAAC081DBF924 /* mz_strm_zlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C6E085514AF1D4E5EA0538B1419E0CC /* mz_strm_zlib.c */; };
+		C843077447EBA7C96760CC2236E158E9 /* mz_zip_rw.c in Sources */ = {isa = PBXBuildFile; fileRef = 7A213D3B7B41A6EC84EC1405F64E473A /* mz_zip_rw.c */; };
+		D8C434F93F62144D7CCCA3F6FBD21640 /* mz_strm_os_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = 323F69BA120C7F06A4A98716F66BA455 /* mz_strm_os_posix.c */; };
+		E0E1CEA2A635287E8EE4A9DF4B6DD855 /* SSZipCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 4851AC6CD9951C3D4B23A22F13530C4F /* SSZipCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77679014C2D8DC16716A473C56AF434 /* mz_crypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 0829234D10C58BB4224CA116AD51C49C /* mz_crypt.c */; };
+		E8395A65B2DD35016389FCB5C6109CC3 /* mz_strm_os.h in Headers */ = {isa = PBXBuildFile; fileRef = 2023D000D5848F7D6D6CEBFA6062DD2F /* mz_strm_os.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		E85680CC478F7B805293F78FA37EFB03 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 211F7718557006D679DC5406BA2238AC /* PrivacyInfo.xcprivacy */; };
+		F293BE71925776301A84CBB1F861AED7 /* mz_os.c in Sources */ = {isa = PBXBuildFile; fileRef = CBAAF5DF64517AE31DC8571144259B71 /* mz_os.c */; };
+		F628E0CB6BBC1D89F4A33350E920995B /* mz_strm.h in Headers */ = {isa = PBXBuildFile; fileRef = B733D7694839AFCF1390AB9035C2B9BD /* mz_strm.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		F858860B40C9D1CE5404B6EE42ACDAD6 /* mz_strm_split.c in Sources */ = {isa = PBXBuildFile; fileRef = B8C29DA82AE86960E679ECDAE5A6476D /* mz_strm_split.c */; };
+		FA39EC116D89CE2EA8CA1DC873A59D52 /* mz_strm_zlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 63082C75BCAF3BC22FED7CB68C52072C /* mz_strm_zlib.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		FD2D4B0766546E1A115546E154F560E3 /* mz.h in Headers */ = {isa = PBXBuildFile; fileRef = 688CCE7209670E42DFEB7315CCB7893F /* mz.h */; settings = {ATTRIBUTES = (Project, ); }; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4214D367B3276CE0B760D32DA71D68A8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F60E38364AFF5E1349FF07415B944396;
+			remoteInfo = SSZipArchive;
+		};
+		6BE3ABA0DDDAD1203DDA138F572DABD6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D8EA004283833F4910C46F5335BE8F07;
+			remoteInfo = "SSZipArchive-SSZipArchive";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-		06FB3A3642DCD916E7437C036A0AF7BD /* Pods-DesktopPet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DesktopPet.release.xcconfig"; sourceTree = "<group>"; };
+		02A6B34C33E5E3E328096FD0E6F72262 /* mz_os_posix.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_os_posix.c; path = SSZipArchive/minizip/mz_os_posix.c; sourceTree = "<group>"; };
+		05D64E993E2BF1A2649259AFA5993BD1 /* SSZipArchive-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "SSZipArchive-Info.plist"; sourceTree = "<group>"; };
+		0829234D10C58BB4224CA116AD51C49C /* mz_crypt.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_crypt.c; path = SSZipArchive/minizip/mz_crypt.c; sourceTree = "<group>"; };
+		166B77B083FCE215BD606E5F5F57C49E /* Pods-DesktopPet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DesktopPet.release.xcconfig"; sourceTree = "<group>"; };
+		1FD7927EC1C5729F1565B45ECD24A9BD /* mz_crypt_apple.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_crypt_apple.c; path = SSZipArchive/minizip/mz_crypt_apple.c; sourceTree = "<group>"; };
+		2023D000D5848F7D6D6CEBFA6062DD2F /* mz_strm_os.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm_os.h; path = SSZipArchive/minizip/mz_strm_os.h; sourceTree = "<group>"; };
+		2096E3B9D4AA5B44E4536219C84E7DF2 /* Pods-DesktopPetiOS */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-DesktopPetiOS"; path = Pods_DesktopPetiOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		211F7718557006D679DC5406BA2238AC /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = "SSZipArchive/Supporting Files/PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		2694E28C223830F3A2B8D54E26FC8706 /* Pods-DesktopPetiOS-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-DesktopPetiOS-umbrella.h"; sourceTree = "<group>"; };
+		27CDF49A053DC51CEB3159974445DCA7 /* mz_crypt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_crypt.h; path = SSZipArchive/minizip/mz_crypt.h; sourceTree = "<group>"; };
+		283FB4C9BCEEA458D64CA544D7A1C4E5 /* SSZipArchive.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = SSZipArchive.m; path = SSZipArchive/SSZipArchive.m; sourceTree = "<group>"; };
+		28D20B183EC84B03EE7E95A79DD94D23 /* Pods-DesktopPet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DesktopPet.debug.xcconfig"; sourceTree = "<group>"; };
+		2DC8908238CF192D71A59A9E40E36B05 /* mz_strm_pkcrypt.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm_pkcrypt.c; path = SSZipArchive/minizip/mz_strm_pkcrypt.c; sourceTree = "<group>"; };
+		2DE7B8996923BD3A2E56F750E8F15F92 /* Pods-DesktopPet-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-DesktopPet-acknowledgements.markdown"; sourceTree = "<group>"; };
+		2EB32E08F2A2AD6D0DF54A9731D091C4 /* Pods-DesktopPetiOS-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-DesktopPetiOS-dummy.m"; sourceTree = "<group>"; };
+		2FFEB5ADB09A533B9B2CA751CBCFFAC9 /* SSZipArchive-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SSZipArchive-umbrella.h"; sourceTree = "<group>"; };
+		31DA0225EA63D1283F600AC9F4C36DDE /* Pods-DesktopPet-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-DesktopPet-Info.plist"; sourceTree = "<group>"; };
+		323F69BA120C7F06A4A98716F66BA455 /* mz_strm_os_posix.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm_os_posix.c; path = SSZipArchive/minizip/mz_strm_os_posix.c; sourceTree = "<group>"; };
+		36CF5F42AC6208D0B9AF5DE08441BEA1 /* Pods-DesktopPet-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-DesktopPet-acknowledgements.plist"; sourceTree = "<group>"; };
+		383DA5977ABE5FA2EEC3B98A7FFD5A93 /* mz_strm_buf.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm_buf.h; path = SSZipArchive/minizip/mz_strm_buf.h; sourceTree = "<group>"; };
+		392A81EA849E9617E17EBA11DBB67BE6 /* Pods-DesktopPetiOS-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-DesktopPetiOS-acknowledgements.markdown"; sourceTree = "<group>"; };
+		3ACAE629AEB9BB57F0D182DD71F6846D /* mz_strm_buf.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm_buf.c; path = SSZipArchive/minizip/mz_strm_buf.c; sourceTree = "<group>"; };
+		3EEE8BE4E24F79E99D9E2D737444B60A /* mz_strm_pkcrypt.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm_pkcrypt.h; path = SSZipArchive/minizip/mz_strm_pkcrypt.h; sourceTree = "<group>"; };
+		47818FA269C04B50A51A8D1D2122C796 /* SSZipArchive-SSZipArchive */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "SSZipArchive-SSZipArchive"; path = SSZipArchive.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		4851AC6CD9951C3D4B23A22F13530C4F /* SSZipCommon.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SSZipCommon.h; path = SSZipArchive/SSZipCommon.h; sourceTree = "<group>"; };
+		51F2EBB48FA8E6FCE9B2AE249633B351 /* mz_strm.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm.c; path = SSZipArchive/minizip/mz_strm.c; sourceTree = "<group>"; };
+		52AEBAA81A7E261CCD0932E4DD01E3A8 /* mz_zip.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_zip.h; path = SSZipArchive/minizip/mz_zip.h; sourceTree = "<group>"; };
+		5D02B1B87FA64B2BF1CA5CD596E94C1F /* mz_zip.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_zip.c; path = SSZipArchive/minizip/mz_zip.c; sourceTree = "<group>"; };
+		5D2179B6B15B7920CE567DD4C3992510 /* SSZipArchive.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SSZipArchive.debug.xcconfig; sourceTree = "<group>"; };
+		60A533B8D774D9C89B5CE91835C3BEFA /* Pods-DesktopPetiOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DesktopPetiOS.release.xcconfig"; sourceTree = "<group>"; };
+		63082C75BCAF3BC22FED7CB68C52072C /* mz_strm_zlib.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm_zlib.h; path = SSZipArchive/minizip/mz_strm_zlib.h; sourceTree = "<group>"; };
+		671875ED8E7C918673FBEA15E5FADDBB /* Pods-DesktopPetiOS-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-DesktopPetiOS-acknowledgements.plist"; sourceTree = "<group>"; };
+		688CCE7209670E42DFEB7315CCB7893F /* mz.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz.h; path = SSZipArchive/minizip/mz.h; sourceTree = "<group>"; };
+		6CE4F5B4EFD299B0D0453ED9A2C9CEAA /* SSZipArchive-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SSZipArchive-prefix.pch"; sourceTree = "<group>"; };
+		6F09103C192FEF49848881BD63379C4D /* Pods-DesktopPet-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-DesktopPet-umbrella.h"; sourceTree = "<group>"; };
 		73DC657D77CCE3033D534C8861237E5E /* Pods-DesktopPet */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-DesktopPet"; path = Pods_DesktopPet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		79644CC176B7FE9E2F4CAD6120F2626F /* Pods-DesktopPet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DesktopPet.debug.xcconfig"; sourceTree = "<group>"; };
+		7A213D3B7B41A6EC84EC1405F64E473A /* mz_zip_rw.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_zip_rw.c; path = SSZipArchive/minizip/mz_zip_rw.c; sourceTree = "<group>"; };
+		7D8163CE62D5F00CF56282A85642FA30 /* mz_zip_rw.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_zip_rw.h; path = SSZipArchive/minizip/mz_zip_rw.h; sourceTree = "<group>"; };
+		7E35532EE4DC5A21D0149F8F7FB2EC98 /* Pods-DesktopPetiOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DesktopPetiOS.debug.xcconfig"; sourceTree = "<group>"; };
+		873C83BCD8A23D19D4E730F8E5EA1535 /* mz_strm_mem.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm_mem.c; path = SSZipArchive/minizip/mz_strm_mem.c; sourceTree = "<group>"; };
+		8EAF080D32DFAD3ACA47DE5108A756DD /* mz_strm_split.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm_split.h; path = SSZipArchive/minizip/mz_strm_split.h; sourceTree = "<group>"; };
+		91B23470DEB9A986332BEB5034234BC7 /* SSZipArchive */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SSZipArchive; path = SSZipArchive.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		953FA4FADA0DB3D01834413C3AEDE993 /* Pods-DesktopPet.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-DesktopPet.modulemap"; sourceTree = "<group>"; };
+		9AFA9FBEA4F6F228AA903B8B5D970607 /* mz_os.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_os.h; path = SSZipArchive/minizip/mz_os.h; sourceTree = "<group>"; };
+		9C6E085514AF1D4E5EA0538B1419E0CC /* mz_strm_zlib.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm_zlib.c; path = SSZipArchive/minizip/mz_strm_zlib.c; sourceTree = "<group>"; };
+		9CC58B9CA9209B212969A59039CC07CE /* ResourceBundle-SSZipArchive-SSZipArchive-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ResourceBundle-SSZipArchive-SSZipArchive-Info.plist"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9E2A7AE22EFB2439A62C162DA631B9A0 /* Pods-DesktopPetiOS.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-DesktopPetiOS.modulemap"; sourceTree = "<group>"; };
 		9EE00D34B275026D4656C738BED5A001 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		A005992E73104E6BD8E0E237CEC6662B /* Pods-DesktopPet-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-DesktopPet-umbrella.h"; sourceTree = "<group>"; };
-		A88C410245F1A3A5293B8660037B4965 /* Pods-DesktopPet.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-DesktopPet.modulemap"; sourceTree = "<group>"; };
-		BF3194676190DE6099C575E1A6F5D1E3 /* Pods-DesktopPet-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-DesktopPet-acknowledgements.plist"; sourceTree = "<group>"; };
-		C12AA8696B369002670A4DAF94E89683 /* Pods-DesktopPet-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-DesktopPet-acknowledgements.markdown"; sourceTree = "<group>"; };
-		E096714A91BE9357C76BFCBB5C741F6E /* Pods-DesktopPet-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-DesktopPet-dummy.m"; sourceTree = "<group>"; };
-		E3802AC095A9D68AAF32CD68C0B1041C /* Pods-DesktopPet-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-DesktopPet-Info.plist"; sourceTree = "<group>"; };
+		A6D8B4E34AE5B599A2B6BD23D271CDDB /* Pods-DesktopPetiOS-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-DesktopPetiOS-resources.sh"; sourceTree = "<group>"; };
+		AF651FEA3AFBF170813A7F22FF620B43 /* mz_compat.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_compat.c; path = SSZipArchive/minizip/mz_compat.c; sourceTree = "<group>"; };
+		B268661C3A076CCEC948ED126A9C0F3A /* Pods-DesktopPet-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-DesktopPet-dummy.m"; sourceTree = "<group>"; };
+		B4761B2DD776E6D941A2C5D13492F33B /* mz_strm_wzaes.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm_wzaes.h; path = SSZipArchive/minizip/mz_strm_wzaes.h; sourceTree = "<group>"; };
+		B733D7694839AFCF1390AB9035C2B9BD /* mz_strm.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm.h; path = SSZipArchive/minizip/mz_strm.h; sourceTree = "<group>"; };
+		B7D9F770817FD0FD5A2AC69CDDDAAF76 /* mz_strm_mem.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_strm_mem.h; path = SSZipArchive/minizip/mz_strm_mem.h; sourceTree = "<group>"; };
+		B8C29DA82AE86960E679ECDAE5A6476D /* mz_strm_split.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm_split.c; path = SSZipArchive/minizip/mz_strm_split.c; sourceTree = "<group>"; };
+		C93377059BB91E3AD0B2E50823979892 /* SSZipArchive.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SSZipArchive.h; path = SSZipArchive/SSZipArchive.h; sourceTree = "<group>"; };
+		CBAAF5DF64517AE31DC8571144259B71 /* mz_os.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_os.c; path = SSZipArchive/minizip/mz_os.c; sourceTree = "<group>"; };
+		D372A235896356A50F0304C7AB30B920 /* mz_strm_wzaes.c */ = {isa = PBXFileReference; includeInIndex = 1; name = mz_strm_wzaes.c; path = SSZipArchive/minizip/mz_strm_wzaes.c; sourceTree = "<group>"; };
+		E703ACCDEFD5286D4A954AC9F5710572 /* SSZipArchive.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SSZipArchive.release.xcconfig; sourceTree = "<group>"; };
+		F5CD94E5F1924351AD768091D909FD4A /* mz_compat.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = mz_compat.h; path = SSZipArchive/minizip/mz_compat.h; sourceTree = "<group>"; };
+		FAE037F032341AA58ADFCAAB5BE4452C /* SSZipArchive-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SSZipArchive-dummy.m"; sourceTree = "<group>"; };
+		FD857A5A0DC7CCBC0D68447E6C3FAA60 /* SSZipArchive.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SSZipArchive.modulemap; sourceTree = "<group>"; };
+		FEAEFA79958B9EADB479515964082CEC /* Pods-DesktopPetiOS-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-DesktopPetiOS-Info.plist"; sourceTree = "<group>"; };
+		FF0C68D28275CD99261E9487AA3C0985 /* ZipArchive.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ZipArchive.h; path = SSZipArchive/include/ZipArchive.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,9 +146,72 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		23097C567E4032B0358ECABF534CBF9D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8169DC6F27F16023EE18686A5492F421 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		36541EB974178127F89EF3ECA1669F99 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B41143592BB3963BEAFC1A5FC1E6BEE /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4C623AC55519BD69DF8BB23421D3A2A9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4913A730F49CE6FF01D6E934A728DA99 /* Pods-DesktopPet */ = {
+			isa = PBXGroup;
+			children = (
+				953FA4FADA0DB3D01834413C3AEDE993 /* Pods-DesktopPet.modulemap */,
+				2DE7B8996923BD3A2E56F750E8F15F92 /* Pods-DesktopPet-acknowledgements.markdown */,
+				36CF5F42AC6208D0B9AF5DE08441BEA1 /* Pods-DesktopPet-acknowledgements.plist */,
+				B268661C3A076CCEC948ED126A9C0F3A /* Pods-DesktopPet-dummy.m */,
+				31DA0225EA63D1283F600AC9F4C36DDE /* Pods-DesktopPet-Info.plist */,
+				6F09103C192FEF49848881BD63379C4D /* Pods-DesktopPet-umbrella.h */,
+				28D20B183EC84B03EE7E95A79DD94D23 /* Pods-DesktopPet.debug.xcconfig */,
+				166B77B083FCE215BD606E5F5F57C49E /* Pods-DesktopPet.release.xcconfig */,
+			);
+			name = "Pods-DesktopPet";
+			path = "Target Support Files/Pods-DesktopPet";
+			sourceTree = "<group>";
+		};
+		61C93E04CE1D2A291AD98FA5D7780D67 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				9CC58B9CA9209B212969A59039CC07CE /* ResourceBundle-SSZipArchive-SSZipArchive-Info.plist */,
+				FD857A5A0DC7CCBC0D68447E6C3FAA60 /* SSZipArchive.modulemap */,
+				FAE037F032341AA58ADFCAAB5BE4452C /* SSZipArchive-dummy.m */,
+				05D64E993E2BF1A2649259AFA5993BD1 /* SSZipArchive-Info.plist */,
+				6CE4F5B4EFD299B0D0453ED9A2C9CEAA /* SSZipArchive-prefix.pch */,
+				2FFEB5ADB09A533B9B2CA751CBCFFAC9 /* SSZipArchive-umbrella.h */,
+				5D2179B6B15B7920CE567DD4C3992510 /* SSZipArchive.debug.xcconfig */,
+				E703ACCDEFD5286D4A954AC9F5710572 /* SSZipArchive.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/SSZipArchive";
+			sourceTree = "<group>";
+		};
+		68E6168DC351BE80EF7E221F43112E77 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				CFC8AF34F4A525BC0DCF2BC95C7211C5 /* SSZipArchive */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		6CF8013CA832F8AB5DDAE0156C97FD88 /* OS X */ = {
 			isa = PBXGroup;
 			children = (
@@ -46,28 +220,29 @@
 			name = "OS X";
 			sourceTree = "<group>";
 		};
-		8B4B6614E56991D6BE7FCB6493D26D9D /* Targets Support Files */ = {
+		8306F87532B999069CE2121FB1440423 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				CD0D9842F16C1C28F758E645B817C572 /* Pods-DesktopPet */,
+				211F7718557006D679DC5406BA2238AC /* PrivacyInfo.xcprivacy */,
 			);
-			name = "Targets Support Files";
+			name = Resources;
 			sourceTree = "<group>";
 		};
-		CD0D9842F16C1C28F758E645B817C572 /* Pods-DesktopPet */ = {
+		CDBDBA145B9C31DCC438603ED29A324A /* Pods-DesktopPetiOS */ = {
 			isa = PBXGroup;
 			children = (
-				A88C410245F1A3A5293B8660037B4965 /* Pods-DesktopPet.modulemap */,
-				C12AA8696B369002670A4DAF94E89683 /* Pods-DesktopPet-acknowledgements.markdown */,
-				BF3194676190DE6099C575E1A6F5D1E3 /* Pods-DesktopPet-acknowledgements.plist */,
-				E096714A91BE9357C76BFCBB5C741F6E /* Pods-DesktopPet-dummy.m */,
-				E3802AC095A9D68AAF32CD68C0B1041C /* Pods-DesktopPet-Info.plist */,
-				A005992E73104E6BD8E0E237CEC6662B /* Pods-DesktopPet-umbrella.h */,
-				79644CC176B7FE9E2F4CAD6120F2626F /* Pods-DesktopPet.debug.xcconfig */,
-				06FB3A3642DCD916E7437C036A0AF7BD /* Pods-DesktopPet.release.xcconfig */,
+				9E2A7AE22EFB2439A62C162DA631B9A0 /* Pods-DesktopPetiOS.modulemap */,
+				392A81EA849E9617E17EBA11DBB67BE6 /* Pods-DesktopPetiOS-acknowledgements.markdown */,
+				671875ED8E7C918673FBEA15E5FADDBB /* Pods-DesktopPetiOS-acknowledgements.plist */,
+				2EB32E08F2A2AD6D0DF54A9731D091C4 /* Pods-DesktopPetiOS-dummy.m */,
+				FEAEFA79958B9EADB479515964082CEC /* Pods-DesktopPetiOS-Info.plist */,
+				A6D8B4E34AE5B599A2B6BD23D271CDDB /* Pods-DesktopPetiOS-resources.sh */,
+				2694E28C223830F3A2B8D54E26FC8706 /* Pods-DesktopPetiOS-umbrella.h */,
+				7E35532EE4DC5A21D0149F8F7FB2EC98 /* Pods-DesktopPetiOS.debug.xcconfig */,
+				60A533B8D774D9C89B5CE91835C3BEFA /* Pods-DesktopPetiOS.release.xcconfig */,
 			);
-			name = "Pods-DesktopPet";
-			path = "Target Support Files/Pods-DesktopPet";
+			name = "Pods-DesktopPetiOS";
+			path = "Target Support Files/Pods-DesktopPetiOS";
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -75,15 +250,62 @@
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				E0A1E60606E0BF6E2E10F1F01350DFE8 /* Frameworks */,
-				DF283932E8DE60BAF2449B965E8A96F5 /* Products */,
-				8B4B6614E56991D6BE7FCB6493D26D9D /* Targets Support Files */,
+				68E6168DC351BE80EF7E221F43112E77 /* Pods */,
+				DB226EE523FCE3C58454A5A787CF9481 /* Products */,
+				F363EE762B58AC8BF27A307BF6C34492 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
-		DF283932E8DE60BAF2449B965E8A96F5 /* Products */ = {
+		CFC8AF34F4A525BC0DCF2BC95C7211C5 /* SSZipArchive */ = {
+			isa = PBXGroup;
+			children = (
+				688CCE7209670E42DFEB7315CCB7893F /* mz.h */,
+				AF651FEA3AFBF170813A7F22FF620B43 /* mz_compat.c */,
+				F5CD94E5F1924351AD768091D909FD4A /* mz_compat.h */,
+				0829234D10C58BB4224CA116AD51C49C /* mz_crypt.c */,
+				27CDF49A053DC51CEB3159974445DCA7 /* mz_crypt.h */,
+				1FD7927EC1C5729F1565B45ECD24A9BD /* mz_crypt_apple.c */,
+				CBAAF5DF64517AE31DC8571144259B71 /* mz_os.c */,
+				9AFA9FBEA4F6F228AA903B8B5D970607 /* mz_os.h */,
+				02A6B34C33E5E3E328096FD0E6F72262 /* mz_os_posix.c */,
+				51F2EBB48FA8E6FCE9B2AE249633B351 /* mz_strm.c */,
+				B733D7694839AFCF1390AB9035C2B9BD /* mz_strm.h */,
+				3ACAE629AEB9BB57F0D182DD71F6846D /* mz_strm_buf.c */,
+				383DA5977ABE5FA2EEC3B98A7FFD5A93 /* mz_strm_buf.h */,
+				873C83BCD8A23D19D4E730F8E5EA1535 /* mz_strm_mem.c */,
+				B7D9F770817FD0FD5A2AC69CDDDAAF76 /* mz_strm_mem.h */,
+				2023D000D5848F7D6D6CEBFA6062DD2F /* mz_strm_os.h */,
+				323F69BA120C7F06A4A98716F66BA455 /* mz_strm_os_posix.c */,
+				2DC8908238CF192D71A59A9E40E36B05 /* mz_strm_pkcrypt.c */,
+				3EEE8BE4E24F79E99D9E2D737444B60A /* mz_strm_pkcrypt.h */,
+				B8C29DA82AE86960E679ECDAE5A6476D /* mz_strm_split.c */,
+				8EAF080D32DFAD3ACA47DE5108A756DD /* mz_strm_split.h */,
+				D372A235896356A50F0304C7AB30B920 /* mz_strm_wzaes.c */,
+				B4761B2DD776E6D941A2C5D13492F33B /* mz_strm_wzaes.h */,
+				9C6E085514AF1D4E5EA0538B1419E0CC /* mz_strm_zlib.c */,
+				63082C75BCAF3BC22FED7CB68C52072C /* mz_strm_zlib.h */,
+				5D02B1B87FA64B2BF1CA5CD596E94C1F /* mz_zip.c */,
+				52AEBAA81A7E261CCD0932E4DD01E3A8 /* mz_zip.h */,
+				7A213D3B7B41A6EC84EC1405F64E473A /* mz_zip_rw.c */,
+				7D8163CE62D5F00CF56282A85642FA30 /* mz_zip_rw.h */,
+				C93377059BB91E3AD0B2E50823979892 /* SSZipArchive.h */,
+				283FB4C9BCEEA458D64CA544D7A1C4E5 /* SSZipArchive.m */,
+				4851AC6CD9951C3D4B23A22F13530C4F /* SSZipCommon.h */,
+				FF0C68D28275CD99261E9487AA3C0985 /* ZipArchive.h */,
+				8306F87532B999069CE2121FB1440423 /* Resources */,
+				61C93E04CE1D2A291AD98FA5D7780D67 /* Support Files */,
+			);
+			name = SSZipArchive;
+			path = SSZipArchive;
+			sourceTree = "<group>";
+		};
+		DB226EE523FCE3C58454A5A787CF9481 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				73DC657D77CCE3033D534C8861237E5E /* Pods-DesktopPet */,
+				2096E3B9D4AA5B44E4536219C84E7DF2 /* Pods-DesktopPetiOS */,
+				91B23470DEB9A986332BEB5034234BC7 /* SSZipArchive */,
+				47818FA269C04B50A51A8D1D2122C796 /* SSZipArchive-SSZipArchive */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -96,9 +318,43 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		F363EE762B58AC8BF27A307BF6C34492 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				4913A730F49CE6FF01D6E934A728DA99 /* Pods-DesktopPet */,
+				CDBDBA145B9C31DCC438603ED29A324A /* Pods-DesktopPetiOS */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		07A5052D6BEB510D8A44077112E30C6A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD2D4B0766546E1A115546E154F560E3 /* mz.h in Headers */,
+				B2E5D44B86C88B9706F79249AA920413 /* mz_compat.h in Headers */,
+				8AD76C6DAEAAC661E3A86F9D9F699E56 /* mz_crypt.h in Headers */,
+				39F42009A46AAEFBCD7448658398E2EA /* mz_os.h in Headers */,
+				F628E0CB6BBC1D89F4A33350E920995B /* mz_strm.h in Headers */,
+				711867B5FB1C7880632FB96063908E86 /* mz_strm_buf.h in Headers */,
+				3C8790362E0C1DD48A7769B9D8BBA451 /* mz_strm_mem.h in Headers */,
+				E8395A65B2DD35016389FCB5C6109CC3 /* mz_strm_os.h in Headers */,
+				8317398F8B935081647384695F741CA9 /* mz_strm_pkcrypt.h in Headers */,
+				BE4FB8AB746816293E1B54B2A2CA86B5 /* mz_strm_split.h in Headers */,
+				3E0DD8DC130D68925E02BC9040576A37 /* mz_strm_wzaes.h in Headers */,
+				FA39EC116D89CE2EA8CA1DC873A59D52 /* mz_strm_zlib.h in Headers */,
+				B4B951D7E23788CE74828E55EFABE315 /* mz_zip.h in Headers */,
+				28E2293428B011797BFFB1C7EDA7EF97 /* mz_zip_rw.h in Headers */,
+				5A812F1F047DCD798CD1E199E219CB17 /* SSZipArchive.h in Headers */,
+				C28B1668DF4529ADEF35DA69E2A4D52F /* SSZipArchive-umbrella.h in Headers */,
+				E0E1CEA2A635287E8EE4A9DF4B6DD855 /* SSZipCommon.h in Headers */,
+				371E7E785E2F5FDFC8ED5D2B96771109 /* ZipArchive.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		49FE742140228AFBAE335636C556A822 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -107,9 +363,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E4783F3C35488E4C3063E1D1E31278D3 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4DDD91154412B7C9C946E2D4B8A98CD6 /* Pods-DesktopPetiOS-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		7EFAED00D773A9D3ADECAD69A753216D /* Pods-DesktopPetiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DEA5275B376E366D30438DD8D715549F /* Build configuration list for PBXNativeTarget "Pods-DesktopPetiOS" */;
+			buildPhases = (
+				E4783F3C35488E4C3063E1D1E31278D3 /* Headers */,
+				2E7DD7224E76EC4214CE789D530E89F2 /* Sources */,
+				36541EB974178127F89EF3ECA1669F99 /* Frameworks */,
+				838B88F86E800B62FCBB0352A6CE5E41 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3BFB0933248AB5F535279C20F16A15F2 /* PBXTargetDependency */,
+			);
+			name = "Pods-DesktopPetiOS";
+			productName = Pods_DesktopPetiOS;
+			productReference = 2096E3B9D4AA5B44E4536219C84E7DF2 /* Pods-DesktopPetiOS */;
+			productType = "com.apple.product-type.framework";
+		};
 		936CFF840BCC0DCB64F4FFA247A65A4E /* Pods-DesktopPet */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 635379D780349D556729066BC2092FFC /* Build configuration list for PBXNativeTarget "Pods-DesktopPet" */;
@@ -126,6 +409,42 @@
 			name = "Pods-DesktopPet";
 			productName = Pods_DesktopPet;
 			productReference = 73DC657D77CCE3033D534C8861237E5E /* Pods-DesktopPet */;
+			productType = "com.apple.product-type.framework";
+		};
+		D8EA004283833F4910C46F5335BE8F07 /* SSZipArchive-SSZipArchive */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2232FC9B8BEE183F96B7B3EDFA6565AC /* Build configuration list for PBXNativeTarget "SSZipArchive-SSZipArchive" */;
+			buildPhases = (
+				440163C51FC95FC451BEC047E50BCA01 /* Sources */,
+				4C623AC55519BD69DF8BB23421D3A2A9 /* Frameworks */,
+				D931BD8EF4E2CFF63AED39F52F429F86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "SSZipArchive-SSZipArchive";
+			productName = SSZipArchive;
+			productReference = 47818FA269C04B50A51A8D1D2122C796 /* SSZipArchive-SSZipArchive */;
+			productType = "com.apple.product-type.bundle";
+		};
+		F60E38364AFF5E1349FF07415B944396 /* SSZipArchive */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 70352FE60DAD7992DDDB9E078D4664F7 /* Build configuration list for PBXNativeTarget "SSZipArchive" */;
+			buildPhases = (
+				07A5052D6BEB510D8A44077112E30C6A /* Headers */,
+				D9F74FDA76AED654CB167D1978FF8763 /* Sources */,
+				23097C567E4032B0358ECABF534CBF9D /* Frameworks */,
+				622C9A1723978EBD805128A3A14FE99F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5F4B31E95CCF157293AF8863D1548C00 /* PBXTargetDependency */,
+			);
+			name = SSZipArchive;
+			productName = SSZipArchive;
+			productReference = 91B23470DEB9A986332BEB5034234BC7 /* SSZipArchive */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -148,16 +467,33 @@
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			minimizedProjectReferenceProxies = 0;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = DF283932E8DE60BAF2449B965E8A96F5 /* Products */;
+			productRefGroup = DB226EE523FCE3C58454A5A787CF9481 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				936CFF840BCC0DCB64F4FFA247A65A4E /* Pods-DesktopPet */,
+				7EFAED00D773A9D3ADECAD69A753216D /* Pods-DesktopPetiOS */,
+				F60E38364AFF5E1349FF07415B944396 /* SSZipArchive */,
+				D8EA004283833F4910C46F5335BE8F07 /* SSZipArchive-SSZipArchive */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		622C9A1723978EBD805128A3A14FE99F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		838B88F86E800B62FCBB0352A6CE5E41 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		93BB388BDE06BE950F732F2369436AB2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -165,9 +501,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D931BD8EF4E2CFF63AED39F52F429F86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E85680CC478F7B805293F78FA37EFB03 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2E7DD7224E76EC4214CE789D530E89F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F9804F6089FE0D45B44478B343D221E /* Pods-DesktopPetiOS-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		440163C51FC95FC451BEC047E50BCA01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D8F895E4A0383CDAD641BF53521634B8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -176,12 +535,190 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D9F74FDA76AED654CB167D1978FF8763 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52FAC14560684333D389DADD1ED0B8CE /* mz_compat.c in Sources */,
+				E77679014C2D8DC16716A473C56AF434 /* mz_crypt.c in Sources */,
+				0336550AA19FDC8FF61A39FD055A86FD /* mz_crypt_apple.c in Sources */,
+				F293BE71925776301A84CBB1F861AED7 /* mz_os.c in Sources */,
+				1D2E08CDDA997FC61A326D8228D97631 /* mz_os_posix.c in Sources */,
+				56EA0474697ABAA3DFDF8820A65359F4 /* mz_strm.c in Sources */,
+				BDA7AAF724006FBFB394B019B5FD5FA3 /* mz_strm_buf.c in Sources */,
+				530162AA71E6AD947C1B12171FA83267 /* mz_strm_mem.c in Sources */,
+				D8C434F93F62144D7CCCA3F6FBD21640 /* mz_strm_os_posix.c in Sources */,
+				0D2DE2A92B5D17DAD04867D82F3EA46A /* mz_strm_pkcrypt.c in Sources */,
+				F858860B40C9D1CE5404B6EE42ACDAD6 /* mz_strm_split.c in Sources */,
+				AA3F32B76953C38B7B01D0044C62E725 /* mz_strm_wzaes.c in Sources */,
+				C49988C9B155ACC8EEABAAC081DBF924 /* mz_strm_zlib.c in Sources */,
+				8594237C2E3936790D688F35493EB88C /* mz_zip.c in Sources */,
+				C843077447EBA7C96760CC2236E158E9 /* mz_zip_rw.c in Sources */,
+				A1CEBEC27391A559A30C3CD5072B7172 /* SSZipArchive.m in Sources */,
+				1A18BD7C78569B2D19B9D2AA8365B301 /* SSZipArchive-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3BFB0933248AB5F535279C20F16A15F2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SSZipArchive;
+			target = F60E38364AFF5E1349FF07415B944396 /* SSZipArchive */;
+			targetProxy = 4214D367B3276CE0B760D32DA71D68A8 /* PBXContainerItemProxy */;
+		};
+		5F4B31E95CCF157293AF8863D1548C00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "SSZipArchive-SSZipArchive";
+			target = D8EA004283833F4910C46F5335BE8F07 /* SSZipArchive-SSZipArchive */;
+			targetProxy = 6BE3ABA0DDDAD1203DDA138F572DABD6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		24130EE791F471CB7B980E8FC7EA54C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5D2179B6B15B7920CE567DD4C3992510 /* SSZipArchive.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/SSZipArchive";
+				IBSC_MODULE = SSZipArchive;
+				INFOPLIST_FILE = "Target Support Files/SSZipArchive/ResourceBundle-SSZipArchive-SSZipArchive-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_NAME = SSZipArchive;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		3993145E1D8C9BB6BF21C87119C7A902 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 60A533B8D774D9C89B5CE91835C3BEFA /* Pods-DesktopPetiOS.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = "Target Support Files/Pods-DesktopPetiOS/Pods-DesktopPetiOS-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MODULEMAP_FILE = "Target Support Files/Pods-DesktopPetiOS/Pods-DesktopPetiOS.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		3CD551115413176245B50CD7F059FE37 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7E35532EE4DC5A21D0149F8F7FB2EC98 /* Pods-DesktopPetiOS.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				INFOPLIST_FILE = "Target Support Files/Pods-DesktopPetiOS/Pods-DesktopPetiOS-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MODULEMAP_FILE = "Target Support Files/Pods-DesktopPetiOS/Pods-DesktopPetiOS.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		3F9D9F6C04768C7AC382E977143CB61E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5D2179B6B15B7920CE567DD4C3992510 /* SSZipArchive.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/SSZipArchive/SSZipArchive-prefix.pch";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Target Support Files/SSZipArchive/SSZipArchive-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MODULEMAP_FILE = "Target Support Files/SSZipArchive/SSZipArchive.modulemap";
+				PRODUCT_MODULE_NAME = SSZipArchive;
+				PRODUCT_NAME = SSZipArchive;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		54D24C8D432FD358971F4356F8C58E5C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 79644CC176B7FE9E2F4CAD6120F2626F /* Pods-DesktopPet.debug.xcconfig */;
+			baseConfigurationReference = 28D20B183EC84B03EE7E95A79DD94D23 /* Pods-DesktopPet.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
@@ -198,6 +735,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "Target Support Files/Pods-DesktopPet/Pods-DesktopPet-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -346,9 +884,49 @@
 			};
 			name = Debug;
 		};
+		C6860872E1CCEA6AD429467850466C7C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E703ACCDEFD5286D4A954AC9F5710572 /* SSZipArchive.release.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GCC_PREFIX_HEADER = "Target Support Files/SSZipArchive/SSZipArchive-prefix.pch";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Target Support Files/SSZipArchive/SSZipArchive-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MODULEMAP_FILE = "Target Support Files/SSZipArchive/SSZipArchive.modulemap";
+				PRODUCT_MODULE_NAME = SSZipArchive;
+				PRODUCT_NAME = SSZipArchive;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_INSTALL_OBJC_HEADER = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		CFDD3A22391F464A741414D2C6B08002 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 06FB3A3642DCD916E7437C036A0AF7BD /* Pods-DesktopPet.release.xcconfig */;
+			baseConfigurationReference = 166B77B083FCE215BD606E5F5F57C49E /* Pods-DesktopPet.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
@@ -365,6 +943,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "Target Support Files/Pods-DesktopPet/Pods-DesktopPet-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -385,9 +964,37 @@
 			};
 			name = Release;
 		};
+		DDCB22F35144CD728FDC8968488F47C6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E703ACCDEFD5286D4A954AC9F5710572 /* SSZipArchive.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/SSZipArchive";
+				IBSC_MODULE = SSZipArchive;
+				INFOPLIST_FILE = "Target Support Files/SSZipArchive/ResourceBundle-SSZipArchive-SSZipArchive-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_NAME = SSZipArchive;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2232FC9B8BEE183F96B7B3EDFA6565AC /* Build configuration list for PBXNativeTarget "SSZipArchive-SSZipArchive" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				24130EE791F471CB7B980E8FC7EA54C4 /* Debug */,
+				DDCB22F35144CD728FDC8968488F47C6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -402,6 +1009,24 @@
 			buildConfigurations = (
 				54D24C8D432FD358971F4356F8C58E5C /* Debug */,
 				CFDD3A22391F464A741414D2C6B08002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		70352FE60DAD7992DDDB9E078D4664F7 /* Build configuration list for PBXNativeTarget "SSZipArchive" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3F9D9F6C04768C7AC382E977143CB61E /* Debug */,
+				C6860872E1CCEA6AD429467850466C7C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DEA5275B376E366D30438DD8D715549F /* Build configuration list for PBXNativeTarget "Pods-DesktopPetiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CD551115413176245B50CD7F059FE37 /* Debug */,
+				3993145E1D8C9BB6BF21C87119C7A902 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

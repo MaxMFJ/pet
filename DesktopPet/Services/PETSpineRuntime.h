@@ -3,6 +3,8 @@
 
 #import "../Config/PETPlatformCompatibility.h"
 
+#import "PETSpineBoneTransform.h"
+
 NS_ASSUME_NONNULL_BEGIN
 
 typedef struct {
@@ -60,7 +62,19 @@ typedef struct {
 
 - (void)advanceTime:(NSTimeInterval)deltaTime;
 
+- (NSArray<NSString *> *)boneNames;
+- (NSArray<NSString *> *)slotNames;
+- (nullable PETSpineBoneTransform *)boneTransformNamed:(NSString *)boneName;
+- (vector_float2)worldPositionForBoneNamed:(NSString *)boneName
+                               localOffset:(vector_float2)localOffset
+                            localRotation:(float)localRotationRadians
+                                    flipX:(BOOL)flipX;
+- (void)setAnimationTime:(NSTimeInterval)time;
+- (NSTimeInterval)currentAnimationTime;
+
 - (CGRect)currentContentBounds;
+
+- (CGRect)referenceContentBoundsForAnimationNamed:(NSString *)animationName;
 
 - (nullable PETSpineHitInfo *)hitInfoAtContentPoint:(CGPoint)contentPoint;
 

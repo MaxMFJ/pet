@@ -44,6 +44,16 @@ static NSString * const PETActionDragRelease = @"drag.release";
 }
 
 - (PETPetProfile *)loadAnimationSourceAtURL:(NSURL *)fileURL error:(NSError **)error {
+    if ([self isDirectoryURL:fileURL]) {
+        NSURL *spineJSONURL = [self spineRuntimeJSONURLInDirectory:fileURL];
+        if (spineJSONURL != nil) {
+            PETPetProfile *profile = [self loadSpineRuntimeProfileFromJSONURL:spineJSONURL error:error];
+            if (profile != nil) {
+                return profile;
+            }
+        }
+    }
+
     if ([self isSpineRuntimeJSONURL:fileURL]) {
         PETPetProfile *profile = [self loadSpineRuntimeProfileFromJSONURL:fileURL error:error];
         if (profile != nil) {
@@ -265,6 +275,46 @@ static NSString * const PETActionDragRelease = @"drag.release";
     return [url.pathExtension.lowercaseString isEqualToString:@"json"] && ![url.lastPathComponent.lowercaseString isEqualToString:@"pet.json"];
 }
 
+- (NSURL *)spineRuntimeJSONURLInDirectory:(NSURL *)directoryURL {
+    NSString *directoryName = directoryURL.lastPathComponent.stringByDeletingPathExtension;
+    NSURL *preferredJSONURL = [directoryURL URLByAppendingPathComponent:[directoryName stringByAppendingPathExtension:@"json"]];
+    if ([self isValidSpineRuntimeJSONURLInDirectory:preferredJSONURL]) {
+        return preferredJSONURL;
+    }
+
+    NSArray<NSURL *> *childURLs = [self visibleChildURLsAtDirectoryURL:directoryURL];
+    for (NSURL *childURL in childURLs) {
+        if ([self isValidSpineRuntimeJSONURLInDirectory:childURL]) {
+            return childURL;
+        }
+    }
+    return nil;
+}
+
+- (BOOL)isValidSpineRuntimeJSONURLInDirectory:(NSURL *)jsonURL {
+    if (![self isSpineRuntimeJSONURL:jsonURL]) {
+        return NO;
+    }
+
+    NSURL *atlasURL = [[jsonURL URLByDeletingPathExtension] URLByAppendingPathExtension:@"atlas"];
+    if (![NSFileManager.defaultManager fileExistsAtPath:atlasURL.path]) {
+        return NO;
+    }
+
+    NSData *data = [NSData dataWithContentsOfURL:jsonURL options:0 error:nil];
+    if (data == nil) {
+        return NO;
+    }
+
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    if (![json isKindOfClass:NSDictionary.class]) {
+        return NO;
+    }
+
+    NSDictionary *animations = [json[@"animations"] isKindOfClass:NSDictionary.class] ? json[@"animations"] : nil;
+    return animations.count > 0;
+}
+
 - (PETPetProfile *)loadSpineRuntimeProfileFromJSONURL:(NSURL *)jsonURL error:(NSError **)error {
     NSData *data = [NSData dataWithContentsOfURL:jsonURL options:0 error:error];
     if (data == nil) {
@@ -326,6 +376,7 @@ static NSString * const PETActionDragRelease = @"drag.release";
     NSDictionary<NSString *, NSArray<PETAnimationFrame *> *> *clips = [self placeholderClipsFromAnimations:animations atlasImage:atlasImage];
     NSString *defaultState = [self defaultAnimationNameFromAnimations:animations];
     NSDictionary<NSString *, id> *metadata = [self metadataForSpineRuntimeJSON:json
+                                               jsonURL:jsonURL
                                               atlasURL:atlasURL
                                              imageURL:atlasImageURL];
 
@@ -444,7 +495,7 @@ static NSString * const PETActionDragRelease = @"drag.release";
 }
 
 - (NSString *)defaultAnimationNameFromAnimations:(NSDictionary<NSString *, id> *)animations {
-    for (NSString *preferred in @[@"Idle", @"idle", @"Move", @"move"]) {
+    for (NSString *preferred in @[@"battle_idle", @"Idle", @"idle", @"Move", @"move"]) {
         if (animations[preferred] != nil) {
             return preferred;
         }
@@ -453,6 +504,7 @@ static NSString * const PETActionDragRelease = @"drag.release";
 }
 
 - (NSDictionary<NSString *, id> *)metadataForSpineRuntimeJSON:(NSDictionary *)json
+                                                      jsonURL:(NSURL *)jsonURL
                                                      atlasURL:(NSURL *)atlasURL
                                                      imageURL:(NSURL *)imageURL {
     NSDictionary *skeleton = [json[@"skeleton"] isKindOfClass:NSDictionary.class] ? json[@"skeleton"] : @{};
@@ -472,8 +524,18 @@ static NSString * const PETActionDragRelease = @"drag.release";
 
     NSDictionary<NSString *, NSString *> *stateAliases = [self inferredStateAliasesFromAnimationNames:names
                                                                                         directionPairs:directionPairs];
-    NSDictionary<NSString *, NSString *> *interactionAliases = [self inferredInteractionAliasesFromAnimationNames:names
-                                                                                                    stateAliases:stateAliases];
+    NSMutableDictionary<NSString *, NSString *> *interactionAliases = [[self inferredInteractionAliasesFromAnimationNames:names
+                                                                                                               stateAliases:stateAliases] mutableCopy];
+    BOOL soulArkEnabled = [self isSoulArkSpineRuntimeJSONURL:jsonURL atlasURL:atlasURL imageURL:imageURL];
+    if (soulArkEnabled) {
+        NSDictionary<NSString *, NSString *> *combatAliases = [self inferredSoulArkCombatInteractionAliasesFromAnimationNames:names];
+        [combatAliases enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
+            (void)stop;
+            if (obj.length > 0) {
+                interactionAliases[key] = obj;
+            }
+        }];
+    }
 
     return @{
         @"sourceType": @"spine-runtime-json",
@@ -481,12 +543,24 @@ static NSString * const PETActionDragRelease = @"drag.release";
         @"atlasPath": atlasURL.path ?: @"",
         @"imagePath": imageURL.path ?: @"",
         @"animationCount": @(names.count),
+        @"灵魂方舟": @(soulArkEnabled),
+        @"灵魂方舟左右方向反转": @(soulArkEnabled),
         @"detectedSemanticParts": detectedSemanticParts ?: @[],
         @"directionPairs": directionPairs.copy,
         @"stateAliases": stateAliases ?: @{},
         @"baseInteractionAliases": interactionAliases ?: @{},
         @"interactionAliases": @{}
     };
+}
+
+- (BOOL)isSoulArkSpineRuntimeJSONURL:(NSURL *)jsonURL atlasURL:(NSURL *)atlasURL imageURL:(NSURL *)imageURL {
+    for (NSURL *url in @[jsonURL ?: NSURL.new, atlasURL ?: NSURL.new, imageURL ?: NSURL.new]) {
+        NSString *stem = url.lastPathComponent.stringByDeletingPathExtension.lowercaseString ?: @"";
+        if ([stem hasPrefix:@"char_"]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (NSDictionary<NSString *, NSString *> *)inferredStateAliasesFromAnimationNames:(NSArray<NSString *> *)names
@@ -512,18 +586,18 @@ static NSString * const PETActionDragRelease = @"drag.release";
         return nil;
     };
 
-    NSString *idle = bestMatch(@[@"Idle", @"Stand", @"Wait"]);
+    NSString *idle = bestMatch(@[@"battle_idle", @"Idle", @"Stand", @"Wait"]);
     if (idle.length > 0) {
         aliases[PETBehaviorStateIdle] = idle;
     }
 
-    NSString *move = bestMatch(@[@"Move", @"Run", @"Walk"]);
+    NSString *move = bestMatch(@[@"run", @"dash", @"Move", @"Run", @"Walk"]);
     if (move.length > 0) {
         aliases[PETBehaviorStateRunningRight] = move;
         aliases[PETBehaviorStateWaiting] = move;
     }
 
-    NSString *jump = bestMatch(@[@"Jump", @"Fall"]);
+    NSString *jump = bestMatch(@[@"jump", @"jump_ing", @"Jump", @"Fall"]);
     if (jump.length > 0) {
         aliases[PETBehaviorStateJumping] = jump;
     }
@@ -662,6 +736,80 @@ static NSString * const PETActionDragRelease = @"drag.release";
     }
     if (aliases[PETActionDragMoveRight] == nil) {
         aliases[PETActionDragMoveRight] = aliases[PETActionDragIdle];
+    }
+
+    return aliases.copy;
+}
+
+- (NSDictionary<NSString *, NSString *> *)inferredSoulArkCombatInteractionAliasesFromAnimationNames:(NSArray<NSString *> *)names {
+    NSMutableDictionary<NSString *, NSString *> *aliases = [NSMutableDictionary dictionary];
+
+    NSString *(^bestMatch)(NSArray<NSString *> *) = ^NSString *(NSArray<NSString *> *candidates) {
+        for (NSString *candidate in candidates) {
+            for (NSString *name in names) {
+                if ([name localizedCaseInsensitiveCompare:candidate] == NSOrderedSame) {
+                    return name;
+                }
+            }
+        }
+        for (NSString *candidate in candidates) {
+            NSString *needle = candidate.lowercaseString;
+            for (NSString *name in names) {
+                if ([name.lowercaseString containsString:needle]) {
+                    return name;
+                }
+            }
+        }
+        return nil;
+    };
+
+    NSString *attack = bestMatch(@[@"attack"]);
+    NSString *skill1 = bestMatch(@[@"attack_skill_link01", @"attack_skill_1"]);
+    NSString *skill2 = bestMatch(@[@"attack_skill_link02", @"attack_skill_2"]);
+    NSString *special = bestMatch(@[@"attack_skill_special", @"attack_skill_special_legend"]);
+    NSString *dash = bestMatch(@[@"dash"]);
+    NSString *battleIdle = bestMatch(@[@"battle_idle", @"idle"]);
+    NSString *hit = bestMatch(@[@"hit"]);
+    NSString *stun = bestMatch(@[@"stun"]);
+    NSString *down = bestMatch(@[@"down"]);
+    NSString *getup = bestMatch(@[@"getup"]);
+    NSString *knockback = bestMatch(@[@"knockback", @"hit_down"]);
+
+    if (attack.length > 0) {
+        aliases[@"combat.primary"] = attack;
+    }
+    if (skill1.length > 0) {
+        aliases[@"combat.secondary"] = skill1;
+    }
+    if (skill2.length > 0) {
+        aliases[@"combat.skill.1"] = skill2;
+    }
+    if (special.length > 0) {
+        aliases[@"combat.ultimate"] = special;
+    }
+    if (dash.length > 0) {
+        aliases[@"combat.quick"] = dash;
+    }
+    if (battleIdle.length > 0) {
+        aliases[@"combat.idle"] = battleIdle;
+    }
+    if (hit.length > 0) {
+        aliases[@"combat.hit"] = hit;
+    }
+    if (stun.length > 0) {
+        aliases[@"combat.hitstun"] = stun;
+    }
+    if (down.length > 0) {
+        aliases[@"combat.knockeddown"] = down;
+    }
+    if (getup.length > 0) {
+        aliases[@"combat.getup"] = getup;
+    }
+    if (knockback.length > 0) {
+        aliases[@"combat.launched"] = knockback;
+    }
+    if (attack.length > 0) {
+        aliases[@"combat.cancel"] = bestMatch(@[@"return"]) ?: attack;
     }
 
     return aliases.copy;

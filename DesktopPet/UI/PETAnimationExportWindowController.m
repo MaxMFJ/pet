@@ -5,7 +5,7 @@
 @implementation PETAnimationExportWindowController
 
 - (instancetype)init {
-    NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 880, 660)
+    NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 980, 680)
                                                    styleMask:(NSWindowStyleMaskTitled |
                                                               NSWindowStyleMaskClosable |
                                                               NSWindowStyleMaskMiniaturizable |
@@ -14,8 +14,8 @@
                                                        defer:NO];
     self = [super initWithWindow:window];
     if (self) {
-        window.title = @"Spine Animation Export Tool";
-        window.minSize = NSMakeSize(820, 620);
+        window.title = @"Spine 动画导出";
+        window.minSize = NSMakeSize(840, 620);
         window.releasedWhenClosed = NO;
         window.contentViewController = [[PETAnimationExportViewController alloc] init];
         [window center];

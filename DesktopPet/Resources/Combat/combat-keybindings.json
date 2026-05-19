@@ -1,0 +1,50 @@
+{
+  "formatVersion": 1,
+  "lastUpdated": "2026-05-16",
+  "notes": [
+    "ACT combat keyboard bindings for desktop pets",
+    "commandType must match PETGameCommand constants",
+    "skillId is required for skill.cast and optional for ultimate.cast"
+  ],
+  "bindings": [
+    {
+      "key": "j",
+      "label": "Primary",
+      "commandType": "skill.cast",
+      "skillId": "basic_primary_strike",
+      "actionKey": "combat.primary"
+    },
+    {
+      "key": "k",
+      "label": "Secondary",
+      "commandType": "attack.secondary",
+      "actionKey": "combat.secondary"
+    },
+    {
+      "key": "l",
+      "label": "Skill",
+      "commandType": "skill.cast",
+      "skillId": "spear_sky_pierce",
+      "actionKey": "combat.skill.1"
+    },
+    {
+      "key": "u",
+      "label": "Ultimate",
+      "commandType": "ultimate.cast",
+      "skillId": "spear_sky_pierce",
+      "actionKey": "combat.ultimate"
+    },
+    {
+      "key": "i",
+      "label": "Quick Strike",
+      "commandType": "attack.primary",
+      "actionKey": "combat.quick"
+    },
+    {
+      "key": "o",
+      "label": "Cancel",
+      "commandType": "skill.cancel",
+      "actionKey": "combat.cancel"
+    }
+  ]
+}

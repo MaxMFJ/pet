@@ -168,6 +168,38 @@ function ensureSkelExtension(filename) {
   return `${base}.skel`;
 }
 
+function normalizeCompanionFiles(companionFiles) {
+  return Array.isArray(companionFiles) ? companionFiles.filter((file) => file?.filename && file?.fileBase64) : [];
+}
+
+function atlasPageNamesFromText(text) {
+  const pageNames = [];
+  let expectingPage = true;
+  for (const rawLine of String(text || "").split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line) {
+      expectingPage = true;
+      continue;
+    }
+    if (expectingPage && !line.includes(":")) {
+      pageNames.push(path.basename(line));
+      expectingPage = false;
+      continue;
+    }
+    if (!line.includes(":")) {
+      expectingPage = false;
+    }
+  }
+  return pageNames;
+}
+
+function mergeAtlasTexts(atlasEntries) {
+  return atlasEntries
+    .map((entry) => String(entry?.text || "").trim())
+    .filter(Boolean)
+    .join("\n\n") + "\n";
+}
+
 function asNumber(value, fallback = 0) {
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
@@ -328,12 +360,36 @@ function collectAttachmentsBySlot(skeletonJson) {
         continue;
       }
       if (!attachmentsBySlot.has(slotName)) {
-        attachmentsBySlot.set(slotName, []);
+        attachmentsBySlot.set(slotName, new Map());
       }
-      attachmentsBySlot.get(slotName).push(...Object.values(attachments).filter(Boolean));
+      const lookup = attachmentsBySlot.get(slotName);
+      for (const [attachmentName, attachment] of Object.entries(attachments)) {
+        if (attachment) {
+          lookup.set(attachmentName, attachment);
+        }
+      }
     }
   }
   return attachmentsBySlot;
+}
+
+function resolveAttachmentNameForTime(slot, animation, time) {
+  const slotTimeline = animation?.slots?.[slot.name];
+  const attachmentFrames = Array.isArray(slotTimeline?.attachment) ? slotTimeline.attachment : null;
+  let attachmentName = slot.attachment ?? null;
+  if (!attachmentFrames || attachmentFrames.length === 0) {
+    return attachmentName;
+  }
+  for (const frame of attachmentFrames) {
+    if (!frame || typeof frame !== "object") {
+      continue;
+    }
+    if (asNumber(frame.time) > time) {
+      break;
+    }
+    attachmentName = Object.prototype.hasOwnProperty.call(frame, "name") ? frame.name : attachmentName;
+  }
+  return attachmentName;
 }
 
 function expandAttachmentBounds(bounds, attachment, boneTransform) {
@@ -375,7 +431,8 @@ function computeDesktopPetDisplayBounds(skeletonJson) {
   const animations = skeletonJson.animations && typeof skeletonJson.animations === "object" ? skeletonJson.animations : {};
   const bounds = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
   const animationEntries = Object.entries(animations);
-  const entriesToSample = animationEntries.length ? animationEntries : [["setup", {}]];
+  const preferredAnimationEntries = animationEntries.filter(([name]) => /(^|_)(idle|run|walk|move|ready|show|battle_idle)(_|$)/i.test(name));
+  const entriesToSample = preferredAnimationEntries.length ? preferredAnimationEntries : (animationEntries.length ? animationEntries : [["setup", {}]]);
 
   for (const [, animation] of entriesToSample) {
     for (const time of collectAnimationSampleTimes(animation)) {
@@ -385,9 +442,15 @@ function computeDesktopPetDisplayBounds(skeletonJson) {
         if (!boneTransform) {
           continue;
         }
-        for (const attachment of attachmentsBySlot.get(slot.name) || []) {
-          expandAttachmentBounds(bounds, attachment, boneTransform);
+        const attachmentName = resolveAttachmentNameForTime(slot, animation, time);
+        if (attachmentName == null) {
+          continue;
         }
+        const attachment = attachmentsBySlot.get(slot.name)?.get(attachmentName);
+        if (!attachment) {
+          continue;
+        }
+        expandAttachmentBounds(bounds, attachment, boneTransform);
       }
     }
   }
@@ -631,8 +694,26 @@ async function runConverter({
 
   await fsp.writeFile(inputPath, inputBuffer);
 
+  const normalizedCompanions = normalizeCompanionFiles(companionFiles);
+  const atlasFiles = normalizedCompanions.filter((file) => String(file.filename || "").toLowerCase().endsWith(".atlas"));
+  const atlasEntries = atlasFiles.map((file) => ({
+    filename: path.basename(file.filename),
+    text: Buffer.from(file.fileBase64, "base64").toString("utf8")
+  }));
+  const referencedAtlasPages = new Set(atlasEntries.flatMap((entry) => atlasPageNamesFromText(entry.text)));
+  const nonAtlasFiles = normalizedCompanions.filter((file) => !String(file.filename || "").toLowerCase().endsWith(".atlas"));
+  const filesNeededForConversion = nonAtlasFiles.filter((file) => {
+    const lower = String(file.filename || "").toLowerCase();
+    if (!lower.endsWith(".png")) {
+      return true;
+    }
+    if (referencedAtlasPages.size === 0) {
+      return true;
+    }
+    return referencedAtlasPages.has(path.basename(file.filename));
+  });
   const bundledFiles = [];
-  for (const file of companionFiles) {
+  for (const file of filesNeededForConversion) {
     if (!file || !file.filename || !file.fileBase64) {
       continue;
     }
@@ -642,6 +723,17 @@ async function runConverter({
     bundledFiles.push({
       filename: companionName,
       path: companionPath
+    });
+  }
+
+  if (atlasFiles.length > 0) {
+    const mergedAtlasName = `${safeBaseName}.atlas`;
+    const mergedAtlasText = mergeAtlasTexts(atlasEntries);
+    const mergedAtlasPath = path.join(requestDir, mergedAtlasName);
+    await fsp.writeFile(mergedAtlasPath, mergedAtlasText, "utf8");
+    bundledFiles.push({
+      filename: mergedAtlasName,
+      path: mergedAtlasPath
     });
   }
 
@@ -683,6 +775,12 @@ async function runConverter({
     logs: {
       stdout: [
         commandResult.stdout,
+        referencedAtlasPages.size > 0
+          ? `Atlas page files kept: ${[...referencedAtlasPages].join(", ")}`
+          : "",
+        atlasFiles.length > 1
+          ? `Merged atlas files: ${atlasFiles.map((file) => path.basename(file.filename)).join(", ")}`
+          : "",
         displayBounds
           ? `DesktopPet displayBounds: x=${displayBounds.x}, y=${displayBounds.y}, width=${displayBounds.width}, height=${displayBounds.height}`
           : ""
@@ -852,11 +950,11 @@ async function handleApi(request, response, pathname) {
       return;
     }
 
-    const companionFiles = Array.isArray(body.companionFiles) ? body.companionFiles : [];
-    const atlasFile = companionFiles.find((file) => String(file.filename || "").toLowerCase().endsWith(".atlas"));
-    const pngFile = companionFiles.find((file) => String(file.filename || "").toLowerCase().endsWith(".png"));
-    if (!atlasFile || !pngFile) {
-      sendJson(response, 400, { error: "atlas 和 png 文件都需要同时上传。" });
+    const companionFiles = normalizeCompanionFiles(body.companionFiles);
+    const atlasFiles = companionFiles.filter((file) => String(file.filename || "").toLowerCase().endsWith(".atlas"));
+    const pngFiles = companionFiles.filter((file) => String(file.filename || "").toLowerCase().endsWith(".png"));
+    if (atlasFiles.length === 0 || pngFiles.length === 0) {
+      sendJson(response, 400, { error: "至少需要上传 1 个 atlas 和 1 个 png 文件。" });
       return;
     }
 
@@ -885,11 +983,11 @@ async function handleApi(request, response, pathname) {
       return;
     }
 
-    const companionFiles = Array.isArray(body.companionFiles) ? body.companionFiles : [];
-    const atlasFile = companionFiles.find((file) => String(file.filename || "").toLowerCase().endsWith(".atlas"));
-    const pngFile = companionFiles.find((file) => String(file.filename || "").toLowerCase().endsWith(".png"));
-    if (!atlasFile || !pngFile) {
-      sendJson(response, 400, { error: "atlas 和 png 文件都需要同时上传。" });
+    const companionFiles = normalizeCompanionFiles(body.companionFiles);
+    const atlasFiles = companionFiles.filter((file) => String(file.filename || "").toLowerCase().endsWith(".atlas"));
+    const pngFiles = companionFiles.filter((file) => String(file.filename || "").toLowerCase().endsWith(".png"));
+    if (atlasFiles.length === 0 || pngFiles.length === 0) {
+      sendJson(response, 400, { error: "至少需要上传 1 个 atlas 和 1 个 png 文件。" });
       return;
     }
 

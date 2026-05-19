@@ -45,6 +45,33 @@
 
 @implementation PETAnimationExportViewController
 
+static NSImage * _Nullable PETExportLoadToolbarTemplateImage(NSString *nameWithoutExtension) {
+    NSURL *url = [[NSBundle mainBundle] URLForResource:nameWithoutExtension withExtension:@"png" subdirectory:@"ManagerToolbar"];
+    if (url == nil) {
+        return nil;
+    }
+    NSImage *image = [[NSImage alloc] initWithContentsOfURL:url];
+    if (image == nil) {
+        return nil;
+    }
+    image.template = YES;
+    image.size = NSMakeSize(18, 18);
+    return image;
+}
+
+static void PETExportApplyToolbarChrome(NSButton *button) {
+    button.bezelStyle = NSBezelStyleTexturedRounded;
+    button.controlSize = NSControlSizeRegular;
+}
+
+static void PETExportSetToolbarImage(NSButton *button, NSString *nameWithoutExtension) {
+    NSImage *image = PETExportLoadToolbarTemplateImage(nameWithoutExtension);
+    if (image != nil) {
+        button.image = image;
+        button.imagePosition = NSImageLeading;
+    }
+}
+
 - (instancetype)init {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
@@ -62,15 +89,15 @@
 }
 
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 880, 660)];
+    self.view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 920, 680)];
     self.view.wantsLayer = YES;
     self.view.layer.backgroundColor = NSColor.windowBackgroundColor.CGColor;
 
     NSStackView *rootStack = [[NSStackView alloc] init];
     rootStack.translatesAutoresizingMaskIntoConstraints = NO;
     rootStack.orientation = NSUserInterfaceLayoutOrientationVertical;
-    rootStack.spacing = 16.0;
-    rootStack.edgeInsets = NSEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
+    rootStack.spacing = 14.0;
+    rootStack.edgeInsets = NSEdgeInsetsMake(20.0, 24.0, 24.0, 24.0);
     [self.view addSubview:rootStack];
 
     [NSLayoutConstraint activateConstraints:@[
@@ -80,10 +107,10 @@
         [rootStack.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor]
     ]];
 
-    [rootStack addArrangedSubview:[self labelWithString:@"Spine Animation Export Tool" font:[NSFont boldSystemFontOfSize:24.0]]];
+    [rootStack addArrangedSubview:[self labelWithString:@"Spine 动画导出" font:[NSFont systemFontOfSize:22.0 weight:NSFontWeightSemibold]]];
 
-    NSTextField *subtitleLabel = [self labelWithString:@"当前可导入宠物包、Codex 图集、WEBP/GIF、Spine runtime JSON，以及按动画分目录的 PNG 序列。"
-                                                  font:[NSFont systemFontOfSize:13.0]];
+    NSTextField *subtitleLabel = [self labelWithString:@"支持宠物包、Codex 图集、WEBP/GIF、Spine JSON，以及按动画分目录的 PNG 序列。"
+                                                  font:[NSFont systemFontOfSize:12.0]];
     subtitleLabel.textColor = NSColor.secondaryLabelColor;
     [rootStack addArrangedSubview:subtitleLabel];
 
@@ -104,10 +131,12 @@
 
 - (NSView *)buildSourceToolbar {
     NSButton *openButton = [NSButton buttonWithTitle:@"打开资源" target:self action:@selector(openSource:)];
-    openButton.bezelStyle = NSBezelStyleRounded;
+    PETExportApplyToolbarChrome(openButton);
+    NSString *openIconName = (PETExportLoadToolbarTemplateImage(@"PETToolbarOpen") != nil) ? @"PETToolbarOpen" : @"PETToolbarImport";
+    PETExportSetToolbarImage(openButton, openIconName);
 
     NSButton *arthurButton = [NSButton buttonWithTitle:@"Arthur 测试资源" target:self action:@selector(loadArthurFixture:)];
-    arthurButton.bezelStyle = NSBezelStyleRounded;
+    PETExportApplyToolbarChrome(arthurButton);
 
     self.sourceLabel = [self labelWithString:@"未选择资源" font:[NSFont systemFontOfSize:12.0]];
     self.sourceLabel.textColor = NSColor.secondaryLabelColor;
@@ -134,10 +163,12 @@
     self.scaleField.placeholderString = @"1.0";
 
     self.exportPNGButton = [NSButton buttonWithTitle:@"导出 PNG 序列" target:self action:@selector(exportPNGSequence:)];
-    self.exportPNGButton.bezelStyle = NSBezelStyleRounded;
+    PETExportApplyToolbarChrome(self.exportPNGButton);
+    PETExportSetToolbarImage(self.exportPNGButton, @"PETToolbarStackPhotos");
 
     self.exportGIFButton = [NSButton buttonWithTitle:@"导出 GIF" target:self action:@selector(exportGIF:)];
-    self.exportGIFButton.bezelStyle = NSBezelStyleRounded;
+    PETExportApplyToolbarChrome(self.exportGIFButton);
+    PETExportSetToolbarImage(self.exportGIFButton, @"PETToolbarGIF");
 
     self.directionLabel = [self labelWithString:@"方向: -"
                                            font:[NSFont systemFontOfSize:12.0]];

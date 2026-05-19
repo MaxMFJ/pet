@@ -1,0 +1,90 @@
+{
+  "formatVersion": 1,
+  "skillId": "slash_01",
+  "displayName": "Slash A",
+  "duration": 1.2,
+  "characterProfileId": "",
+  "characterAnimation": "attack",
+  "tracks": [
+    {
+      "trackId": "character_main",
+      "type": "character",
+      "displayName": "Character",
+      "clips": [
+        {
+          "clipId": "char_anim",
+          "start": 0.0,
+          "end": 1.2,
+          "payload": {
+            "animation": "attack",
+            "loop": false,
+            "playbackRate": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "fx_main",
+      "type": "fx",
+      "displayName": "FX",
+      "clips": [
+        {
+          "clipId": "fx_slash",
+          "start": 0.12,
+          "end": 0.45,
+          "payload": {
+            "asset": "slash_fx",
+            "assetType": "pngSequence",
+            "socket": "root",
+            "offsetX": 12,
+            "offsetY": -8,
+            "rotation": 15,
+            "scale": 1.2,
+            "flipX": false,
+            "blendMode": "additive"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "hitbox_main",
+      "type": "hitbox",
+      "displayName": "Hitbox",
+      "clips": [
+        {
+          "clipId": "hb_strike",
+          "start": 0.15,
+          "end": 0.22,
+          "payload": {
+            "shape": "rect",
+            "socket": "root",
+            "x": 0,
+            "y": 0,
+            "width": 120,
+            "height": 60,
+            "damage": 120,
+            "windowId": "strike_hit",
+            "reactionId": "hit_stun_light",
+            "collisionMode": "pixelOverlap"
+          }
+        }
+      ]
+    },
+    {
+      "trackId": "shader_main",
+      "type": "shader",
+      "displayName": "Shader",
+      "clips": [
+        {
+          "clipId": "shader_glow",
+          "start": 0.08,
+          "end": 0.28,
+          "payload": {
+            "shader": "glow",
+            "params": { "intensity": 1.4 }
+          }
+        }
+      ]
+    }
+  ]
+}

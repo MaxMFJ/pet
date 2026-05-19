@@ -19,8 +19,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)playState:(NSString *)state;
 - (void)pauseAnimation;
 - (void)resumeDefaultAnimation;
+- (void)recordProfilingWindowEventWithName:(NSString *)eventName;
 - (BOOL)containsInteractiveContentAtPoint:(NSPoint)point;
 - (BOOL)containsDraggableContentAtPoint:(NSPoint)point;
+- (BOOL)containsOpaqueRenderedContentAtPoint:(NSPoint)point;
+- (NSRect)visibleRenderedContentRect;
 
 @end
 

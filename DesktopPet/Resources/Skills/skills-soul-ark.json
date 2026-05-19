@@ -1,0 +1,223 @@
+{
+  "formatVersion": 1,
+  "notes": [
+    "Default Soul Ark (char_*) combat skills",
+    "Override per character with skills.json in the pet folder"
+  ],
+  "reactions": [
+    {
+      "reactionId": "soul_ark_hit",
+      "combatState": "combat.hitstun",
+      "animationState": "hit",
+      "duration": 0.33,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "soul_ark_knockback",
+      "combatState": "combat.launched",
+      "animationState": "knockback",
+      "duration": 0.45,
+      "gravityScale": 1.0,
+      "lockHorizontal": false,
+      "lockVertical": false,
+      "knockdown": false
+    },
+    {
+      "reactionId": "soul_ark_launch",
+      "combatState": "combat.launched",
+      "animationState": "knockback",
+      "duration": 0.62,
+      "gravityScale": 1.0,
+      "lockHorizontal": false,
+      "lockVertical": false,
+      "knockdown": false,
+      "launchVector": {
+        "dx": 96.0,
+        "dy": 220.0
+      }
+    },
+    {
+      "reactionId": "soul_ark_knockdown",
+      "combatState": "combat.knockeddown",
+      "animationState": "down",
+      "duration": 0.83,
+      "gravityScale": 1.0,
+      "lockHorizontal": true,
+      "lockVertical": true,
+      "knockdown": true
+    }
+  ],
+  "skills": [
+    {
+      "skillId": "soul_ark_attack",
+      "displayName": "Soul Ark Attack",
+      "castType": "primary",
+      "entryPhase": "attack",
+      "tags": ["soul_ark", "ground"],
+      "phases": [
+        {
+          "phaseId": "attack",
+          "startTime": 0.0,
+          "duration": 1.0,
+          "animationState": "attack",
+          "movementLock": true,
+          "allowMovementDuringCast": false,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "attack_hit",
+              "startTime": 0.1,
+              "endTime": 0.45,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "soul_ark_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "soul_ark_skill_1",
+      "displayName": "Soul Ark Skill 1",
+      "castType": "skill",
+      "entryPhase": "cast",
+      "tags": ["soul_ark", "combo"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 2.5,
+          "animationState": "attack_skill_link01",
+          "movementLock": true,
+          "allowMovementDuringCast": false,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "skill1_hit",
+              "startTime": 0.2,
+              "endTime": 0.9,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "soul_ark_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "soul_ark_skill_2",
+      "displayName": "Soul Ark Skill 2",
+      "castType": "skill",
+      "entryPhase": "cast",
+      "tags": ["soul_ark", "combo"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 2.0,
+          "animationState": "attack_skill_link02",
+          "movementLock": true,
+          "allowMovementDuringCast": false,
+          "gravityScale": 1.0,
+          "casterMotion": {
+            "startTime": 0.06,
+            "endTime": 0.5,
+            "dx": 0.0,
+            "dy": 0.0,
+            "relativeToFacing": true
+          },
+          "hitWindows": [
+            {
+              "windowId": "skill2_hit",
+              "startTime": 0.12,
+              "endTime": 0.72,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 4.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "soul_ark_launch",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "soul_ark_special",
+      "displayName": "Soul Ark Special",
+      "castType": "ultimate",
+      "entryPhase": "cast",
+      "tags": ["soul_ark", "ultimate"],
+      "phases": [
+        {
+          "phaseId": "cast",
+          "startTime": 0.0,
+          "duration": 3.0,
+          "animationState": "attack_skill_special",
+          "movementLock": true,
+          "allowMovementDuringCast": false,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "special_hit",
+              "startTime": 0.35,
+              "endTime": 1.4,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 3.0,
+              "maxHitsPerTarget": 2,
+              "rehitInterval": 0.5,
+              "reactionId": "soul_ark_knockdown",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    },
+    {
+      "skillId": "soul_ark_dash",
+      "displayName": "Soul Ark Dash",
+      "castType": "skill",
+      "entryPhase": "dash",
+      "tags": ["soul_ark", "mobility"],
+      "phases": [
+        {
+          "phaseId": "dash",
+          "startTime": 0.0,
+          "duration": 0.2,
+          "animationState": "dash",
+          "movementLock": false,
+          "allowMovementDuringCast": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "dash_hit",
+              "startTime": 0.02,
+              "endTime": 0.16,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 5.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "soul_ark_hit",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [],
+          "transitions": []
+        }
+      ]
+    }
+  ]
+}

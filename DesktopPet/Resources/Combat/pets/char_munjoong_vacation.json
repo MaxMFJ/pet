@@ -1,0 +1,68 @@
+{
+  "formatVersion": 1,
+  "characterId": "char_munjoong_vacation",
+  "displayName": "Munjoong Vacation",
+  "sourceStem": "char_munjoong_vacation",
+  "profileKind": "character_override",
+  "notes": [
+    "Overrides char_soul_ark_default for this pet only",
+    "Other char_* pets use Combat/pets/char_soul_ark_default.json"
+  ],
+  "interactionAliases": {
+    "combat.primary": "attack",
+    "combat.secondary": "attack_skill_link01",
+    "combat.skill.1": "attack_skill_link02",
+    "combat.ultimate": "attack_skill_special",
+    "combat.quick": "dash",
+    "combat.cancel": "return",
+    "combat.idle": "battle_idle",
+    "combat.hit": "hit",
+    "combat.hitstun": "stun",
+    "combat.knockeddown": "down",
+    "combat.getup": "getup",
+    "combat.launched": "knockback"
+  },
+  "bindings": [
+    {
+      "key": "j",
+      "label": "Attack",
+      "commandType": "skill.cast",
+      "skillId": "munjoong_attack",
+      "actionKey": "combat.primary"
+    },
+    {
+      "key": "k",
+      "label": "Skill Link 1",
+      "commandType": "skill.cast",
+      "skillId": "munjoong_skill_link01",
+      "actionKey": "combat.secondary"
+    },
+    {
+      "key": "l",
+      "label": "Skill Link 2",
+      "commandType": "skill.cast",
+      "skillId": "munjoong_skill_link02",
+      "actionKey": "combat.skill.1"
+    },
+    {
+      "key": "u",
+      "label": "Special",
+      "commandType": "skill.cast",
+      "skillId": "munjoong_skill_special",
+      "actionKey": "combat.ultimate"
+    },
+    {
+      "key": "i",
+      "label": "Dash",
+      "commandType": "skill.cast",
+      "skillId": "munjoong_dash",
+      "actionKey": "combat.quick"
+    },
+    {
+      "key": "o",
+      "label": "Cancel",
+      "commandType": "skill.cancel",
+      "actionKey": "combat.cancel"
+    }
+  ]
+}

@@ -5,7 +5,7 @@
 #import "../Managers/PETPetManager.h"
 #import "../Models/PETPetProfile.h"
 
-@interface PETManagerViewController () <NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate>
+@interface PETManagerViewController () <NSTableViewDataSource, NSTableViewDelegate, NSTextFieldDelegate, NSSplitViewDelegate>
 
 @property (nonatomic, strong) PETPetManager *petManager;
 @property (nonatomic, strong) PETAppConfig *configuration;
@@ -21,12 +21,17 @@
 @property (nonatomic, strong) NSTextField *scaleValueLabel;
 @property (nonatomic, strong) NSSegmentedControl *facingDirectionControl;
 @property (nonatomic, strong) NSButton *clickThroughCheckbox;
+@property (nonatomic, strong) NSButton *soulArkCheckbox;
+@property (nonatomic, strong) NSButton *soulArkFacingInvertedCheckbox;
 @property (nonatomic, strong) NSPopUpButton *statePopUpButton;
 @property (nonatomic, strong) NSButton *previewStateButton;
 @property (nonatomic, strong) NSButton *resumeAmbientButton;
 @property (nonatomic, strong) NSTextField *currentStateLabel;
+@property (nonatomic, strong) NSTextField *combatDebugLabel;
+@property (nonatomic, strong) NSTextField *collisionDebugLabel;
 @property (nonatomic, strong) NSTableView *interactionMappingTableView;
 @property (nonatomic, copy) NSArray<NSString *> *interactionMappingActionKeys;
+@property (nonatomic, strong) NSSplitView *listDetailSplitView;
 
 @end
 
@@ -43,6 +48,38 @@ static NSString * const PETManagerInteractionDragMoveLeft = @"drag.move.left";
 static NSString * const PETManagerInteractionDragMoveRight = @"drag.move.right";
 static NSString * const PETManagerInteractionDragIdle = @"drag.idle";
 static NSString * const PETManagerInteractionDragRelease = @"drag.release";
+static CGFloat const PETManagerDefaultScale = 0.3;
+
+static NSImage * _Nullable PETLoadManagerToolbarTemplateImage(NSString *nameWithoutExtension) {
+    NSURL *url = [[NSBundle mainBundle] URLForResource:nameWithoutExtension withExtension:@"png" subdirectory:@"ManagerToolbar"];
+    if (url == nil) {
+        return nil;
+    }
+    NSImage *image = [[NSImage alloc] initWithContentsOfURL:url];
+    if (image == nil) {
+        return nil;
+    }
+    image.template = YES;
+    image.size = NSMakeSize(18, 18);
+    return image;
+}
+
+static void PETApplyToolbarChromeToButton(NSButton *button) {
+    button.bezelStyle = NSBezelStyleTexturedRounded;
+    button.controlSize = NSControlSizeRegular;
+}
+
+static void PETSetToolbarTemplateImage(NSButton *button, NSString * _Nullable nameWithoutExtension) {
+    if (nameWithoutExtension.length == 0) {
+        button.image = nil;
+        return;
+    }
+    NSImage *image = PETLoadManagerToolbarTemplateImage(nameWithoutExtension);
+    if (image != nil) {
+        button.image = image;
+        button.imagePosition = NSImageLeading;
+    }
+}
 
 - (instancetype)initWithPetManager:(PETPetManager *)petManager
                      configuration:(PETAppConfig *)configuration
@@ -56,6 +93,10 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
                                                  selector:@selector(reloadPetList)
                                                      name:PETPetManagerDidChangePetsNotification
                                                    object:_petManager];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleRuntimeDebugUpdate:)
+                                                     name:PETPetManagerDidUpdateRuntimeDebugNotification
+                                                   object:_petManager];
     }
     return self;
 }
@@ -64,16 +105,35 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (NSBox *)pet_sectionBoxWithTitle:(NSString *)title content:(NSView *)content {
+    NSBox *box = [[NSBox alloc] init];
+    box.translatesAutoresizingMaskIntoConstraints = NO;
+    box.title = title;
+    box.boxType = NSBoxPrimary;
+    box.titlePosition = NSAtTop;
+    content.translatesAutoresizingMaskIntoConstraints = NO;
+    NSView *host = box.contentView;
+    [host addSubview:content];
+    [NSLayoutConstraint activateConstraints:@[
+        [content.leadingAnchor constraintEqualToAnchor:host.leadingAnchor constant:8],
+        [content.trailingAnchor constraintEqualToAnchor:host.trailingAnchor constant:-8],
+        [content.topAnchor constraintEqualToAnchor:host.topAnchor constant:4],
+        [content.bottomAnchor constraintEqualToAnchor:host.bottomAnchor constant:-8],
+    ]];
+    return box;
+}
+
 - (void)loadView {
-    self.view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 940, 560)];
+    self.view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 960, 560)];
     self.view.wantsLayer = YES;
     self.view.layer.backgroundColor = NSColor.windowBackgroundColor.CGColor;
 
     NSStackView *rootStack = [[NSStackView alloc] init];
     rootStack.translatesAutoresizingMaskIntoConstraints = NO;
     rootStack.orientation = NSUserInterfaceLayoutOrientationVertical;
-    rootStack.spacing = 16.0;
-    rootStack.edgeInsets = NSEdgeInsetsMake(20.0, 20.0, 20.0, 20.0);
+    rootStack.spacing = 12.0;
+    rootStack.edgeInsets = NSEdgeInsetsMake(16.0, 20.0, 20.0, 20.0);
+    rootStack.distribution = NSStackViewDistributionFill;
     [self.view addSubview:rootStack];
 
     [NSLayoutConstraint activateConstraints:@[
@@ -83,31 +143,75 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
         [rootStack.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor]
     ]];
 
-    NSTextField *titleLabel = [self labelWithString:@"Desktop Pet Manager" font:[NSFont boldSystemFontOfSize:24.0]];
+    NSTextField *titleLabel = [self labelWithString:@"桌面宠物" font:[NSFont systemFontOfSize:22.0 weight:NSFontWeightSemibold]];
     [rootStack addArrangedSubview:titleLabel];
 
-    NSTextField *subtitleLabel = [self labelWithString:@"管理宠物显示状态，优先导入 Codex 标准宠物包，并配置 AI BaseURL。" font:[NSFont systemFontOfSize:13.0]];
+    NSTextField *subtitleLabel = [self labelWithString:@"管理已导入的宠物、窗口显示与 AI 端点。建议优先使用 Codex 标准宠物包。" font:[NSFont systemFontOfSize:12.0]];
     subtitleLabel.textColor = NSColor.secondaryLabelColor;
+    subtitleLabel.maximumNumberOfLines = 2;
     [rootStack addArrangedSubview:subtitleLabel];
 
     NSGridView *settingsGrid = [self buildSettingsGrid];
-    [rootStack addArrangedSubview:settingsGrid];
+    NSBox *settingsBox = [self pet_sectionBoxWithTitle:@"连接与上限" content:settingsGrid];
+    [rootStack addArrangedSubview:settingsBox];
 
     NSStackView *toolbar = [self buildToolbar];
-    [rootStack addArrangedSubview:toolbar];
+    NSBox *actionsBox = [self pet_sectionBoxWithTitle:@"快捷操作" content:toolbar];
+    [rootStack addArrangedSubview:actionsBox];
 
     NSScrollView *tableScrollView = [self buildTableView];
-    [rootStack addArrangedSubview:tableScrollView];
-
     NSGridView *petSettingsGrid = [self buildPetSettingsGrid];
-    [rootStack addArrangedSubview:petSettingsGrid];
+    petSettingsGrid.translatesAutoresizingMaskIntoConstraints = NO;
+
+    NSScrollView *detailScrollView = [[NSScrollView alloc] initWithFrame:NSZeroRect];
+    detailScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+    detailScrollView.hasVerticalScroller = YES;
+    detailScrollView.hasHorizontalScroller = NO;
+    detailScrollView.autohidesScrollers = YES;
+    detailScrollView.borderType = NSBezelBorder;
+    detailScrollView.documentView = petSettingsGrid;
+    NSClipView *detailClip = detailScrollView.contentView;
+    [NSLayoutConstraint activateConstraints:@[
+        [petSettingsGrid.leadingAnchor constraintEqualToAnchor:detailClip.leadingAnchor],
+        [petSettingsGrid.trailingAnchor constraintEqualToAnchor:detailClip.trailingAnchor],
+        [petSettingsGrid.topAnchor constraintEqualToAnchor:detailClip.topAnchor],
+        [petSettingsGrid.widthAnchor constraintEqualToAnchor:detailClip.widthAnchor]
+    ]];
+    [detailScrollView setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationVertical];
+
+    NSBox *listBox = [self pet_sectionBoxWithTitle:@"宠物列表" content:tableScrollView];
+    NSBox *detailBox = [self pet_sectionBoxWithTitle:@"选中宠物" content:detailScrollView];
+    listBox.translatesAutoresizingMaskIntoConstraints = YES;
+    detailBox.translatesAutoresizingMaskIntoConstraints = YES;
+    listBox.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    detailBox.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+
+    NSSplitView *splitView = [[NSSplitView alloc] initWithFrame:NSMakeRect(0, 0, 920, 360)];
+    splitView.translatesAutoresizingMaskIntoConstraints = NO;
+    splitView.vertical = NO;
+    splitView.dividerStyle = NSSplitViewDividerStyleThin;
+    splitView.autosaveName = @"PETManagerListDetailSplit";
+    splitView.delegate = self;
+    self.listDetailSplitView = splitView;
+    [splitView addSubview:listBox];
+    [splitView addSubview:detailBox];
+    [splitView adjustSubviews];
+
+    [splitView setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationVertical];
+    [splitView setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationVertical];
+    [rootStack addArrangedSubview:splitView];
+    [splitView.heightAnchor constraintGreaterThanOrEqualToConstant:300.0].active = YES;
 
     self.petCountLabel = [self labelWithString:@"" font:[NSFont systemFontOfSize:12.0]];
     self.petCountLabel.textColor = NSColor.secondaryLabelColor;
     [rootStack addArrangedSubview:self.petCountLabel];
 
-    [tableScrollView.heightAnchor constraintGreaterThanOrEqualToConstant:280.0].active = YES;
     [self reloadPetList];
+}
+
+- (void)viewDidAppear {
+    [super viewDidAppear];
+    [self.listDetailSplitView adjustSubviews];
 }
 
 - (NSGridView *)buildSettingsGrid {
@@ -118,7 +222,8 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     self.baseURLField.delegate = self;
 
     NSButton *saveButton = [NSButton buttonWithTitle:@"保存配置" target:self action:@selector(saveConfiguration:)];
-    saveButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(saveButton);
+    PETSetToolbarTemplateImage(saveButton, @"PETToolbarSave");
 
     NSTextField *maxPetsLabel = [self labelWithString:@"多宠物上限" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]];
     NSTextField *maxPetsValue = [self labelWithString:[NSString stringWithFormat:@"%ld", (long)self.configuration.maxConcurrentPets]
@@ -137,26 +242,32 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
 
 - (NSStackView *)buildToolbar {
     NSButton *addButton = [NSButton buttonWithTitle:@"导入宠物包" target:self action:@selector(addPet:)];
-    addButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(addButton);
+    PETSetToolbarTemplateImage(addButton, @"PETToolbarImport");
 
     NSButton *spineToolButton = [NSButton buttonWithTitle:@"Spine 工具" target:self action:@selector(openSpineTool:)];
-    spineToolButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(spineToolButton);
+    PETSetToolbarTemplateImage(spineToolButton, @"PETToolbarSpine");
 
     self.toggleVisibilityButton = [NSButton buttonWithTitle:@"隐藏宠物" target:self action:@selector(toggleSelectedPetVisibility:)];
-    self.toggleVisibilityButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(self.toggleVisibilityButton);
 
     self.removeButton = [NSButton buttonWithTitle:@"删除宠物" target:self action:@selector(removeSelectedPet:)];
-    self.removeButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(self.removeButton);
+    PETSetToolbarTemplateImage(self.removeButton, @"PETToolbarTrash");
 
     NSButton *showAllButton = [NSButton buttonWithTitle:@"全部显示" target:self action:@selector(showAllPets:)];
-    showAllButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(showAllButton);
+    PETSetToolbarTemplateImage(showAllButton, @"PETToolbarEyeVisible");
 
     NSButton *hideAllButton = [NSButton buttonWithTitle:@"全部隐藏" target:self action:@selector(hideAllPets:)];
-    hideAllButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(hideAllButton);
+    PETSetToolbarTemplateImage(hideAllButton, @"PETToolbarHideAll");
 
     NSStackView *toolbar = [[NSStackView alloc] initWithFrame:NSZeroRect];
     toolbar.orientation = NSUserInterfaceLayoutOrientationHorizontal;
     toolbar.spacing = 10.0;
+    toolbar.alignment = NSLayoutAttributeCenterY;
     [toolbar addArrangedSubview:addButton];
     [toolbar addArrangedSubview:spineToolButton];
     [toolbar addArrangedSubview:self.toggleVisibilityButton];
@@ -167,8 +278,6 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
 }
 
 - (NSGridView *)buildPetSettingsGrid {
-    NSTextField *sectionLabel = [self labelWithString:@"当前宠物设置" font:[NSFont systemFontOfSize:14.0 weight:NSFontWeightSemibold]];
-
     self.nameField = [[NSTextField alloc] initWithFrame:NSZeroRect];
     self.nameField.placeholderString = @"Pet Name";
     self.nameField.delegate = self;
@@ -176,11 +285,11 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     self.scaleSlider = [[NSSlider alloc] initWithFrame:NSZeroRect];
     self.scaleSlider.minValue = 0.01;
     self.scaleSlider.maxValue = 3.0;
-    self.scaleSlider.doubleValue = 1.0;
+    self.scaleSlider.doubleValue = PETManagerDefaultScale;
     self.scaleSlider.target = self;
     self.scaleSlider.action = @selector(scaleChanged:);
 
-    self.scaleValueLabel = [self labelWithString:@"100%" font:[NSFont systemFontOfSize:12.0]];
+    self.scaleValueLabel = [self labelWithString:@"30%" font:[NSFont systemFontOfSize:12.0]];
     self.scaleValueLabel.textColor = NSColor.secondaryLabelColor;
 
     self.facingDirectionControl = [[NSSegmentedControl alloc] initWithFrame:NSMakeRect(0, 0, 120, 28)];
@@ -193,13 +302,25 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     self.facingDirectionControl.selectedSegment = 1;
 
     self.clickThroughCheckbox = [NSButton checkboxWithTitle:@"点击穿透" target:self action:@selector(clickThroughChanged:)];
+    self.soulArkCheckbox = [NSButton checkboxWithTitle:@"灵魂方舟适配" target:self action:@selector(soulArkChanged:)];
+    self.soulArkFacingInvertedCheckbox = [NSButton checkboxWithTitle:@"灵魂方舟左右反转" target:self action:@selector(soulArkFacingInvertedChanged:)];
+    NSStackView *adaptationStack = [[NSStackView alloc] initWithFrame:NSZeroRect];
+    adaptationStack.orientation = NSUserInterfaceLayoutOrientationVertical;
+    adaptationStack.alignment = NSLayoutAttributeLeading;
+    adaptationStack.spacing = 6.0;
+    [adaptationStack addArrangedSubview:self.soulArkCheckbox];
+    [adaptationStack addArrangedSubview:self.soulArkFacingInvertedCheckbox];
     self.statePopUpButton = [[NSPopUpButton alloc] initWithFrame:NSZeroRect pullsDown:NO];
     self.previewStateButton = [NSButton buttonWithTitle:@"预览动作" target:self action:@selector(previewSelectedState:)];
-    self.previewStateButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(self.previewStateButton);
+    PETSetToolbarTemplateImage(self.previewStateButton, @"PETToolbarPlay");
     self.resumeAmbientButton = [NSButton buttonWithTitle:@"恢复待机" target:self action:@selector(resumeAmbientState:)];
-    self.resumeAmbientButton.bezelStyle = NSBezelStyleRounded;
+    PETApplyToolbarChromeToButton(self.resumeAmbientButton);
+    PETSetToolbarTemplateImage(self.resumeAmbientButton, @"PETToolbarHomeIdle");
     self.currentStateLabel = [self labelWithString:@"当前: idle" font:[NSFont systemFontOfSize:12.0]];
     self.currentStateLabel.textColor = NSColor.secondaryLabelColor;
+    self.combatDebugLabel = [self multilineLabel];
+    self.collisionDebugLabel = [self multilineLabel];
 
     self.interactionMappingTableView = [[NSTableView alloc] initWithFrame:NSZeroRect];
     self.interactionMappingTableView.delegate = self;
@@ -209,11 +330,11 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     self.interactionMappingTableView.rowHeight = 30.0;
 
     NSTableColumn *mappingKeyColumn = [[NSTableColumn alloc] initWithIdentifier:@"mappingKey"];
-    mappingKeyColumn.width = 320.0;
-    mappingKeyColumn.minWidth = 280.0;
+    mappingKeyColumn.width = 200.0;
+    mappingKeyColumn.minWidth = 160.0;
     NSTableColumn *mappingValueColumn = [[NSTableColumn alloc] initWithIdentifier:@"mappingValue"];
-    mappingValueColumn.width = 360.0;
-    mappingValueColumn.minWidth = 320.0;
+    mappingValueColumn.width = 220.0;
+    mappingValueColumn.minWidth = 160.0;
     [self.interactionMappingTableView addTableColumn:mappingKeyColumn];
     [self.interactionMappingTableView addTableColumn:mappingValueColumn];
 
@@ -226,19 +347,20 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     [interactionMappingScrollView.heightAnchor constraintEqualToConstant:180.0].active = YES;
 
     NSGridView *grid = [NSGridView gridViewWithViews:@[
-        @[sectionLabel, [NSView new], [NSView new]],
         @[[self labelWithString:@"名称" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.nameField, [NSView new]],
         @[[self labelWithString:@"缩放" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.scaleSlider, self.scaleValueLabel],
         @[[self labelWithString:@"朝向" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.facingDirectionControl, [NSView new]],
         @[[self labelWithString:@"交互" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.clickThroughCheckbox, [NSView new]],
+        @[[self labelWithString:@"素材适配" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], adaptationStack, [NSView new]],
         @[[self labelWithString:@"动作" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.statePopUpButton, self.previewStateButton],
         @[[self labelWithString:@"交互映射" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], interactionMappingScrollView, [NSView new]],
-        @[[self labelWithString:@"状态" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.currentStateLabel, self.resumeAmbientButton]
+        @[[self labelWithString:@"状态" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.currentStateLabel, self.resumeAmbientButton],
+        @[[self labelWithString:@"战斗调试" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.combatDebugLabel, [NSView new]],
+        @[[self labelWithString:@"触碰检测" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.collisionDebugLabel, [NSView new]]
     ]];
     grid.rowSpacing = 10.0;
     grid.columnSpacing = 12.0;
     [grid columnAtIndex:1].xPlacement = NSGridCellPlacementFill;
-    [[grid columnAtIndex:1] setWidth:700.0];
     return grid;
 }
 
@@ -246,31 +368,45 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     self.tableView = [[NSTableView alloc] initWithFrame:NSZeroRect];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    self.tableView.headerView = nil;
     self.tableView.allowsEmptySelection = YES;
     self.tableView.usesAlternatingRowBackgroundColors = YES;
-    self.tableView.rowHeight = 34.0;
+    self.tableView.rowHeight = 32.0;
+    self.tableView.gridStyleMask = NSTableViewSolidHorizontalGridLineMask;
+    self.tableView.columnAutoresizingStyle = NSTableViewLastColumnOnlyAutoresizingStyle;
+    self.tableView.headerView = [[NSTableHeaderView alloc] initWithFrame:NSZeroRect];
 
     NSTableColumn *nameColumn = [[NSTableColumn alloc] initWithIdentifier:@"name"];
-    nameColumn.title = @"Name";
-    nameColumn.width = 180.0;
+    nameColumn.title = @"名称";
+    nameColumn.width = 160.0;
+    nameColumn.minWidth = 100.0;
+    nameColumn.resizingMask = NSTableColumnAutoresizingMask;
 
     NSTableColumn *statusColumn = [[NSTableColumn alloc] initWithIdentifier:@"status"];
-    statusColumn.title = @"Status";
-    statusColumn.width = 90.0;
+    statusColumn.title = @"显示";
+    statusColumn.width = 72.0;
+    statusColumn.minWidth = 56.0;
+    statusColumn.maxWidth = 100.0;
+    statusColumn.resizingMask = NSTableColumnUserResizingMask;
 
     NSTableColumn *sourceColumn = [[NSTableColumn alloc] initWithIdentifier:@"source"];
-    sourceColumn.title = @"Source";
-    sourceColumn.width = 420.0;
+    sourceColumn.title = @"来源路径";
+    sourceColumn.width = 360.0;
+    sourceColumn.minWidth = 120.0;
+    sourceColumn.resizingMask = NSTableColumnAutoresizingMask;
 
     [self.tableView addTableColumn:nameColumn];
     [self.tableView addTableColumn:statusColumn];
     [self.tableView addTableColumn:sourceColumn];
 
     NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:NSZeroRect];
+    scrollView.translatesAutoresizingMaskIntoConstraints = NO;
     scrollView.documentView = self.tableView;
     scrollView.hasVerticalScroller = YES;
+    scrollView.hasHorizontalScroller = YES;
+    scrollView.autohidesScrollers = YES;
     scrollView.borderType = NSBezelBorder;
+    [scrollView setContentHuggingPriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [scrollView setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
     return scrollView;
 }
 
@@ -281,12 +417,24 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     return label;
 }
 
+- (NSTextField *)multilineLabel {
+    NSTextField *label = [NSTextField labelWithString:@"-"];
+    label.font = [NSFont monospacedSystemFontOfSize:11.0 weight:NSFontWeightRegular];
+    label.textColor = NSColor.secondaryLabelColor;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    label.maximumNumberOfLines = 0;
+    label.usesSingleLineMode = NO;
+    [label setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow forOrientation:NSLayoutConstraintOrientationHorizontal];
+    return label;
+}
+
 - (void)reloadPetList {
-    NSString *selectedIdentifier = [self selectedProfile].identifier;
+    NSString *selectedIdentifier = self.petManager.selectedPetIdentifier ?: [self selectedProfile].identifier;
     [self.tableView reloadData];
     [self restoreSelectionWithIdentifier:selectedIdentifier];
-    self.petCountLabel.stringValue = [NSString stringWithFormat:@"当前宠物: %lu / %ld",
+    self.petCountLabel.stringValue = [NSString stringWithFormat:@"已导入: %lu    显示: %lu / %ld",
                                       (unsigned long)self.petManager.activeProfiles.count,
+                                      (unsigned long)self.petManager.visiblePetCount,
                                       (long)self.configuration.maxConcurrentPets];
     [self updateButtons];
     [self refreshPetSettings];
@@ -300,11 +448,13 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
 
     if (!hasSelection) {
         self.toggleVisibilityButton.title = @"隐藏宠物";
+        self.toggleVisibilityButton.image = nil;
         return;
     }
 
     BOOL isVisible = [self.petManager isPetVisible:selectedProfile];
     self.toggleVisibilityButton.title = isVisible ? @"隐藏宠物" : @"显示宠物";
+    PETSetToolbarTemplateImage(self.toggleVisibilityButton, isVisible ? @"PETToolbarEyeHidden" : @"PETToolbarEyeVisible");
 }
 
 - (void)refreshPetSettings {
@@ -315,6 +465,8 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     self.scaleSlider.enabled = hasSelection;
     self.facingDirectionControl.enabled = hasSelection;
     self.clickThroughCheckbox.enabled = hasSelection;
+    self.soulArkCheckbox.enabled = hasSelection;
+    self.soulArkFacingInvertedCheckbox.enabled = hasSelection;
     self.statePopUpButton.enabled = hasSelection;
     self.previewStateButton.enabled = hasSelection;
     self.resumeAmbientButton.enabled = hasSelection;
@@ -322,14 +474,18 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
 
     if (!hasSelection) {
         self.nameField.stringValue = @"";
-        self.scaleSlider.doubleValue = 1.0;
-        self.scaleValueLabel.stringValue = @"100%";
+        self.scaleSlider.doubleValue = PETManagerDefaultScale;
+        self.scaleValueLabel.stringValue = @"30%";
         self.facingDirectionControl.selectedSegment = 1;
         self.clickThroughCheckbox.state = NSControlStateValueOff;
+        self.soulArkCheckbox.state = NSControlStateValueOff;
+        self.soulArkFacingInvertedCheckbox.state = NSControlStateValueOff;
         [self.statePopUpButton removeAllItems];
         self.interactionMappingActionKeys = @[];
         [self.interactionMappingTableView reloadData];
         [self.currentStateLabel setStringValue:@"当前: -"];
+        self.combatDebugLabel.stringValue = @"-";
+        self.collisionDebugLabel.stringValue = @"-";
         return;
     }
 
@@ -339,9 +495,13 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     self.scaleValueLabel.stringValue = [NSString stringWithFormat:@"%.0f%%", scale * 100.0];
     self.facingDirectionControl.selectedSegment = [self.petManager isFacingRightForPetProfile:selectedProfile] ? 1 : 0;
     self.clickThroughCheckbox.state = [self.petManager isClickThroughEnabledForPetProfile:selectedProfile] ? NSControlStateValueOn : NSControlStateValueOff;
+    self.soulArkCheckbox.state = [self.petManager isSoulArkEnabledForPetProfile:selectedProfile] ? NSControlStateValueOn : NSControlStateValueOff;
+    self.soulArkFacingInvertedCheckbox.state = [self.petManager isSoulArkFacingInvertedForPetProfile:selectedProfile] ? NSControlStateValueOn : NSControlStateValueOff;
+    self.soulArkFacingInvertedCheckbox.enabled = hasSelection && (self.soulArkCheckbox.state == NSControlStateValueOn);
     [self reloadStateControlsForProfile:selectedProfile];
     [self reloadInteractionMappingTableForProfile:selectedProfile];
     self.currentStateLabel.stringValue = [self.petManager characterRuntimeSummaryForPetProfile:selectedProfile];
+    [self refreshCombatDebugPanelForProfile:selectedProfile];
 }
 
 - (PETPetProfile * _Nullable)selectedProfile {
@@ -421,6 +581,33 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
 
     BOOL facingRight = (self.facingDirectionControl.selectedSegment != 0);
     [self.petManager setFacingRight:facingRight forPetProfile:profile];
+    [self refreshPetSettings];
+}
+
+- (void)soulArkChanged:(id)sender {
+    (void)sender;
+    PETPetProfile *profile = [self selectedProfile];
+    if (profile == nil) {
+        return;
+    }
+
+    BOOL isEnabled = (self.soulArkCheckbox.state == NSControlStateValueOn);
+    [self.petManager setSoulArkEnabled:isEnabled forPetProfile:profile];
+    if (!isEnabled) {
+        [self.petManager setSoulArkFacingInverted:NO forPetProfile:profile];
+    }
+    [self refreshPetSettings];
+}
+
+- (void)soulArkFacingInvertedChanged:(id)sender {
+    (void)sender;
+    PETPetProfile *profile = [self selectedProfile];
+    if (profile == nil) {
+        return;
+    }
+
+    BOOL isInverted = (self.soulArkFacingInvertedCheckbox.state == NSControlStateValueOn);
+    [self.petManager setSoulArkFacingInverted:isInverted forPetProfile:profile];
     [self refreshPetSettings];
 }
 
@@ -577,8 +764,18 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
     (void)notification;
+    [self.petManager setSelectedPetProfile:[self selectedProfile]];
     [self updateButtons];
     [self refreshPetSettings];
+}
+
+- (void)handleRuntimeDebugUpdate:(NSNotification *)notification {
+    (void)notification;
+    PETPetProfile *profile = [self selectedProfile];
+    if (profile == nil) {
+        return;
+    }
+    [self refreshCombatDebugPanelForProfile:profile];
 }
 
 - (void)controlTextDidEndEditing:(NSNotification *)obj {
@@ -673,6 +870,9 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
         @"waiting": @"等待",
         @"review": @"审阅",
         @"jumping": @"跳跃",
+        @"jump": @"起跳",
+        @"jump-air": @"滞空",
+        @"jump-land": @"落地",
         @"failed": @"失败",
         @"running": @"跑动",
         @"running-left": @"左跑",
@@ -733,6 +933,98 @@ static NSString * const PETManagerInteractionDragRelease = @"drag.release";
     }
 
     [self.tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+}
+
+- (void)refreshCombatDebugPanelForProfile:(PETPetProfile *)profile {
+    NSDictionary<NSString *, id> *combat = [self.petManager combatDebugSnapshotForPetProfile:profile];
+    NSDictionary<NSString *, id> *activeSkill = [combat[@"activeSkill"] isKindOfClass:NSDictionary.class] ? combat[@"activeSkill"] : nil;
+    NSDictionary<NSString *, id> *activeAttack = [combat[@"activeAttack"] isKindOfClass:NSDictionary.class] ? combat[@"activeAttack"] : nil;
+    NSArray<NSDictionary<NSString *, id> *> *activeHitWindows = [activeSkill[@"activeHitWindows"] isKindOfClass:NSArray.class] ? activeSkill[@"activeHitWindows"] : @[];
+    NSString *combatState = [combat[@"currentState"] isKindOfClass:NSString.class] ? combat[@"currentState"] : @"-";
+    NSString *currentAction = [self.petManager currentStateForPetProfile:profile] ?: @"-";
+    NSString *skillId = [activeSkill[@"skillId"] isKindOfClass:NSString.class] ? activeSkill[@"skillId"] : @"-";
+    NSString *phaseId = [activeSkill[@"currentPhaseId"] isKindOfClass:NSString.class] ? activeSkill[@"currentPhaseId"] : @"-";
+    NSString *phaseAnimation = [activeSkill[@"animationState"] isKindOfClass:NSString.class] ? activeSkill[@"animationState"] : @"-";
+    NSString *lastTransitionReason = [activeSkill[@"lastTransitionReason"] isKindOfClass:NSString.class] ? activeSkill[@"lastTransitionReason"] : @"-";
+    NSString *lastHitWindowId = [activeSkill[@"lastHitWindowId"] isKindOfClass:NSString.class] ? activeSkill[@"lastHitWindowId"] : @"-";
+    NSString *lastHitTargetId = [activeSkill[@"lastHitTargetId"] isKindOfClass:NSString.class] ? activeSkill[@"lastHitTargetId"] : @"-";
+    NSString *attackKind = [activeAttack[@"attackKind"] isKindOfClass:NSString.class] ? activeAttack[@"attackKind"] : @"-";
+    NSNumber *stateTimeRemaining = [combat[@"stateTimeRemaining"] respondsToSelector:@selector(doubleValue)] ? combat[@"stateTimeRemaining"] : nil;
+    NSMutableArray<NSString *> *windowSummaries = [NSMutableArray arrayWithCapacity:activeHitWindows.count];
+    for (NSDictionary<NSString *, id> *window in activeHitWindows) {
+        NSString *windowId = [window[@"windowId"] isKindOfClass:NSString.class] ? window[@"windowId"] : @"window";
+        [windowSummaries addObject:windowId];
+    }
+    NSString *activeWindowsSummary = windowSummaries.count > 0 ? [windowSummaries componentsJoinedByString:@", "] : @"-";
+    self.combatDebugLabel.stringValue = [NSString stringWithFormat:@"state: %@\naction: %@\nattack: %@\nskill: %@\nphase: %@\nphaseAnim: %@\nactiveWindows: %@\nlastHit: %@ -> %@\nlastTransition: %@\nremain: %.2fs",
+                                         combatState ?: @"-",
+                                         currentAction ?: @"-",
+                                         attackKind ?: @"-",
+                                         skillId ?: @"-",
+                                         phaseId ?: @"-",
+                                         phaseAnimation ?: @"-",
+                                         activeWindowsSummary,
+                                         lastHitWindowId ?: @"-",
+                                         lastHitTargetId ?: @"-",
+                                         lastTransitionReason ?: @"-",
+                                         stateTimeRemaining.doubleValue];
+
+    NSDictionary<NSString *, id> *collision = [self.petManager lastCollisionSnapshotForPetProfile:profile];
+    NSDictionary<NSString *, id> *screenPoint = [collision[@"screenPoint"] isKindOfClass:NSDictionary.class] ? collision[@"screenPoint"] : nil;
+    NSString *sourcePetIdentifier = [collision[@"sourcePetIdentifier"] isKindOfClass:NSString.class] ? collision[@"sourcePetIdentifier"] : @"-";
+    NSString *targetPetIdentifier = [collision[@"targetPetIdentifier"] isKindOfClass:NSString.class] ? collision[@"targetPetIdentifier"] : @"-";
+    NSString *attackIdentifier = [collision[@"attackIdentifier"] isKindOfClass:NSString.class] ? collision[@"attackIdentifier"] : @"-";
+    NSString *attackKindForCollision = [collision[@"attackKind"] isKindOfClass:NSString.class] ? collision[@"attackKind"] : @"-";
+    NSNumber *sampleSpacing = [collision[@"sampleSpacing"] respondsToSelector:@selector(doubleValue)] ? collision[@"sampleSpacing"] : nil;
+    NSNumber *timestamp = [collision[@"timestamp"] respondsToSelector:@selector(doubleValue)] ? collision[@"timestamp"] : nil;
+    if (collision.count == 0) {
+        self.collisionDebugLabel.stringValue = @"-";
+        return;
+    }
+    NSString *timeSummary = @"-";
+    if (timestamp.doubleValue > 0.0) {
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:timestamp.doubleValue];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        formatter.dateFormat = @"HH:mm:ss.SSS";
+        timeSummary = [formatter stringFromDate:date] ?: @"-";
+    }
+    self.collisionDebugLabel.stringValue = [NSString stringWithFormat:@"source: %@\ntarget: %@\nattack: %@\nkind: %@\npoint: (%.1f, %.1f)\nspacing: %.1f\ntime: %@",
+                                            sourcePetIdentifier ?: @"-",
+                                            targetPetIdentifier ?: @"-",
+                                            attackIdentifier ?: @"-",
+                                            attackKindForCollision ?: @"-",
+                                            [screenPoint[@"x"] doubleValue],
+                                            [screenPoint[@"y"] doubleValue],
+                                            sampleSpacing.doubleValue,
+                                            timeSummary];
+}
+
+#pragma mark - NSSplitViewDelegate
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMinCoordinate:(CGFloat)proposedMin ofSubviewAt:(NSInteger)dividerIndex {
+    (void)splitView;
+    if (dividerIndex == 0) {
+        return MAX(proposedMin, 200.0);
+    }
+    return proposedMin;
+}
+
+- (CGFloat)splitView:(NSSplitView *)splitView constrainMaxCoordinate:(CGFloat)proposedMax ofSubviewAt:(NSInteger)dividerIndex {
+    if (dividerIndex != 0) {
+        return proposedMax;
+    }
+    CGFloat total = NSWidth(splitView.bounds);
+    if (total < 480.0) {
+        return proposedMax;
+    }
+    CGFloat rightMin = 260.0;
+    return MIN(proposedMax, total - rightMin);
+}
+
+- (BOOL)splitView:(NSSplitView *)splitView canCollapseSubview:(NSView *)subview {
+    (void)splitView;
+    (void)subview;
+    return NO;
 }
 
 @end
