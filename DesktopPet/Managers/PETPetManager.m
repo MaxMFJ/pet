@@ -6,6 +6,7 @@
 #import "../GameEngine/Core/PETGameEvent.h"
 #import "../GameEngine/Skill/PETSkillLibrary.h"
 #import "../GameEngine/Input/PETCombatCharacterCatalog.h"
+#import "../GameEngine/Input/PETCombatKeyboardBinding.h"
 #import "../GameEngine/Input/PETCombatKeyboardBindings.h"
 #import "../GameEngine/Input/PETKeyboardInputRouter.h"
 #import "../GameEngine/Presentation/PETGamePresentationBridge.h"
@@ -104,6 +105,21 @@ static NSURL *PETPetManagerFindBundledResourceURL(NSString *relativePath) {
 @end
 
 @implementation PETPetManager
+
+static NSString *PETNormalizedCombatProfileKey(NSString *value) {
+    if (value.length == 0) {
+        return @"";
+    }
+    NSMutableString *normalized = [NSMutableString stringWithCapacity:value.length];
+    NSCharacterSet *alphanumericCharacterSet = [NSCharacterSet alphanumericCharacterSet];
+    for (NSUInteger index = 0; index < value.length; index++) {
+        unichar character = [value characterAtIndex:index];
+        if ([alphanumericCharacterSet characterIsMember:character]) {
+            [normalized appendFormat:@"%C", (unichar)tolower(character)];
+        }
+    }
+    return normalized.copy;
+}
 
 - (nullable PETPetProfile *)profileMatchingSourceURL:(NSURL *)sourceURL {
     NSString *sourcePath = sourceURL.path;
@@ -285,12 +301,7 @@ static NSURL *PETPetManagerFindBundledResourceURL(NSString *relativePath) {
             if (profile == nil) {
                 return nil;
             }
-            PETCombatCharacterProfile *characterProfile = [strongSelf.combatCharacterCatalog profileForSourceURL:profile.sourceURL];
-            if (characterProfile != nil) {
-                return characterProfile;
-            }
-            return [strongSelf.combatCharacterCatalog loadProfileForSourceURL:profile.sourceURL
-                                                                 skillLibrary:strongSelf.gameEngine.skillLibrary];
+            return [strongSelf resolvedCombatCharacterProfileForPetProfile:profile];
         };
         _keyboardInputRouter.petSourceURLProvider = ^NSURL * _Nullable(NSString *petIdentifier) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -515,14 +526,109 @@ static NSURL *PETPetManagerFindBundledResourceURL(NSString *relativePath) {
     }
 }
 
+- (nullable PETCombatCharacterProfile *)resolvedCombatCharacterProfileForPetProfile:(PETPetProfile *)profile {
+    if (profile == nil) {
+        return nil;
+    }
+
+    PETCombatCharacterProfile *fallbackProfile = nil;
+    for (NSString *metadataKey in @[@"combatSourceStem", @"sourceStem", @"characterId"]) {
+        NSString *metadataValue = [profile.metadata[metadataKey] isKindOfClass:NSString.class] ? profile.metadata[metadataKey] : nil;
+        if (metadataValue.length == 0) {
+            continue;
+        }
+        PETCombatCharacterProfile *characterProfile = [self.combatCharacterCatalog profileForSourceStem:metadataValue];
+        if (characterProfile != nil && characterProfile != self.combatCharacterCatalog.soulArkCharacterDefaultProfile) {
+            return characterProfile;
+        }
+        if (fallbackProfile == nil) {
+            fallbackProfile = characterProfile;
+        }
+    }
+
+    NSMutableArray<NSURL *> *candidateURLs = [NSMutableArray array];
+    if (profile.sourceURL != nil) {
+        [candidateURLs addObject:profile.sourceURL];
+    }
+
+    for (NSString *metadataKey in @[@"atlasPath", @"imagePath"]) {
+        NSString *path = [profile.metadata[metadataKey] isKindOfClass:NSString.class] ? profile.metadata[metadataKey] : nil;
+        if (path.length == 0) {
+            continue;
+        }
+        NSURL *url = [NSURL fileURLWithPath:path];
+        if (url != nil) {
+            [candidateURLs addObject:url];
+        }
+    }
+
+    for (NSURL *candidateURL in candidateURLs) {
+        PETCombatCharacterProfile *characterProfile = [self.combatCharacterCatalog profileForSourceURL:candidateURL];
+        if (characterProfile != nil && characterProfile != self.combatCharacterCatalog.soulArkCharacterDefaultProfile) {
+            return characterProfile;
+        }
+        if (fallbackProfile == nil) {
+            fallbackProfile = characterProfile;
+        }
+    }
+
+    for (NSURL *candidateURL in candidateURLs) {
+        PETCombatCharacterProfile *characterProfile = [self.combatCharacterCatalog loadProfileForSourceURL:candidateURL
+                                                                                              skillLibrary:self.gameEngine.skillLibrary];
+        if (characterProfile != nil && characterProfile != self.combatCharacterCatalog.soulArkCharacterDefaultProfile) {
+            return characterProfile;
+        }
+        if (fallbackProfile == nil) {
+            fallbackProfile = characterProfile;
+        }
+    }
+
+    NSMutableArray<NSString *> *candidateNames = [NSMutableArray array];
+    if (profile.displayName.length > 0) {
+        [candidateNames addObject:profile.displayName];
+    }
+    for (NSString *metadataKey in @[@"displayName", @"combatSourceStem", @"sourceStem", @"characterId"]) {
+        NSString *value = [profile.metadata[metadataKey] isKindOfClass:NSString.class] ? profile.metadata[metadataKey] : nil;
+        if (value.length > 0) {
+            [candidateNames addObject:value];
+        }
+    }
+
+    NSArray<PETCombatCharacterProfile *> *knownProfiles = [[NSOrderedSet orderedSetWithArray:self.combatCharacterCatalog.profilesBySourceStem.allValues] array];
+    for (NSString *candidateName in candidateNames) {
+        NSString *normalizedCandidate = PETNormalizedCombatProfileKey(candidateName);
+        if (normalizedCandidate.length == 0) {
+            continue;
+        }
+        for (PETCombatCharacterProfile *knownProfile in knownProfiles) {
+            if (knownProfile == self.combatCharacterCatalog.soulArkCharacterDefaultProfile) {
+                continue;
+            }
+            NSString *normalizedSourceStem = PETNormalizedCombatProfileKey(knownProfile.sourceStem ?: @"");
+            NSString *normalizedDisplayName = PETNormalizedCombatProfileKey(knownProfile.displayName ?: @"");
+            NSString *normalizedCharacterIdentifier = PETNormalizedCombatProfileKey(knownProfile.characterIdentifier ?: @"");
+            BOOL matches = [normalizedCandidate isEqualToString:normalizedSourceStem] ||
+                           [normalizedCandidate isEqualToString:normalizedDisplayName] ||
+                           [normalizedCandidate isEqualToString:normalizedCharacterIdentifier] ||
+                           [normalizedCandidate containsString:normalizedSourceStem] ||
+                           [normalizedSourceStem containsString:normalizedCandidate] ||
+                           [normalizedCandidate containsString:normalizedDisplayName] ||
+                           [normalizedDisplayName containsString:normalizedCandidate] ||
+                           [normalizedCandidate containsString:normalizedCharacterIdentifier] ||
+                           [normalizedCharacterIdentifier containsString:normalizedCandidate];
+            if (matches) {
+                return knownProfile;
+            }
+        }
+    }
+
+    return fallbackProfile;
+}
+
 - (void)applyCombatCharacterProfileIfNeeded:(PETPetProfile *)profile {
     [self mergeCombatSkillsForProfileIfNeeded:profile];
 
-    PETCombatCharacterProfile *characterProfile = [self.combatCharacterCatalog loadProfileForSourceURL:profile.sourceURL
-                                                                                          skillLibrary:self.gameEngine.skillLibrary];
-    if (characterProfile == nil) {
-        characterProfile = [self.combatCharacterCatalog profileForSourceURL:profile.sourceURL];
-    }
+    PETCombatCharacterProfile *characterProfile = [self resolvedCombatCharacterProfileForPetProfile:profile];
     if (characterProfile == nil) {
         return;
     }
@@ -717,6 +823,34 @@ static NSURL *PETPetManagerFindBundledResourceURL(NSString *relativePath) {
     return self.combatDebugSnapshots[profile.identifier] ?: @{};
 }
 
+- (PETCombatKeyboardBinding *)resolvedCombatBindingForKey:(NSString *)key
+                                            forPetProfile:(PETPetProfile *)profile {
+    if (key.length == 0 || profile == nil) {
+        return nil;
+    }
+
+    PETCombatCharacterProfile *characterProfile = [self resolvedCombatCharacterProfileForPetProfile:profile];
+
+    PETCombatKeyboardBinding *binding = [characterProfile bindingForKey:key];
+    if (binding != nil) {
+        return binding;
+    }
+    return [self.combatKeyboardBindings bindingForKey:key];
+}
+
+- (NSDictionary<NSString *,id> *)combatDebugBindingDescriptorForKey:(NSString *)key
+                                                       forPetProfile:(PETPetProfile *)profile {
+    PETCombatKeyboardBinding *binding = [self resolvedCombatBindingForKey:key forPetProfile:profile];
+    if (binding == nil) {
+        return nil;
+    }
+
+    NSMutableDictionary<NSString *, id> *descriptor = [[binding dictionaryRepresentation] mutableCopy];
+    descriptor[@"resolvedKey"] = key.lowercaseString ?: @"";
+    descriptor[@"label"] = binding.label.length > 0 ? binding.label : key.uppercaseString ?: @"";
+    return descriptor.copy;
+}
+
 - (NSDictionary<NSString *,id> *)lastCollisionSnapshotForPetProfile:(PETPetProfile *)profile {
     return self.lastCollisionSnapshots[profile.identifier];
 }
@@ -755,6 +889,29 @@ static NSURL *PETPetManagerFindBundledResourceURL(NSString *relativePath) {
 
 - (void)submitGameCommand:(PETGameCommand *)command {
     [self.gameEngine submitCommand:command];
+}
+
+- (BOOL)triggerCombatDebugBindingForKey:(NSString *)key forPetProfile:(PETPetProfile *)profile {
+    PETCombatKeyboardBinding *binding = [self resolvedCombatBindingForKey:key forPetProfile:profile];
+    if (binding == nil || profile.identifier.length == 0) {
+        return NO;
+    }
+
+    NSMutableDictionary<NSString *, id> *context = [NSMutableDictionary dictionary];
+    if (binding.actionKey.length > 0) {
+        context[@"actionKey"] = binding.actionKey;
+    }
+    context[@"debugTriggerKey"] = binding.key ?: key.lowercaseString ?: @"";
+
+    PETGameCommand *command = [[PETGameCommand alloc] initWithPetIdentifier:profile.identifier
+                                                                commandType:binding.commandType
+                                                                     source:PETGameCommandSourceDebug
+                                                                  direction:nil
+                                                            skillIdentifier:binding.skillIdentifier
+                                                                   strength:1.0
+                                                                    context:context.copy];
+    [self submitGameCommand:command];
+    return YES;
 }
 
 - (void)previewState:(NSString *)state forPetProfile:(PETPetProfile *)profile {
@@ -1014,16 +1171,6 @@ static NSURL *PETPetManagerFindBundledResourceURL(NSString *relativePath) {
         if (![event.eventType hasPrefix:@"game.move."]) {
             continue;
         }
-        if ([event.source isEqualToString:@"game.skill.motion"]) {
-            continue;
-        }
-        PETPetWindow *window = self.petWindows[event.petIdentifier];
-        if (window == nil) {
-            continue;
-        }
-        [self.gameEngine setMovementPosition:[window stableFrameOrigin]
-                                    bodySize:[window stableFrameSize]
-                            forPetIdentifier:event.petIdentifier];
     }
     [debugChangedPetIdentifiers removeObject:@""];
     if (debugChangedPetIdentifiers.count > 0) {

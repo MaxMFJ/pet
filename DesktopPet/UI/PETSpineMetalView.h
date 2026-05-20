@@ -15,8 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, readonly) NSString *currentState;
 @property (nonatomic, assign) BOOL facingRight;
 @property (nonatomic, assign) NSRect contentLayoutRect;
-@property (nonatomic, assign) BOOL editorPlaybackEnabled;
-@property (nonatomic, copy, nullable) NSDictionary<NSString *, id> *activeShaderPayload;
 @property (nonatomic, strong, readonly) PETSpineRuntime *spineRuntime;
 
 - (nullable instancetype)initWithProfile:(PETPetProfile *)profile error:(NSError * _Nullable * _Nullable)error;
@@ -26,8 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)pauseAnimation;
 - (void)resumeDefaultAnimation;
 - (NSTimeInterval)durationForState:(NSString *)state;
-- (void)seekToAnimationTime:(NSTimeInterval)time;
-- (void)redrawSpineFrame;
 - (BOOL)containsInteractiveContentAtPoint:(NSPoint)point;
 - (BOOL)containsDraggableContentAtPoint:(NSPoint)point;
 - (nullable NSString *)interactivePartIdentifierAtPoint:(NSPoint)point;

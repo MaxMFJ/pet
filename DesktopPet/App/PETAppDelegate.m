@@ -7,7 +7,6 @@
 #import "../Services/PETAnimationSourceLoader.h"
 #import "../UI/PETAnimationExportWindowController.h"
 #import "../UI/PETManagerWindowController.h"
-#import "../SkillEditor/UI/PETSkillEditorWindowController.h"
 
 @interface PETAppDelegate ()
 
@@ -16,7 +15,6 @@
 @property (nonatomic, strong) PETAssetImportManager *assetImportManager;
 @property (nonatomic, strong) PETManagerWindowController *managerWindowController;
 @property (nonatomic, strong) PETAnimationExportWindowController *animationExportWindowController;
-@property (nonatomic, strong) PETSkillEditorWindowController *skillEditorWindowController;
 @property (nonatomic, strong) NSStatusItem *statusItem;
 @property (nonatomic, strong) PETAnimationSourceLoader *animationSourceLoader;
 
@@ -58,7 +56,6 @@
     [menu addItemWithTitle:@"Open Manager" action:@selector(showManagerWindow:) keyEquivalent:@"m"];
     [menu addItemWithTitle:@"Import Pet Package..." action:@selector(importPet:) keyEquivalent:@"o"];
     [menu addItemWithTitle:@"Spine Export Tool" action:@selector(showAnimationExportTool:) keyEquivalent:@"e"];
-    [menu addItemWithTitle:@"Skill Timeline Editor" action:@selector(showSkillTimelineEditor:) keyEquivalent:@"t"];
     [menu addItemWithTitle:@"Hide All Pets" action:@selector(hideAllPets:) keyEquivalent:@""];
     [menu addItemWithTitle:@"Show All Pets" action:@selector(showAllPets:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
@@ -86,15 +83,6 @@
         self.animationExportWindowController = [[PETAnimationExportWindowController alloc] init];
     }
     [self.animationExportWindowController showWindow:self];
-    [NSApp activateIgnoringOtherApps:YES];
-}
-
-- (void)showSkillTimelineEditor:(id)sender {
-    (void)sender;
-    if (self.skillEditorWindowController == nil) {
-        self.skillEditorWindowController = [[PETSkillEditorWindowController alloc] initWithPetManager:self.petManager];
-    }
-    [self.skillEditorWindowController showWindow:self];
     [NSApp activateIgnoringOtherApps:YES];
 }
 

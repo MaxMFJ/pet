@@ -175,6 +175,33 @@ NSString * const PETGameEngineEventsUserInfoKey = @"events";
             [events addObjectsFromArray:[targetSession applyResolvedHitResult:hitResult]];
         }
     }
+    for (PETGameSession *session in sessions) {
+        NSArray<NSDictionary<NSString *, id> *> *motionDirectives = [session drainPendingSkillMotionDirectives];
+        for (NSDictionary<NSString *, id> *directive in motionDirectives) {
+            NSString *targetPetIdentifier = [directive[@"targetPetIdentifier"] isKindOfClass:NSString.class] ? directive[@"targetPetIdentifier"] : nil;
+            NSString *sourcePetIdentifier = [directive[@"sourcePetIdentifier"] isKindOfClass:NSString.class] ? directive[@"sourcePetIdentifier"] : nil;
+            PETGameSession *targetSession = self.sessions[targetPetIdentifier];
+            PETGameSession *sourceSession = self.sessions[sourcePetIdentifier];
+            if (targetSession == nil || sourceSession == nil) {
+                continue;
+            }
+            [events addObjectsFromArray:[targetSession applyMotionDirective:directive
+                                                             sourcePosition:[sourceSession movementPosition]
+                                                           sourceFacingRight:[sourceSession isFacingRight]]];
+        }
+    }
+    for (PETGameSession *session in sessions) {
+        NSString *sourcePetIdentifier = [session activeConstraintSourcePetIdentifier];
+        if (sourcePetIdentifier.length == 0) {
+            continue;
+        }
+        PETGameSession *sourceSession = self.sessions[sourcePetIdentifier];
+        if (sourceSession == nil) {
+            continue;
+        }
+        [events addObjectsFromArray:[session syncConstraintFromSourcePosition:[sourceSession movementPosition]
+                                                            sourceFacingRight:[sourceSession isFacingRight]]];
+    }
     [self emitEvents:events.copy];
 }
 

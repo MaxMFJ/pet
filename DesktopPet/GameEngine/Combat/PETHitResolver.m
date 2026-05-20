@@ -1,6 +1,7 @@
 #import "PETHitResolver.h"
 
 #import "../Core/PETGameSession.h"
+#import "../Core/PETTargetReactionRuntime.h"
 #import "PETCombatStateComponent.h"
 #import "PETAttackDefinition.h"
 #import "PETHitResult.h"
@@ -38,15 +39,25 @@
                                                                              attackIdentifier:attackDefinition.attackIdentifier
                                                                                    attackKind:attackDefinition.attackKind
                                                                               hitStunDuration:attackDefinition.hitStunDuration
-                                                                           knockdownDuration:attackDefinition.knockdownDuration
-                                                                                 launchVector:attackDefinition.launchVector
-                                                                                  combatState:(attackDefinition.causesKnockdown
-                                                                                               ? PETCombatStateKnockedDown
-                                                                                               : (fabs(attackDefinition.launchVector.dy) > 1.0
-                                                                                                  ? PETCombatStateLaunched
-                                                                                                  : PETCombatStateHitStun))
-                                                                             causesKnockdown:attackDefinition.causesKnockdown
-                                                                            collisionSnapshot:collisionSnapshot];
+                                                                knockdownDuration:attackDefinition.knockdownDuration
+                                                                      launchVector:attackDefinition.launchVector
+                                                                       combatState:(attackDefinition.causesKnockdown
+                                                                                    ? PETCombatStateKnockedDown
+                                                                                    : (fabs(attackDefinition.launchVector.dy) > 1.0
+                                                                                       ? PETCombatStateLaunched
+                                                                                       : PETCombatStateHitStun))
+                                                                   reactionState:(attackDefinition.causesKnockdown
+                                                                                  ? PETReactionStateKnockdown
+                                                                                  : (fabs(attackDefinition.launchVector.dy) > 1.0
+                                                                                     ? PETReactionStateLaunched
+                                                                                     : PETReactionStateHitStun))
+                                                              reactionIdentifier:nil
+                                                          reactionAnimationState:nil
+                                                           reactionGravityScale:1.0
+                                                         reactionLocksHorizontal:(attackDefinition.causesKnockdown || fabs(attackDefinition.launchVector.dy) <= 1.0)
+                                                           reactionLocksVertical:attackDefinition.causesKnockdown
+                                                               causesKnockdown:attackDefinition.causesKnockdown
+                                                              collisionSnapshot:collisionSnapshot];
                 [hitResults addObject:hitResult];
             }
         }

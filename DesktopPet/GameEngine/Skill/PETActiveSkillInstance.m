@@ -14,6 +14,8 @@
 @property (nonatomic, assign, getter=isFinished) BOOL finished;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, NSMutableArray<NSNumber *> *> *> *hitTimestampsByWindowIdentifier;
 @property (nonatomic, strong) NSMutableSet<NSString *> *executedEffectKeys;
+@property (nonatomic, strong) NSMutableSet<NSString *> *activeProjectileIdentifiers;
+@property (nonatomic, strong) NSMutableArray<NSString *> *returnedProjectileIdentifiers;
 @property (nonatomic, copy, nullable) NSString *lastHitWindowIdentifier;
 @property (nonatomic, copy, nullable) NSString *lastHitTargetIdentifier;
 @property (nonatomic, copy, nullable) NSString *lastTransitionReason;
@@ -35,6 +37,8 @@
         _finished = (_currentPhase == nil);
         _hitTimestampsByWindowIdentifier = [NSMutableDictionary dictionary];
         _executedEffectKeys = [NSMutableSet set];
+        _activeProjectileIdentifiers = [NSMutableSet set];
+        _returnedProjectileIdentifiers = [NSMutableArray array];
     }
     return self;
 }
@@ -131,6 +135,50 @@
 
 - (NSArray<NSDictionary<NSString *,id> *> *)currentPhaseTransitions {
     return self.currentPhase.transitions ?: @[];
+}
+
+- (void)registerSpawnedProjectileIdentifier:(NSString *)projectileIdentifier {
+    if (projectileIdentifier.length == 0) {
+        return;
+    }
+    [self.activeProjectileIdentifiers addObject:projectileIdentifier];
+}
+
+- (BOOL)hasActiveProjectileIdentifier:(NSString *)projectileIdentifier {
+    if (projectileIdentifier.length == 0) {
+        return NO;
+    }
+    return [self.activeProjectileIdentifiers containsObject:projectileIdentifier];
+}
+
+- (BOOL)registerReturnedProjectileIdentifier:(NSString *)projectileIdentifier {
+    if (projectileIdentifier.length == 0 || ![self.activeProjectileIdentifiers containsObject:projectileIdentifier]) {
+        return NO;
+    }
+    [self.activeProjectileIdentifiers removeObject:projectileIdentifier];
+    [self.returnedProjectileIdentifiers addObject:projectileIdentifier];
+    return YES;
+}
+
+- (BOOL)handleProjectileReturnIdentifier:(NSString *)projectileIdentifier {
+    if (self.currentPhase == nil || projectileIdentifier.length == 0) {
+        return NO;
+    }
+
+    NSDictionary<NSString *, id> *transition = nil;
+    for (NSDictionary<NSString *, id> *candidate in self.currentPhase.transitions) {
+        NSString *type = [candidate[@"type"] isKindOfClass:NSString.class] ? candidate[@"type"] : @"";
+        if (![type isEqualToString:@"onProjectileReturn"]) {
+            continue;
+        }
+        NSString *requiredProjectileIdentifier = [candidate[@"projectileId"] isKindOfClass:NSString.class] ? candidate[@"projectileId"] : nil;
+        if (requiredProjectileIdentifier.length > 0 && ![requiredProjectileIdentifier isEqualToString:projectileIdentifier]) {
+            continue;
+        }
+        transition = candidate;
+        break;
+    }
+    return [self applyTransition:transition reason:@"projectileReturn"];
 }
 
 - (NSString *)effectExecutionKeyForPhase:(PETSkillPhase *)phase
@@ -380,6 +428,8 @@
         @"lastHitWindowId": self.lastHitWindowIdentifier ?: @"",
         @"lastHitTargetId": self.lastHitTargetIdentifier ?: @"",
         @"lastTransitionReason": self.lastTransitionReason ?: @"",
+        @"activeProjectileIds": self.activeProjectileIdentifiers.allObjects ?: @[],
+        @"returnedProjectileIds": self.returnedProjectileIdentifiers.copy ?: @[],
         @"activeHitWindows": [self activeHitWindows] ?: @[],
         @"currentPhaseEffects": [self currentPhaseEffects] ?: @[],
         @"currentPhaseTransitions": [self currentPhaseTransitions] ?: @[],

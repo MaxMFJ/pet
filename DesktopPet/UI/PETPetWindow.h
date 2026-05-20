@@ -33,6 +33,8 @@ FOUNDATION_EXPORT NSString * const PETPetWindowRuntimeModeUserInfoKey;
                                       actionKey:(nullable NSString *)actionKey
                                        duration:(NSTimeInterval)duration;
 - (void)playHitReactionForCombatState:(NSString *)combatState
+                        reactionState:(nullable NSString *)reactionState
+               preferredAnimationState:(nullable NSString *)preferredAnimationState
                          launchVector:(CGVector)launchVector
                              duration:(NSTimeInterval)duration;
 - (NSPoint)stableFrameOrigin;

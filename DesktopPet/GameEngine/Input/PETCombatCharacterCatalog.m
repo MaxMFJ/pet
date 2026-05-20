@@ -355,12 +355,14 @@ static BOOL PETSourceStemMatchesSoulArkPrefix(NSString *sourceStem) {
 
 - (nullable PETCombatCharacterProfile *)loadProfileForSourceURL:(NSURL *)sourceURL skillLibrary:(PETSkillLibrary *)skillLibrary {
     PETCombatCharacterProfile *cachedProfile = [self profileForSourceURL:sourceURL];
-    if (cachedProfile != nil) {
+    NSString *stem = sourceURL.lastPathComponent.stringByDeletingPathExtension ?: @"";
+    BOOL shouldAttemptSpecificOverrideLoad = PETSourceStemMatchesSoulArkPrefix(stem)
+        && (cachedProfile == nil || cachedProfile == self.soulArkCharacterDefaultProfile);
+    if (cachedProfile != nil && !shouldAttemptSpecificOverrideLoad) {
         return cachedProfile;
     }
 
     NSURL *directoryURL = sourceURL.URLByDeletingLastPathComponent;
-    NSString *stem = sourceURL.lastPathComponent.stringByDeletingPathExtension ?: @"";
     NSArray<NSString *> *candidateNames = @[
         @"combat-bindings.json",
         [NSString stringWithFormat:@"%@.combat.json", stem],
@@ -391,6 +393,10 @@ static BOOL PETSourceStemMatchesSoulArkPrefix(NSString *sourceStem) {
     PETCombatCharacterProfile *bundleSpecificProfile = [self specificProfileForSourceStem:stem];
     if (bundleSpecificProfile != nil) {
         return bundleSpecificProfile;
+    }
+
+    if (cachedProfile != nil) {
+        return cachedProfile;
     }
 
     if (PETSourceStemMatchesSoulArkPrefix(stem)) {

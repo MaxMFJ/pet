@@ -16,6 +16,16 @@
       "knockdown": false
     },
     {
+      "reactionId": "munjoong_combo_hold",
+      "combatState": "combat.hitstun",
+      "animationState": "hit_air_hold",
+      "duration": 1.35,
+      "gravityScale": 0.05,
+      "lockHorizontal": true,
+      "lockVertical": true,
+      "knockdown": false
+    },
+    {
       "reactionId": "munjoong_knockback",
       "combatState": "combat.launched",
       "animationState": "knockback",
@@ -24,6 +34,20 @@
       "lockHorizontal": false,
       "lockVertical": false,
       "knockdown": false
+    },
+    {
+      "reactionId": "munjoong_launch",
+      "combatState": "combat.launched",
+      "animationState": "knockback",
+      "duration": 0.68,
+      "gravityScale": 1.0,
+      "lockHorizontal": false,
+      "lockVertical": false,
+      "knockdown": false,
+      "launchVector": {
+        "dx": 88.0,
+        "dy": 235.0
+      }
     },
     {
       "reactionId": "munjoong_knockdown",
@@ -87,11 +111,12 @@
             {
               "windowId": "link01_hit",
               "startTime": 0.35,
-              "endTime": 1.2,
+              "endTime": 3.05,
               "collisionMode": "pixelOverlap",
               "sampleSpacing": 4.0,
-              "maxHitsPerTarget": 1,
-              "reactionId": "munjoong_hit",
+              "maxHitsPerTarget": 6,
+              "rehitInterval": 0.45,
+              "reactionId": "munjoong_combo_hold",
               "targetFilter": "enemy"
             }
           ],
@@ -114,15 +139,22 @@
           "animationState": "attack_skill_link02",
           "movementLock": true,
           "gravityScale": 1.0,
+          "casterMotion": {
+            "startTime": 0.08,
+            "endTime": 0.62,
+            "dx": 0.0,
+            "dy": 0.0,
+            "relativeToFacing": true
+          },
           "hitWindows": [
             {
               "windowId": "link02_hit",
-              "startTime": 0.25,
-              "endTime": 1.0,
+              "startTime": 0.18,
+              "endTime": 0.95,
               "collisionMode": "pixelOverlap",
               "sampleSpacing": 4.0,
               "maxHitsPerTarget": 1,
-              "reactionId": "munjoong_knockback",
+              "reactionId": "munjoong_launch",
               "targetFilter": "enemy"
             }
           ],
@@ -141,23 +173,101 @@
         {
           "phaseId": "cast",
           "startTime": 0.0,
-          "duration": 4.67,
+          "duration": 2.05,
           "animationState": "attack_skill_special",
           "movementLock": true,
           "gravityScale": 1.0,
           "hitWindows": [
             {
               "windowId": "special_hit",
-              "startTime": 0.5,
-              "endTime": 2.0,
+              "startTime": 1.42,
+              "endTime": 1.96,
               "collisionMode": "pixelOverlap",
-              "sampleSpacing": 3.0,
-              "maxHitsPerTarget": 2,
+              "sampleSpacing": 2.0,
+              "maxHitsPerTarget": 1,
+              "reactionId": "munjoong_combo_hold",
+              "targetFilter": "enemy"
+            }
+          ],
+          "effects": [
+            {
+              "type": "airSuspendTarget",
+              "duration": 1.35,
+              "gravityScale": 0.05,
+              "lockHorizontal": true,
+              "lockVertical": true,
+              "animationState": "hit_air_hold"
+            },
+            {
+              "type": "followTargetRoot",
+              "time": 1.72,
+              "duration": 1.32,
+              "targetSelector": "lastHitTarget",
+              "offset": {
+                "dx": 8.0,
+                "dy": 92.0
+              }
+            }
+          ],
+          "transitions": [
+            {
+              "type": "onHit",
+              "toPhase": "hold"
+            },
+            {
+              "type": "onPhaseComplete",
+              "toPhase": "hold"
+            }
+          ]
+        },
+        {
+          "phaseId": "hold",
+          "startTime": 2.05,
+          "duration": 1.18,
+          "animationState": "attack_skill_special",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [],
+          "effects": [],
+          "transitions": [
+            {
+              "type": "onTimer",
+              "time": 1.18,
+              "toPhase": "slam"
+            }
+          ]
+        },
+        {
+          "phaseId": "slam",
+          "startTime": 3.23,
+          "duration": 1.44,
+          "animationState": "attack_skill_special",
+          "movementLock": true,
+          "gravityScale": 1.0,
+          "hitWindows": [
+            {
+              "windowId": "special_slam_hit",
+              "startTime": 0.36,
+              "endTime": 0.92,
+              "collisionMode": "pixelOverlap",
+              "sampleSpacing": 2.0,
+              "maxHitsPerTarget": 1,
               "reactionId": "munjoong_knockdown",
               "targetFilter": "enemy"
             }
           ],
-          "effects": [],
+          "effects": [
+            {
+              "type": "releaseTarget",
+              "time": 0.28,
+              "targetSelector": "lastHitTarget",
+              "facingRelative": true,
+              "vector": {
+                "dx": 165.0,
+                "dy": 0.0
+              }
+            }
+          ],
           "transitions": []
         }
       ]

@@ -57,10 +57,52 @@ static NSURL *PETSkillLibraryFindResourceURL(NSString *relativePath) {
 
 @property (nonatomic, assign) NSInteger formatVersion;
 @property (nonatomic, copy) NSArray<PETSkillDefinition *> *skills;
-@property (nonatomic, copy) NSDictionary<NSString *, NSDictionary<NSString *, id> *> *reactionDefinitionsByIdentifier;
+@property (nonatomic, copy) NSDictionary<NSString *, PETSkillReactionDefinition *> *reactionDefinitionsByIdentifier;
 @property (nonatomic, copy) NSDictionary<NSString *, PETSkillDefinition *> *skillDefinitionsByIdentifier;
 
 - (instancetype)initWithRootDictionary:(NSDictionary<NSString *, id> *)root;
+
+@end
+
+@interface PETSkillReactionDefinition ()
+
+@property (nonatomic, copy) NSString *reactionIdentifier;
+@property (nonatomic, copy) NSString *combatState;
+@property (nonatomic, copy, nullable) NSString *animationState;
+@property (nonatomic, assign) NSTimeInterval duration;
+@property (nonatomic, assign) CGFloat gravityScale;
+@property (nonatomic, assign) BOOL lockHorizontal;
+@property (nonatomic, assign) BOOL lockVertical;
+@property (nonatomic, assign, getter=isKnockdown) BOOL knockdown;
+@property (nonatomic, assign) CGVector launchVector;
+@property (nonatomic, copy) NSDictionary<NSString *, id> *dictionaryRepresentation;
+
+@end
+
+@implementation PETSkillReactionDefinition
+
+- (instancetype)initWithDictionaryRepresentation:(NSDictionary<NSString *,id> *)dictionary {
+    self = [super init];
+    if (self) {
+        NSString *reactionIdentifier = [dictionary[@"reactionId"] isKindOfClass:NSString.class] ? dictionary[@"reactionId"] : @"";
+        NSString *combatState = [dictionary[@"combatState"] isKindOfClass:NSString.class] ? dictionary[@"combatState"] : @"combat.hitstun";
+        NSString *animationState = [dictionary[@"animationState"] isKindOfClass:NSString.class] ? dictionary[@"animationState"] : nil;
+        NSDictionary<NSString *, id> *launchVector = [dictionary[@"launchVector"] isKindOfClass:NSDictionary.class] ? dictionary[@"launchVector"] : nil;
+
+        _reactionIdentifier = [reactionIdentifier copy];
+        _combatState = [combatState copy];
+        _animationState = [animationState copy];
+        _duration = MAX(0.0, [dictionary[@"duration"] doubleValue]);
+        NSNumber *gravityScale = [dictionary[@"gravityScale"] respondsToSelector:@selector(doubleValue)] ? dictionary[@"gravityScale"] : nil;
+        _gravityScale = gravityScale != nil ? gravityScale.doubleValue : 1.0;
+        _lockHorizontal = [dictionary[@"lockHorizontal"] boolValue];
+        _lockVertical = [dictionary[@"lockVertical"] boolValue];
+        _knockdown = [dictionary[@"knockdown"] boolValue];
+        _launchVector = CGVectorMake([launchVector[@"dx"] doubleValue], [launchVector[@"dy"] doubleValue]);
+        _dictionaryRepresentation = [dictionary copy] ?: @{};
+    }
+    return self;
+}
 
 @end
 
@@ -143,16 +185,16 @@ static NSURL *PETSkillLibraryFindResourceURL(NSString *relativePath) {
         }
 
         NSArray<NSDictionary<NSString *, id> *> *rawReactions = [root[@"reactions"] isKindOfClass:NSArray.class] ? root[@"reactions"] : @[];
-        NSMutableDictionary<NSString *, NSDictionary<NSString *, id> *> *reactionsByIdentifier = [NSMutableDictionary dictionaryWithCapacity:rawReactions.count];
+        NSMutableDictionary<NSString *, PETSkillReactionDefinition *> *reactionsByIdentifier = [NSMutableDictionary dictionaryWithCapacity:rawReactions.count];
         for (NSDictionary<NSString *, id> *reaction in rawReactions) {
             if (![reaction isKindOfClass:NSDictionary.class]) {
                 continue;
             }
-            NSString *reactionIdentifier = [reaction[@"reactionId"] isKindOfClass:NSString.class] ? reaction[@"reactionId"] : nil;
-            if (reactionIdentifier.length == 0) {
+            PETSkillReactionDefinition *definition = [[PETSkillReactionDefinition alloc] initWithDictionaryRepresentation:reaction];
+            if (definition.reactionIdentifier.length == 0) {
                 continue;
             }
-            reactionsByIdentifier[reactionIdentifier] = reaction;
+            reactionsByIdentifier[definition.reactionIdentifier] = definition;
         }
 
         _skills = [skills copy];
@@ -169,7 +211,7 @@ static NSURL *PETSkillLibraryFindResourceURL(NSString *relativePath) {
     return self.skillDefinitionsByIdentifier[skillIdentifier];
 }
 
-- (NSDictionary<NSString *,id> *)reactionDefinitionForIdentifier:(NSString *)reactionIdentifier {
+- (PETSkillReactionDefinition *)reactionDefinitionForIdentifier:(NSString *)reactionIdentifier {
     if (reactionIdentifier.length == 0) {
         return nil;
     }
@@ -195,7 +237,7 @@ static NSURL *PETSkillLibraryFindResourceURL(NSString *relativePath) {
     NSDictionary<NSString *, id> *root = rootObject;
     NSMutableArray<PETSkillDefinition *> *skills = [self.skills mutableCopy] ?: [NSMutableArray array];
     NSMutableDictionary<NSString *, PETSkillDefinition *> *skillsByIdentifier = [self.skillDefinitionsByIdentifier mutableCopy] ?: [NSMutableDictionary dictionary];
-    NSMutableDictionary<NSString *, NSDictionary<NSString *, id> *> *reactionsByIdentifier = [self.reactionDefinitionsByIdentifier mutableCopy] ?: [NSMutableDictionary dictionary];
+    NSMutableDictionary<NSString *, PETSkillReactionDefinition *> *reactionsByIdentifier = [self.reactionDefinitionsByIdentifier mutableCopy] ?: [NSMutableDictionary dictionary];
 
     NSArray<NSDictionary<NSString *, id> *> *rawSkills = [root[@"skills"] isKindOfClass:NSArray.class] ? root[@"skills"] : @[];
     for (NSDictionary<NSString *, id> *rawSkill in rawSkills) {
@@ -224,11 +266,11 @@ static NSURL *PETSkillLibraryFindResourceURL(NSString *relativePath) {
         if (![reaction isKindOfClass:NSDictionary.class]) {
             continue;
         }
-        NSString *reactionIdentifier = [reaction[@"reactionId"] isKindOfClass:NSString.class] ? reaction[@"reactionId"] : nil;
-        if (reactionIdentifier.length == 0) {
+        PETSkillReactionDefinition *definition = [[PETSkillReactionDefinition alloc] initWithDictionaryRepresentation:reaction];
+        if (definition.reactionIdentifier.length == 0) {
             continue;
         }
-        reactionsByIdentifier[reactionIdentifier] = reaction;
+        reactionsByIdentifier[definition.reactionIdentifier] = definition;
     }
 
     self.skills = skills.copy;

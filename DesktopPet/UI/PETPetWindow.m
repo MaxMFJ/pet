@@ -57,6 +57,7 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
 @property (nonatomic, assign) NSPoint dragStartWindowOrigin;
 @property (nonatomic, assign) BOOL didDragDuringMouseSession;
 @property (nonatomic, assign) BOOL dragEligibleForCurrentMouseSession;
+@property (nonatomic, assign) BOOL suppressPrimaryInteractionForCurrentMouseSession;
 @property (nonatomic, assign) NSSize baseNormalWindowSize;
 @property (nonatomic, assign) NSSize normalWindowSize;
 @property (nonatomic, assign) NSRect normalFrameBeforeTransientExpansion;
@@ -829,8 +830,11 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
     self.hasManualStateOverride = NO;
     NSString *resolvedState = [self resolvedAnimationStateForBehaviorState:state] ?: state;
     [self expandWindowForTransientStateIfNeeded:resolvedState];
-    [self playStateOnActiveView:resolvedState loop:loop];
-    self.currentState = resolvedState;
+    BOOL shouldReplayState = ![self.currentState isEqualToString:resolvedState];
+    if (shouldReplayState) {
+        [self playStateOnActiveView:resolvedState loop:loop];
+        self.currentState = resolvedState;
+    }
 
     __weak typeof(self) weakSelf = self;
     self.transientTimer = [NSTimer scheduledTimerWithTimeInterval:duration
@@ -1005,8 +1009,10 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
         return;
     }
 
+    BOOL wasControlFocusActive = self.controlFocusActive;
     [self emitActivationEvent];
     self.ignoresMouseEvents = NO;
+    self.suppressPrimaryInteractionForCurrentMouseSession = !wasControlFocusActive;
     self.dragStartPointInWindow = windowPoint;
     self.dragStartPointOnScreen = NSEvent.mouseLocation;
     self.dragStartWindowOrigin = self.frame.origin;
@@ -1040,7 +1046,7 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
     NSPoint localPoint = [self.contentView convertPoint:windowPoint fromView:nil];
     BOOL interactive = [self activeRendererContainsInteractiveContentAtPoint:localPoint];
 
-    if (!self.didDragDuringMouseSession && interactive) {
+    if (!self.didDragDuringMouseSession && interactive && !self.suppressPrimaryInteractionForCurrentMouseSession) {
         [self handlePrimaryInteractionForPoint:localPoint];
     }
 
@@ -1050,6 +1056,7 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
 
     self.dragEligibleForCurrentMouseSession = NO;
     self.didDragDuringMouseSession = NO;
+    self.suppressPrimaryInteractionForCurrentMouseSession = NO;
     self.dragStartPointOnScreen = NSZeroPoint;
     [self updateMousePassThroughState];
 }
@@ -1140,9 +1147,18 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
 }
 
 - (void)playHitReactionForCombatState:(NSString *)combatState
+                        reactionState:(NSString *)reactionState
+               preferredAnimationState:(NSString *)preferredAnimationState
                          launchVector:(CGVector)launchVector
                              duration:(NSTimeInterval)duration {
-    NSString *resolvedState = [self resolvedAnimationStateForCombatReactionState:combatState launchVector:launchVector];
+    NSString *resolvedState = nil;
+    if (preferredAnimationState.length > 0 && [self.supportedStates containsObject:preferredAnimationState]) {
+        resolvedState = preferredAnimationState;
+    } else {
+        resolvedState = [self resolvedAnimationStateForCombatReactionState:combatState
+                                                             reactionState:reactionState
+                                                              launchVector:launchVector];
+    }
     if (resolvedState.length == 0) {
         return;
     }
@@ -1154,24 +1170,26 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
     resolvedDuration = MAX(0.08, resolvedDuration);
     NSTimeInterval runtimeDuration = self.spinePetView != nil ? [self.spinePetView durationForState:resolvedState] : 0.0;
     BOOL isLaunchedReaction = [combatState isEqualToString:@"combat.launched"];
-    if (isLaunchedReaction && runtimeDuration > 0.0) {
+    BOOL isAirHoldReaction = [reactionState isEqualToString:@"reaction.air_hold"];
+    if (isLaunchedReaction && !isAirHoldReaction && runtimeDuration > 0.0) {
         resolvedDuration = MIN(resolvedDuration, MIN(runtimeDuration, 0.18));
-    } else if (isLaunchedReaction) {
+    } else if (isLaunchedReaction && !isAirHoldReaction) {
         resolvedDuration = MIN(resolvedDuration, 0.18);
     }
-    if (isLaunchedReaction) {
+    if (isLaunchedReaction && !isAirHoldReaction) {
         resolvedDuration = MAX(0.12, resolvedDuration);
     }
-    BOOL shouldLoop = !isLaunchedReaction && (runtimeDuration > 0.0 && resolvedDuration > runtimeDuration + 0.001);
+    BOOL shouldLoop = runtimeDuration > 0.0 && resolvedDuration > runtimeDuration + 0.001;
     self.combatTransientActive = YES;
-    [self emitRuntimeEventWithActionKey:[NSString stringWithFormat:@"combat.reaction.%@", combatState ?: @"hit"]
+    NSString *reactionEventKey = reactionState.length > 0 ? reactionState : combatState;
+    [self emitRuntimeEventWithActionKey:[NSString stringWithFormat:@"combat.reaction.%@", reactionEventKey ?: @"hit"]
                   fallbackBehaviorState:resolvedState
                  resolvedAnimationState:resolvedState
                                    mode:@"combat.reaction"];
     [self playTransientState:resolvedState
                     duration:resolvedDuration
                         loop:shouldLoop
-    resumeAmbientOnCompletion:!isLaunchedReaction];
+    resumeAmbientOnCompletion:!(isLaunchedReaction && !isAirHoldReaction)];
 }
 
 - (void)previewState:(NSString *)state {
@@ -1284,11 +1302,15 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
     return self.profile.defaultState;
 }
 
-- (NSString *)resolvedAnimationStateForCombatReactionState:(NSString *)combatState launchVector:(CGVector)launchVector {
+- (NSString *)resolvedAnimationStateForCombatReactionState:(NSString *)combatState
+                                             reactionState:(NSString *)reactionState
+                                              launchVector:(CGVector)launchVector {
     BOOL usesSoulArkMovementProfile = [self.profile.metadata[@"灵魂方舟"] boolValue];
     BOOL prefersAirborneMovementStates = usesSoulArkMovementProfile && [combatState isEqualToString:@"combat.launched"];
     if (prefersAirborneMovementStates) {
-        NSArray<NSString *> *candidates = [self animationCandidatesForCombatReactionState:combatState launchVector:launchVector];
+        NSArray<NSString *> *candidates = [self animationCandidatesForCombatReactionState:combatState
+                                                                            reactionState:reactionState
+                                                                             launchVector:launchVector];
         for (NSString *candidate in candidates) {
             if ([self.supportedStates containsObject:candidate]) {
                 return candidate;
@@ -1303,7 +1325,7 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
         }
     }
 
-    NSArray<NSString *> *actionKeys = [self combatReactionActionKeysForState:combatState];
+    NSArray<NSString *> *actionKeys = [self combatReactionActionKeysForState:combatState reactionState:reactionState];
     for (NSString *actionKey in actionKeys) {
         NSString *resolved = [self resolvedAnimationStateForActionKey:actionKey fallbackBehaviorState:nil];
         if (resolved.length > 0) {
@@ -1311,7 +1333,9 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
         }
     }
 
-    NSArray<NSString *> *candidates = [self animationCandidatesForCombatReactionState:combatState launchVector:launchVector];
+    NSArray<NSString *> *candidates = [self animationCandidatesForCombatReactionState:combatState
+                                                                        reactionState:reactionState
+                                                                         launchVector:launchVector];
     for (NSString *candidate in candidates) {
         NSString *resolved = [self resolvedAnimationStateForActionKey:[NSString stringWithFormat:@"combat.%@", candidate]
                                                 fallbackBehaviorState:candidate];
@@ -1325,7 +1349,10 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
     return nil;
 }
 
-- (NSArray<NSString *> *)combatReactionActionKeysForState:(NSString *)combatState {
+- (NSArray<NSString *> *)combatReactionActionKeysForState:(NSString *)combatState reactionState:(NSString *)reactionState {
+    if ([reactionState isEqualToString:@"reaction.air_hold"]) {
+        return @[@"combat.air_hold", @"combat.hit_air_hold", @"combat.float", @"combat.air", @"combat.launched"];
+    }
     if ([combatState isEqualToString:@"combat.knockeddown"]) {
         return @[@"combat.knockeddown", @"combat.knockdown", @"combat.down", @"combat.fall"];
     }
@@ -1335,8 +1362,16 @@ NSString * const PETPetWindowRuntimeModeUserInfoKey = @"PETPetWindowRuntimeModeU
     return @[@"combat.hitstun", @"combat.hit", @"combat.hurt", @"combat.damage"];
 }
 
-- (NSArray<NSString *> *)animationCandidatesForCombatReactionState:(NSString *)combatState launchVector:(CGVector)launchVector {
+- (NSArray<NSString *> *)animationCandidatesForCombatReactionState:(NSString *)combatState
+                                                      reactionState:(NSString *)reactionState
+                                                       launchVector:(CGVector)launchVector {
     BOOL usesSoulArkMovementProfile = [self.profile.metadata[@"灵魂方舟"] boolValue];
+    if ([reactionState isEqualToString:@"reaction.air_hold"]) {
+        if (usesSoulArkMovementProfile) {
+            return @[@"hit_air_hold", @"air_hold", @"air", @"air_ing", @"jump_ing", @"hit_fly", @"hurt", @"hit", @"idle"];
+        }
+        return @[@"hit_air_hold", @"air_hold", @"float", @"air", @"airborne", @"hit_fly", @"hurt", @"hit", @"idle"];
+    }
     if ([combatState isEqualToString:@"combat.knockeddown"]) {
         if (usesSoulArkMovementProfile) {
             return @[@"down", @"air_down", @"jump_landing", @"land", @"fall", @"knockdown", @"idle"];

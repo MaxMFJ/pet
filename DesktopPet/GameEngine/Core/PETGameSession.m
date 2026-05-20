@@ -14,6 +14,9 @@
 #import "../Skill/PETSkillPhase.h"
 #import "PETGameCommand.h"
 #import "PETGameEvent.h"
+#import "PETSkillRuntimeExecutor.h"
+#import "PETTargetMotionRuntime.h"
+#import "PETTargetReactionRuntime.h"
 
 @interface PETGameSession ()
 
@@ -32,16 +35,35 @@
 @property (nonatomic, strong, nullable) PETAttackDefinition *activeAttackDefinition;
 @property (nonatomic, strong, nullable) PETActiveSkillInstance *activeSkillInstance;
 @property (nonatomic, strong, nullable) PETSkillLibrary *skillLibrary;
-@property (nonatomic, strong, nullable) PETHitResult *pendingHitMovementResult;
-@property (nonatomic, assign) NSTimeInterval pendingHitMovementDelayRemaining;
 @property (nonatomic, strong) NSMutableArray<PETHitResult *> *pendingSkillEffectHitResults;
 @property (nonatomic, strong) NSMutableArray<PETGameEvent *> *pendingSkillEffectEvents;
+@property (nonatomic, strong) NSMutableArray<NSDictionary<NSString *, id> *> *pendingSkillMotionDirectives;
+@property (nonatomic, strong) PETTargetReactionRuntime *targetReactionRuntime;
+@property (nonatomic, strong) PETTargetMotionRuntime *targetMotionRuntime;
+@property (nonatomic, strong) PETSkillRuntimeExecutor *skillRuntimeExecutor;
 
 @end
 
 @implementation PETGameSession
 
-static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
+static NSString *PETReactionSemanticStateForDefinition(PETSkillReactionDefinition *reaction) {
+    if (reaction == nil) {
+        return PETReactionStateNone;
+    }
+    if (reaction.isKnockdown || [reaction.combatState isEqualToString:PETCombatStateKnockedDown]) {
+        return PETReactionStateKnockdown;
+    }
+    if ([reaction.combatState isEqualToString:PETCombatStateLaunched]) {
+        if (reaction.gravityScale < 0.95 || [reaction.animationState localizedCaseInsensitiveContainsString:@"hold"]) {
+            return PETReactionStateAirHold;
+        }
+        return PETReactionStateLaunched;
+    }
+    if ([reaction.combatState isEqualToString:PETCombatStateHitStun]) {
+        return PETReactionStateHitStun;
+    }
+    return PETReactionStateNone;
+}
 
 - (nullable PETSkillDefinition *)reloadSkillDefinitionForIdentifier:(NSString *)skillIdentifier {
     if (skillIdentifier.length == 0) {
@@ -84,6 +106,10 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
         _skillLibrary = skillLibrary;
         _pendingSkillEffectHitResults = [NSMutableArray array];
         _pendingSkillEffectEvents = [NSMutableArray array];
+        _pendingSkillMotionDirectives = [NSMutableArray array];
+        _targetReactionRuntime = [[PETTargetReactionRuntime alloc] init];
+        _targetMotionRuntime = [[PETTargetMotionRuntime alloc] initWithMovementComponent:_movementComponent];
+        _skillRuntimeExecutor = [[PETSkillRuntimeExecutor alloc] initWithPetIdentifier:_petIdentifier];
     }
     return self;
 }
@@ -126,7 +152,7 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
                                                           context:@{@"tickCount": @(self.tickCount),
                                                                     @"deltaTime": @(deltaTime)}]];
     }
-    [self advancePendingHitMovementResponseWithDeltaTime:deltaTime];
+    [self.targetMotionRuntime advanceWithDeltaTime:deltaTime];
     [self syncMovementRestrictionsFromCombatState];
     [events addObjectsFromArray:[self.movementSystem updateMovementComponent:self.movementComponent
                                                                movementVector:self.inputState.movementVector
@@ -158,6 +184,7 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
     state[@"input"] = [self.inputState serializedState];
     state[@"movement"] = [self.movementComponent serializedState];
     state[@"combat"] = [self.combatStateComponent serializedState];
+    state[@"reactionRuntime"] = [self.targetReactionRuntime serializedState];
     if (self.activeAttackDefinition != nil) {
         state[@"activeAttack"] = [self.activeAttackDefinition dictionaryRepresentation];
     }
@@ -175,6 +202,7 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
     NSDictionary<NSString *, id> *input = [state[@"input"] isKindOfClass:NSDictionary.class] ? state[@"input"] : nil;
     NSDictionary<NSString *, id> *movement = [state[@"movement"] isKindOfClass:NSDictionary.class] ? state[@"movement"] : nil;
     NSDictionary<NSString *, id> *combat = [state[@"combat"] isKindOfClass:NSDictionary.class] ? state[@"combat"] : nil;
+    NSDictionary<NSString *, id> *reactionRuntime = [state[@"reactionRuntime"] isKindOfClass:NSDictionary.class] ? state[@"reactionRuntime"] : nil;
     NSDictionary<NSString *, id> *activeAttack = [state[@"activeAttack"] isKindOfClass:NSDictionary.class] ? state[@"activeAttack"] : nil;
 
     self.paused = paused.boolValue;
@@ -193,6 +221,12 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
         [self.combatStateComponent restoreFromSerializedState:combat];
     }
     self.activeAttackDefinition = activeAttack.count > 0 ? [[PETAttackDefinition alloc] initWithDictionaryRepresentation:activeAttack] : nil;
+    if (reactionRuntime.count > 0) {
+        [self.targetReactionRuntime restoreFromSerializedState:reactionRuntime];
+    } else {
+        [self.targetReactionRuntime syncWithCombatStateComponent:self.combatStateComponent];
+    }
+    [self syncMovementRestrictionsFromCombatState];
 }
 
 - (void)setPaused:(BOOL)paused reason:(NSString *)reason {
@@ -209,8 +243,11 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
         return @[];
     }
 
-    [self.combatStateComponent applyHitResult:hitResult];
-    [self queueMovementResponseForHitResult:hitResult];
+    [self.targetReactionRuntime applyHitResult:hitResult toCombatStateComponent:self.combatStateComponent];
+    [self.targetMotionRuntime syncReactionConstraintsWithGravityScale:self.targetReactionRuntime.currentGravityScale
+                                                      lockHorizontal:self.targetReactionRuntime.locksHorizontalMotion
+                                                        lockVertical:self.targetReactionRuntime.locksVerticalMotion];
+    [self.targetMotionRuntime queueHitMovementForHitResult:hitResult];
     return @[
         [[PETGameEvent alloc] initWithEventType:PETGameEventAttackHit
                                   petIdentifier:self.petIdentifier
@@ -223,73 +260,13 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
     ];
 }
 
-- (void)queueMovementResponseForHitResult:(PETHitResult *)hitResult {
-    self.pendingHitMovementResult = hitResult;
-    self.pendingHitMovementDelayRemaining = PETDelayedHitMovementResponseDelay;
-}
-
-- (void)advancePendingHitMovementResponseWithDeltaTime:(NSTimeInterval)deltaTime {
-    if (self.pendingHitMovementResult == nil) {
-        return;
-    }
-
-    self.pendingHitMovementDelayRemaining = MAX(0.0, self.pendingHitMovementDelayRemaining - MAX(0.0, deltaTime));
-    if (self.pendingHitMovementDelayRemaining > 0.0) {
-        return;
-    }
-
-    PETHitResult *resolvedHitResult = self.pendingHitMovementResult;
-    self.pendingHitMovementResult = nil;
-    self.pendingHitMovementDelayRemaining = 0.0;
-    [self applyMovementResponseForHitResult:resolvedHitResult];
-}
-
-- (void)applyMovementResponseForHitResult:(PETHitResult *)hitResult {
-    if (hitResult == nil) {
-        return;
-    }
-
-    CGFloat horizontalVelocity = hitResult.launchVector.dx;
-    CGFloat verticalVelocity = hitResult.launchVector.dy;
-    NSDictionary<NSString *, id> *collisionSnapshot = hitResult.collisionSnapshot;
-    NSDictionary<NSString *, id> *sourceOrigin = [collisionSnapshot[@"sourceOrigin"] isKindOfClass:NSDictionary.class] ? collisionSnapshot[@"sourceOrigin"] : nil;
-    NSDictionary<NSString *, id> *targetOrigin = [collisionSnapshot[@"targetOrigin"] isKindOfClass:NSDictionary.class] ? collisionSnapshot[@"targetOrigin"] : nil;
-    if (sourceOrigin != nil && targetOrigin != nil && fabs(horizontalVelocity) > 0.01) {
-        CGFloat sourceX = [sourceOrigin[@"x"] doubleValue];
-        CGFloat targetX = [targetOrigin[@"x"] doubleValue];
-        horizontalVelocity = targetX < sourceX ? -fabs(horizontalVelocity) : fabs(horizontalVelocity);
-    }
-
-    if (fabs(horizontalVelocity) > 0.01) {
-        self.movementComponent.velocity = CGVectorMake(horizontalVelocity, self.movementComponent.velocity.dy);
-        self.movementComponent.facingDirection = horizontalVelocity >= 0.0 ? PETMovementFacingRight : PETMovementFacingLeft;
-    }
-
-    NSString *combatState = hitResult.combatState;
-    BOOL isLaunchedReaction = [combatState isEqualToString:PETCombatStateLaunched] || verticalVelocity > 1.0;
-    if (isLaunchedReaction) {
-        self.movementComponent.jumping = YES;
-        self.movementComponent.jumpGroundY = self.movementComponent.position.y;
-        self.movementComponent.jumpVelocity = verticalVelocity;
-        self.movementComponent.jumpTakeoffTimeRemaining = self.movementComponent.jumpTakeoffDuration;
-        self.movementComponent.landingTimeRemaining = 0.0;
-        self.movementComponent.jumpAirTimeRemaining = 0.0;
-        self.movementComponent.movementState = PETMovementStateJump;
-    }
-}
-
 - (void)syncMovementRestrictionsFromCombatState {
-    if (self.activeSkillInstance != nil && self.activeSkillInstance.currentPhase != nil) {
-        self.movementComponent.locked = self.activeSkillInstance.currentPhase.movementLock;
-        return;
-    }
-
-    if (self.activeAttackDefinition != nil && self.combatStateComponent.isControlLocked) {
-        self.movementComponent.locked = YES;
-        return;
-    }
-
-    self.movementComponent.locked = NO;
+    [self.targetMotionRuntime syncMovementLockForSkillPhase:self.activeSkillInstance.currentPhase
+                                      activeAttackDefinition:self.activeAttackDefinition
+                                           combatControlLocked:self.combatStateComponent.isControlLocked];
+    [self.targetMotionRuntime syncReactionConstraintsWithGravityScale:self.targetReactionRuntime.currentGravityScale
+                                                      lockHorizontal:self.targetReactionRuntime.locksHorizontalMotion
+                                                        lockVertical:self.targetReactionRuntime.locksVerticalMotion];
 }
 
 - (NSDictionary<NSString *,id> *)combatDebugSnapshot {
@@ -297,7 +274,26 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
     snapshot[@"activeAttack"] = self.activeAttackDefinition != nil ? [self.activeAttackDefinition dictionaryRepresentation] : @{};
     snapshot[@"activeSkill"] = self.activeSkillInstance != nil ? [self.activeSkillInstance debugSnapshot] : @{};
     snapshot[@"pendingSkillEffectHitResults"] = @([self.pendingSkillEffectHitResults count]);
+    snapshot[@"movement"] = [self.targetMotionRuntime movementEventContext];
+    NSDictionary<NSString *, id> *reactionSnapshot = [self.targetReactionRuntime debugSnapshot];
+    NSDictionary<NSString *, id> *motionSnapshot = [self.targetMotionRuntime debugSnapshot];
+    snapshot[@"reactionRuntime"] = reactionSnapshot;
+    snapshot[@"targetMotionRuntime"] = motionSnapshot;
+    snapshot[@"currentReactionState"] = reactionSnapshot[@"currentReactionState"] ?: @"";
+    snapshot[@"motionControlMode"] = motionSnapshot[@"motionControlMode"] ?: @"free";
     return snapshot.copy;
+}
+
+- (CGPoint)movementPosition {
+    return self.movementComponent.position;
+}
+
+- (BOOL)isFacingRight {
+    return ![self.movementComponent.facingDirection isEqualToString:PETMovementFacingLeft];
+}
+
+- (NSString *)activeConstraintSourcePetIdentifier {
+    return [self.targetMotionRuntime activeConstraintSourcePetIdentifier];
 }
 
 - (NSArray<PETGameEvent *> *)combatEventsForCommand:(PETGameCommand *)command {
@@ -358,31 +354,29 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
         }
     }
     if (self.activeSkillInstance != nil) {
-        NSString *previousPhaseIdentifier = self.activeSkillInstance.currentPhase.phaseIdentifier ?: @"";
-        PETSkillPhase *previousPhase = self.activeSkillInstance.currentPhase;
-        NSTimeInterval previousPhaseTime = self.activeSkillInstance.phaseElapsedTime;
-        [self.activeSkillInstance advanceTime:deltaTime];
-        [events addObjectsFromArray:[self executeTimedEffectsFromPreviousPhase:previousPhase
-                                                              previousPhaseTime:previousPhaseTime
-                                                                   currentPhase:self.activeSkillInstance.currentPhase
-                                                              currentPhaseTime:self.activeSkillInstance.phaseElapsedTime]];
-        [events addObjectsFromArray:[self applyCasterMotionForPreviousPhase:previousPhase
-                                                           previousPhaseTime:previousPhaseTime
-                                                                currentPhase:self.activeSkillInstance.currentPhase
-                                                           currentPhaseTime:self.activeSkillInstance.phaseElapsedTime
-                                                                  deltaTime:deltaTime]];
-        NSString *currentPhaseIdentifier = self.activeSkillInstance.currentPhase.phaseIdentifier ?: @"";
-        if (![previousPhaseIdentifier isEqualToString:currentPhaseIdentifier]) {
+        PETSkillRuntimeAdvanceResult *runtimeResult = [self.skillRuntimeExecutor advanceSkillInstance:self.activeSkillInstance
+                                                                                             deltaTime:deltaTime
+                                                                                         motionRuntime:self.targetMotionRuntime
+                                                                           combatDebugSnapshotProvider:^NSDictionary<NSString *,id> *{
+            return [self combatDebugSnapshot];
+        }];
+        [events addObjectsFromArray:runtimeResult.events];
+        [self.pendingSkillEffectEvents addObjectsFromArray:runtimeResult.pendingEffectEvents];
+        [self.pendingSkillEffectHitResults addObjectsFromArray:runtimeResult.pendingEffectHitResults];
+        [self.pendingSkillMotionDirectives addObjectsFromArray:runtimeResult.pendingMotionDirectives];
+        if (runtimeResult.didChangePhase) {
             [events addObject:[[PETGameEvent alloc] initWithEventType:PETGameEventCombatStateChanged
                                                         petIdentifier:self.petIdentifier
                                                                source:@"game.skill"
                                                               context:[self combatDebugSnapshot]]];
         }
-        if (self.activeSkillInstance.isFinished) {
-            NSDictionary<NSString *, id> *finalSnapshot = [self.activeSkillInstance debugSnapshot];
+        if (runtimeResult.didFinishSkill) {
+            NSDictionary<NSString *, id> *finalSnapshot = runtimeResult.finalSkillSnapshot;
             self.activeSkillInstance = nil;
             self.activeAttackDefinition = nil;
             [self.combatStateComponent advanceTime:DBL_MAX];
+            [self.targetReactionRuntime syncWithCombatStateComponent:self.combatStateComponent];
+            [self.targetMotionRuntime resetTransientMotionState];
             [events addObject:[[PETGameEvent alloc] initWithEventType:PETGameEventAttackEnded
                                                         petIdentifier:self.petIdentifier
                                                                source:@"game.skill"
@@ -394,182 +388,13 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
         }
     }
     if ([self.combatStateComponent advanceTime:deltaTime]) {
+        [self.targetReactionRuntime syncWithCombatStateComponent:self.combatStateComponent];
         [events addObject:[[PETGameEvent alloc] initWithEventType:PETGameEventCombatStateChanged
                                                     petIdentifier:self.petIdentifier
                                                            source:@"game.combat"
                                                           context:[self combatDebugSnapshot]]];
     }
     return events.copy;
-}
-
-- (NSArray<PETGameEvent *> *)applyCasterMotionForPreviousPhase:(PETSkillPhase *)previousPhase
-                                              previousPhaseTime:(NSTimeInterval)previousPhaseTime
-                                                   currentPhase:(PETSkillPhase *)currentPhase
-                                              currentPhaseTime:(NSTimeInterval)currentPhaseTime
-                                                     deltaTime:(NSTimeInterval)deltaTime {
-    if (previousPhase == nil || deltaTime <= 0.0) {
-        return @[];
-    }
-
-    BOOL facingRight = ![self.movementComponent.facingDirection isEqualToString:PETMovementFacingLeft];
-    CGVector totalDelta = CGVectorMake(0.0, 0.0);
-    if (previousPhase == currentPhase) {
-        totalDelta = [self casterMotionDeltaForPhase:previousPhase
-                                            fromTime:previousPhaseTime
-                                              toTime:currentPhaseTime
-                                         facingRight:facingRight];
-    } else {
-        totalDelta = [self casterMotionDeltaForPhase:previousPhase
-                                            fromTime:previousPhaseTime
-                                              toTime:previousPhase.duration
-                                         facingRight:facingRight];
-        if (currentPhase != nil) {
-            CGVector currentPhaseDelta = [self casterMotionDeltaForPhase:currentPhase
-                                                                fromTime:0.0
-                                                                  toTime:currentPhaseTime
-                                                             facingRight:facingRight];
-            totalDelta.dx += currentPhaseDelta.dx;
-            totalDelta.dy += currentPhaseDelta.dy;
-        }
-    }
-
-    if (fabs(totalDelta.dx) <= 0.01 && fabs(totalDelta.dy) <= 0.01) {
-        return @[];
-    }
-
-    CGPoint position = self.movementComponent.position;
-    position.x += totalDelta.dx;
-    position.y += totalDelta.dy;
-    self.movementComponent.position = position;
-
-    return @[
-        [[PETGameEvent alloc] initWithEventType:@"game.move.changed"
-                                  petIdentifier:self.petIdentifier
-                                         source:@"game.skill.motion"
-                                        context:[self movementEventContext]]
-    ];
-}
-
-- (NSArray<PETGameEvent *> *)executeTimedEffectsFromPreviousPhase:(PETSkillPhase *)previousPhase
-                                                previousPhaseTime:(NSTimeInterval)previousPhaseTime
-                                                     currentPhase:(PETSkillPhase *)currentPhase
-                                                currentPhaseTime:(NSTimeInterval)currentPhaseTime {
-    if (self.activeSkillInstance == nil) {
-        return @[];
-    }
-
-    NSArray<NSDictionary<NSString *, id> *> *effects = [self.activeSkillInstance timedEffectsTriggeredFromPhase:previousPhase
-                                                                                                       fromTime:previousPhaseTime
-                                                                                                        toPhase:currentPhase
-                                                                                                         toTime:currentPhaseTime];
-    NSMutableArray<PETGameEvent *> *events = [NSMutableArray array];
-    for (NSDictionary<NSString *, id> *effect in effects) {
-        NSString *phaseIdentifier = [effect[@"_effectPhaseId"] isKindOfClass:NSString.class]
-            ? effect[@"_effectPhaseId"]
-            : (currentPhase.phaseIdentifier ?: previousPhase.phaseIdentifier ?: @"");
-        PETGameEvent *event = [self eventForExecutedEffect:effect
-                                                   phaseId:phaseIdentifier
-                                          targetIdentifier:nil
-                                               effectSource:@"game.skill.effect.timer"];
-        if (event != nil) {
-            [events addObject:event];
-            [self.pendingSkillEffectEvents addObject:event];
-        }
-    }
-    return events.copy;
-}
-
-- (PETGameEvent *)eventForExecutedEffect:(NSDictionary<NSString *, id> *)effect
-                                 phaseId:(NSString *)phaseIdentifier
-                        targetIdentifier:(NSString *)targetIdentifier
-                            effectSource:(NSString *)effectSource {
-    NSString *type = [effect[@"type"] isKindOfClass:NSString.class] ? effect[@"type"] : @"effect";
-    NSMutableDictionary<NSString *, id> *context = [NSMutableDictionary dictionaryWithDictionary:effect ?: @{}];
-    [context removeObjectForKey:@"_effectIndex"];
-    [context removeObjectForKey:@"_effectTriggerTime"];
-    [context removeObjectForKey:@"_effectPhaseId"];
-    context[@"type"] = type;
-    context[@"skillId"] = self.activeSkillInstance.skillDefinition.skillIdentifier ?: @"";
-    context[@"phaseId"] = phaseIdentifier ?: @"";
-    if (targetIdentifier.length > 0) {
-        context[@"targetPetIdentifier"] = targetIdentifier;
-    }
-    return [[PETGameEvent alloc] initWithEventType:@"game.skill.effect.triggered"
-                                     petIdentifier:self.petIdentifier
-                                            source:effectSource ?: @"game.skill.effect"
-                                           context:context.copy];
-}
-
-- (NSDictionary<NSString *, id> *)collisionSnapshotForSkillEffect:(NSDictionary<NSString *, id> *)effect
-                                                 targetIdentifier:(NSString *)targetIdentifier
-                                                          phaseId:(NSString *)phaseIdentifier {
-    NSMutableDictionary<NSString *, id> *snapshot = [NSMutableDictionary dictionary];
-    snapshot[@"skillId"] = self.activeSkillInstance.skillDefinition.skillIdentifier ?: @"";
-    snapshot[@"phaseId"] = phaseIdentifier ?: @"";
-    snapshot[@"effectType"] = [effect[@"type"] isKindOfClass:NSString.class] ? effect[@"type"] : @"";
-    snapshot[@"sourcePetIdentifier"] = self.petIdentifier ?: @"";
-    snapshot[@"targetPetIdentifier"] = targetIdentifier ?: @"";
-    if ([effect[@"vector"] isKindOfClass:NSDictionary.class]) {
-        snapshot[@"effectVector"] = effect[@"vector"];
-    }
-    if ([effect[@"duration"] respondsToSelector:@selector(doubleValue)]) {
-        snapshot[@"effectDuration"] = effect[@"duration"];
-    }
-    return snapshot.copy;
-}
-
-- (PETHitResult *)hitResultForSkillEffect:(NSDictionary<NSString *, id> *)effect
-                         targetIdentifier:(NSString *)targetIdentifier
-                                  phaseId:(NSString *)phaseIdentifier
-                              effectIndex:(NSUInteger)effectIndex {
-    if (self.activeSkillInstance == nil || targetIdentifier.length == 0) {
-        return nil;
-    }
-
-    NSString *type = [effect[@"type"] isKindOfClass:NSString.class] ? effect[@"type"] : @"";
-    NSTimeInterval duration = [effect[@"duration"] respondsToSelector:@selector(doubleValue)] ? [effect[@"duration"] doubleValue] : 0.0;
-    NSDictionary<NSString *, id> *vector = [effect[@"vector"] isKindOfClass:NSDictionary.class] ? effect[@"vector"] : nil;
-    CGFloat dx = [vector[@"dx"] doubleValue];
-    CGFloat dy = [vector[@"dy"] doubleValue];
-    NSString *combatState = nil;
-    BOOL causesKnockdown = NO;
-
-    if ([type isEqualToString:@"launchTarget"]) {
-        combatState = PETCombatStateLaunched;
-        if (duration <= 0.0) {
-            duration = 0.45;
-        }
-    } else if ([type isEqualToString:@"airSuspendTarget"]) {
-        combatState = PETCombatStateLaunched;
-        if (duration <= 0.0) {
-            duration = 0.65;
-        }
-    } else if ([type isEqualToString:@"knockdownTarget"]) {
-        combatState = PETCombatStateKnockedDown;
-        causesKnockdown = YES;
-        if (duration <= 0.0) {
-            duration = 0.8;
-        }
-    } else {
-        return nil;
-    }
-
-    NSString *attackIdentifier = [NSString stringWithFormat:@"%@:%@:%lu",
-                                  self.activeSkillInstance.instanceIdentifier ?: @"skill",
-                                  type ?: @"effect",
-                                  (unsigned long)effectIndex];
-    return [[PETHitResult alloc] initWithSourcePetIdentifier:self.petIdentifier
-                                         targetPetIdentifier:targetIdentifier
-                                            attackIdentifier:attackIdentifier
-                                                  attackKind:PETAttackKindSkill
-                                             hitStunDuration:duration
-                                          knockdownDuration:duration
-                                                launchVector:CGVectorMake(dx, dy)
-                                                 combatState:combatState
-                                            causesKnockdown:causesKnockdown
-                                           collisionSnapshot:[self collisionSnapshotForSkillEffect:effect
-                                                                                targetIdentifier:targetIdentifier
-                                                                                         phaseId:phaseIdentifier]];
 }
 
 - (NSArray<PETGameEvent *> *)drainPendingSkillEffectEvents {
@@ -584,32 +409,44 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
     return results;
 }
 
-- (CGVector)casterMotionDeltaForPhase:(PETSkillPhase *)phase
-                             fromTime:(NSTimeInterval)fromTime
-                               toTime:(NSTimeInterval)toTime
-                          facingRight:(BOOL)facingRight {
-    if (phase == nil || toTime <= fromTime) {
-        return CGVectorMake(0.0, 0.0);
-    }
-
-    CGVector startOffset = [phase casterMotionOffsetAtPhaseTime:fromTime facingRight:facingRight];
-    CGVector endOffset = [phase casterMotionOffsetAtPhaseTime:toTime facingRight:facingRight];
-    return CGVectorMake(endOffset.dx - startOffset.dx, endOffset.dy - startOffset.dy);
+- (NSArray<NSDictionary<NSString *,id> *> *)drainPendingSkillMotionDirectives {
+    NSArray<NSDictionary<NSString *, id> *> *directives = self.pendingSkillMotionDirectives.copy;
+    [self.pendingSkillMotionDirectives removeAllObjects];
+    return directives;
 }
 
-- (NSDictionary<NSString *, id> *)movementEventContext {
-    return @{
-        @"position": @{@"x": @(self.movementComponent.position.x), @"y": @(self.movementComponent.position.y)},
-        @"velocity": @{@"dx": @(self.movementComponent.velocity.dx), @"dy": @(self.movementComponent.velocity.dy)},
-        @"bodySize": @{@"width": @(self.movementComponent.bodySize.width), @"height": @(self.movementComponent.bodySize.height)},
-        @"facingDirection": self.movementComponent.facingDirection ?: PETMovementFacingRight,
-        @"facingRight": @([self.movementComponent.facingDirection isEqualToString:PETMovementFacingRight]),
-        @"movementState": self.movementComponent.movementState ?: PETMovementStateIdle,
-        @"jumping": @(self.movementComponent.isJumping),
-        @"jumpVelocity": @(self.movementComponent.jumpVelocity),
-        @"jumpTakeoffTimeRemaining": @(self.movementComponent.jumpTakeoffTimeRemaining),
-        @"landingTimeRemaining": @(self.movementComponent.landingTimeRemaining)
-    };
+- (NSArray<PETGameEvent *> *)applyMotionDirective:(NSDictionary<NSString *,id> *)directive
+                                   sourcePosition:(CGPoint)sourcePosition
+                                 sourceFacingRight:(BOOL)sourceFacingRight {
+    if (![self.targetMotionRuntime applyMotionDirective:directive
+                                    sourcePetIdentifier:[directive[@"sourcePetIdentifier"] isKindOfClass:NSString.class] ? directive[@"sourcePetIdentifier"] : nil
+                                         sourcePosition:sourcePosition
+                                       sourceFacingRight:sourceFacingRight]) {
+        return @[];
+    }
+    return @[
+        [[PETGameEvent alloc] initWithEventType:@"game.move.changed"
+                                  petIdentifier:self.petIdentifier
+                                         source:@"game.motion.constraint"
+                                        context:[self.targetMotionRuntime movementEventContext]],
+        [[PETGameEvent alloc] initWithEventType:PETGameEventCombatStateChanged
+                                  petIdentifier:self.petIdentifier
+                                         source:@"game.motion.constraint"
+                                        context:[self combatDebugSnapshot]]
+    ];
+}
+
+- (NSArray<PETGameEvent *> *)syncConstraintFromSourcePosition:(CGPoint)sourcePosition
+                                            sourceFacingRight:(BOOL)sourceFacingRight {
+    if (![self.targetMotionRuntime syncConstraintAnchorFromSourcePosition:sourcePosition sourceFacingRight:sourceFacingRight]) {
+        return @[];
+    }
+    return @[
+        [[PETGameEvent alloc] initWithEventType:@"game.move.changed"
+                                  petIdentifier:self.petIdentifier
+                                         source:@"game.motion.follow"
+                                        context:[self.targetMotionRuntime movementEventContext]]
+    ];
 }
 
 - (NSArray<PETGameEvent *> *)cancelEventsForCommand:(PETGameCommand *)command {
@@ -633,6 +470,8 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
     self.activeSkillInstance = nil;
     self.activeAttackDefinition = nil;
     [self.combatStateComponent advanceTime:DBL_MAX];
+    [self.targetReactionRuntime syncWithCombatStateComponent:self.combatStateComponent];
+    [self.targetMotionRuntime resetTransientMotionState];
     return @[
         [[PETGameEvent alloc] initWithEventType:PETGameEventAttackEnded
                                   petIdentifier:self.petIdentifier
@@ -705,7 +544,7 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
     return self.activeSkillInstance != nil ? [self.activeSkillInstance activeHitWindows] : @[];
 }
 
-- (NSDictionary<NSString *,id> *)reactionDefinitionForActiveSkillHitWindow:(NSDictionary<NSString *,id> *)hitWindow {
+- (PETSkillReactionDefinition *)reactionDefinitionForActiveSkillHitWindow:(NSDictionary<NSString *,id> *)hitWindow {
     NSString *reactionIdentifier = [hitWindow[@"reactionId"] isKindOfClass:NSString.class] ? hitWindow[@"reactionId"] : nil;
     return [self.skillLibrary reactionDefinitionForIdentifier:reactionIdentifier];
 }
@@ -736,17 +575,25 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
             return;
         }
 
-        PETHitResult *effectHitResult = [self hitResultForSkillEffect:effect
-                                                     targetIdentifier:targetIdentifier
-                                                              phaseId:phaseIdentifier
-                                                          effectIndex:index];
+        PETHitResult *effectHitResult = [self.skillRuntimeExecutor hitResultForSkillEffect:effect
+                                                                          targetIdentifier:targetIdentifier
+                                                                                   phaseId:phaseIdentifier
+                                                                             skillInstance:self.activeSkillInstance
+                                                                               effectIndex:index];
         if (effectHitResult != nil) {
             [self.pendingSkillEffectHitResults addObject:effectHitResult];
         }
-        PETGameEvent *effectEvent = [self eventForExecutedEffect:effect
-                                                         phaseId:phaseIdentifier
-                                                targetIdentifier:targetIdentifier
-                                                    effectSource:@"game.skill.effect.hit"];
+        NSDictionary<NSString *, id> *motionDirective = [self motionDirectiveForSkillEffect:effect
+                                                                            targetIdentifier:targetIdentifier
+                                                                                     phaseId:phaseIdentifier];
+        if (motionDirective.count > 0) {
+            [self.pendingSkillMotionDirectives addObject:motionDirective];
+        }
+        PETGameEvent *effectEvent = [self.skillRuntimeExecutor eventForExecutedEffect:effect
+                                                                              phaseId:phaseIdentifier
+                                                                     targetIdentifier:targetIdentifier
+                                                                        skillInstance:self.activeSkillInstance
+                                                                         effectSource:@"game.skill.effect.hit"];
         if (effectEvent != nil) {
             [self.pendingSkillEffectEvents addObject:effectEvent];
         }
@@ -761,32 +608,66 @@ static NSTimeInterval const PETDelayedHitMovementResponseDelay = 0.5;
 - (PETHitResult *)hitResultForActiveSkillHitWindow:(NSDictionary<NSString *,id> *)hitWindow
                                targetPetIdentifier:(NSString *)targetPetIdentifier
                                  collisionSnapshot:(NSDictionary<NSString *,id> *)collisionSnapshot {
-    NSDictionary<NSString *, id> *reaction = [self reactionDefinitionForActiveSkillHitWindow:hitWindow];
+    PETSkillReactionDefinition *reaction = [self reactionDefinitionForActiveSkillHitWindow:hitWindow];
     NSString *windowIdentifier = [hitWindow[@"windowId"] isKindOfClass:NSString.class] ? hitWindow[@"windowId"] : @"";
-    CGFloat launchDX = [reaction[@"launchVector"][@"dx"] doubleValue];
-    CGFloat launchDY = [reaction[@"launchVector"][@"dy"] doubleValue];
-    NSString *combatState = [reaction[@"combatState"] isKindOfClass:NSString.class] ? reaction[@"combatState"] : nil;
+    CGFloat launchDX = reaction.launchVector.dx;
+    CGFloat launchDY = reaction.launchVector.dy;
+    NSString *combatState = reaction.combatState;
     if (launchDX == 0.0 && launchDY == 0.0) {
         launchDX = [[hitWindow valueForKeyPath:@"vector.dx"] doubleValue];
         launchDY = [[hitWindow valueForKeyPath:@"vector.dy"] doubleValue];
     }
     if (combatState.length == 0) {
-        BOOL causesKnockdown = [reaction[@"knockdown"] boolValue];
+        BOOL causesKnockdown = reaction.isKnockdown;
         combatState = causesKnockdown ? PETCombatStateKnockedDown : (fabs(launchDY) > 1.0 ? PETCombatStateLaunched : PETCombatStateHitStun);
     }
     NSMutableDictionary<NSString *, id> *snapshot = [collisionSnapshot mutableCopy];
     snapshot[@"skillId"] = self.activeSkillInstance.skillDefinition.skillIdentifier ?: @"";
     snapshot[@"windowId"] = windowIdentifier ?: @"";
+    if (reaction.reactionIdentifier.length > 0) {
+        snapshot[@"reactionId"] = reaction.reactionIdentifier;
+    }
+    if (reaction.animationState.length > 0) {
+        snapshot[@"reactionAnimationState"] = reaction.animationState;
+    }
+    NSString *reactionState = PETReactionSemanticStateForDefinition(reaction);
     return [[PETHitResult alloc] initWithSourcePetIdentifier:self.petIdentifier
                                          targetPetIdentifier:targetPetIdentifier
                                             attackIdentifier:[NSString stringWithFormat:@"%@:%@", self.activeSkillInstance.instanceIdentifier ?: @"skill", windowIdentifier ?: @"window"]
                                                   attackKind:PETAttackKindSkill
-                                             hitStunDuration:[reaction[@"duration"] doubleValue]
-                                          knockdownDuration:[reaction[@"duration"] doubleValue]
+                                             hitStunDuration:reaction.duration
+                                          knockdownDuration:reaction.duration
                                                 launchVector:CGVectorMake(launchDX, launchDY)
                                                  combatState:combatState
-                                            causesKnockdown:[reaction[@"knockdown"] boolValue]
+                                              reactionState:reactionState
+                                           reactionIdentifier:reaction.reactionIdentifier
+                                       reactionAnimationState:reaction.animationState
+                                         reactionGravityScale:reaction.gravityScale
+                                       reactionLocksHorizontal:reaction.lockHorizontal
+                                         reactionLocksVertical:reaction.lockVertical
+                                            causesKnockdown:reaction.isKnockdown
                                            collisionSnapshot:snapshot.copy];
+}
+
+- (NSDictionary<NSString *, id> *)motionDirectiveForSkillEffect:(NSDictionary<NSString *, id> *)effect
+                                                targetIdentifier:(NSString *)targetIdentifier
+                                                         phaseId:(NSString *)phaseIdentifier {
+    NSString *type = [effect[@"type"] isKindOfClass:NSString.class] ? effect[@"type"] : @"";
+    if (targetIdentifier.length == 0) {
+        return @{};
+    }
+    if (![type isEqualToString:@"followTargetRoot"] &&
+        ![type isEqualToString:@"lockTargetPoint"] &&
+        ![type isEqualToString:@"releaseTarget"]) {
+        return @{};
+    }
+
+    NSMutableDictionary<NSString *, id> *directive = [NSMutableDictionary dictionaryWithDictionary:effect ?: @{}];
+    directive[@"targetPetIdentifier"] = targetIdentifier;
+    directive[@"sourcePetIdentifier"] = self.petIdentifier ?: @"";
+    directive[@"phaseId"] = phaseIdentifier ?: @"";
+    directive[@"skillId"] = self.activeSkillInstance.skillDefinition.skillIdentifier ?: @"";
+    return directive.copy;
 }
 
 @end

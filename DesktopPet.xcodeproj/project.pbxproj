@@ -102,6 +102,9 @@
 		AA6000000000000000000008 /* PETMovementComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6000000000000000001015 /* PETMovementComponent.m */; };
 		AA6000000000000000000009 /* PETMovementSystem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6000000000000000001017 /* PETMovementSystem.m */; };
 		AA600000000000000000000A /* PETGamePresentationBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6000000000000000001019 /* PETGamePresentationBridge.m */; };
+		AC8100000000000000000001 /* PETTargetReactionRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = AC8100000000000000001001 /* PETTargetReactionRuntime.m */; };
+		AC8100000000000000000002 /* PETTargetMotionRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = AC8100000000000000001003 /* PETTargetMotionRuntime.m */; };
+		AC8100000000000000000003 /* PETSkillRuntimeExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AC8100000000000000001005 /* PETSkillRuntimeExecutor.m */; };
 		AB6100000000000000000001 /* PETAttackDefinition.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6100000000000000001002 /* PETAttackDefinition.m */; };
 		AB6100000000000000000002 /* PETCombatStateComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6100000000000000001004 /* PETCombatStateComponent.m */; };
 		AB6100000000000000000003 /* PETHitResult.m in Sources */ = {isa = PBXBuildFile; fileRef = AB6100000000000000001006 /* PETHitResult.m */; };
@@ -123,20 +126,6 @@
 		AB7300000000000000000006 /* char_soul_ark_default.json in Resources */ = {isa = PBXBuildFile; fileRef = AB7300000000000000001010 /* char_soul_ark_default.json */; };
 		AB7300000000000000000007 /* char_munjoong_vacation.combat-bindings.json in Resources */ = {isa = PBXBuildFile; fileRef = AB7300000000000000001011 /* char_munjoong_vacation.combat-bindings.json */; };
 		AB7300000000000000000008 /* char_yangjeon_SGB.combat-bindings.json in Resources */ = {isa = PBXBuildFile; fileRef = AB7300000000000000001012 /* char_yangjeon_SGB.combat-bindings.json */; };
-		AC711131B74B041F4ACC938070F6 /* PETTimelineLayoutEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = AC7185432760B8D545B6A5AD9744 /* PETTimelineLayoutEngine.m */; };
-		AC7130226E42BD094E2BB2576B60 /* PETSkillTimelineJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = AC712FE2305D003D4416BA9BAB1F /* PETSkillTimelineJSONSerializer.m */; };
-		AC7152B1112AF0A64E65B5F63D5E /* PETSkillTimelineCompiler.m in Sources */ = {isa = PBXBuildFile; fileRef = AC71FDD0E3D025AA48E685B43E4E /* PETSkillTimelineCompiler.m */; };
-		AC71629053D73F754F788669BC7E /* PETSkillTimelineEnums.m in Sources */ = {isa = PBXBuildFile; fileRef = AC710578F85CB32649899EC687B2 /* PETSkillTimelineEnums.m */; };
-		AC7178C7F1612610492D91F05E46 /* PETSkillEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AC7152045ED0DBDC46B0B6C89BAD /* PETSkillEditorViewController.m */; };
-		AC71A3867E2A98B540DD9DE66643 /* PETSkillEditorWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = AC712536902560DB4FB0A2827D5E /* PETSkillEditorWindowController.m */; };
-		AC71B702A74609C64CF9BBCE638A /* PETTimelineView.m in Sources */ = {isa = PBXBuildFile; fileRef = AC71A327E8745D124FDDAAF5728C /* PETTimelineView.m */; };
-		AC71BAB60AA341F84C328AED04B9 /* PETSkillTimelineDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = AC71FAF78918A052467EB3579E87 /* PETSkillTimelineDocument.m */; };
-		AC71C747BC3E69C34570B4772AE4 /* PETSpineBoneTransform.m in Sources */ = {isa = PBXBuildFile; fileRef = AC718BE2C879B91849BBB23B7174 /* PETSpineBoneTransform.m */; };
-		AC71CCF29855C413436BB36A17EA /* PETSkillPreviewDirector.m in Sources */ = {isa = PBXBuildFile; fileRef = AC71CE634DF3332544E79B7F5B38 /* PETSkillPreviewDirector.m */; };
-		AC71DFBD325B43794C6AA7F48CF6 /* PETAssetBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AC714F0606AB52834E80A14EA7AF /* PETAssetBrowserViewController.m */; };
-		AC71F29B248A502C4237AAD1EC7B /* PETSkillTimelineClip.m in Sources */ = {isa = PBXBuildFile; fileRef = AC71A5354894B82F43C7A37A3226 /* PETSkillTimelineClip.m */; };
-		AC71F2ADEB9A8916448B96F97A17 /* PETSkillTimelineTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = AC719D8A4D1371604DCDBF07BDBD /* PETSkillTimelineTrack.m */; };
-		AC71FE6755ED10BB4A7F85E62529 /* PETHitboxOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = AC71703A597D4C4C48FE88D66C36 /* PETHitboxOverlayView.m */; };
 		C0DEFACE00000001 /* PETToolbarImport.png in Resources */ = {isa = PBXBuildFile; fileRef = C0DEC0DE00000001 /* PETToolbarImport.png */; };
 		C0DEFACE00000002 /* PETToolbarSave.png in Resources */ = {isa = PBXBuildFile; fileRef = C0DEC0DE00000002 /* PETToolbarSave.png */; };
 		C0DEFACE00000003 /* PETToolbarSpine.png in Resources */ = {isa = PBXBuildFile; fileRef = C0DEC0DE00000003 /* PETToolbarSpine.png */; };
@@ -150,20 +139,6 @@
 		C0DEFACE0000000B /* PETToolbarStackPhotos.png in Resources */ = {isa = PBXBuildFile; fileRef = C0DEC0DE0000000B /* PETToolbarStackPhotos.png */; };
 		C0DEFACE0000000C /* PETToolbarGIF.png in Resources */ = {isa = PBXBuildFile; fileRef = C0DEC0DE0000000C /* PETToolbarGIF.png */; };
 		C0DEFACE0000000D /* Icons8Attribution.txt in Resources */ = {isa = PBXBuildFile; fileRef = C0DEC0DE0000000D /* Icons8Attribution.txt */; };
-		AC7291A855EF2C0C49FCAA494D0F /* PETSpineLayoutHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = AC72C0C42CD6CC294F4D9F6408E6 /* PETSpineLayoutHelper.m */; };
-		AC729D683D08847749389C43DF53 /* PETFXAssetCatalog.m in Sources */ = {isa = PBXBuildFile; fileRef = AC72CAE29D95DF8D49B582EA1FB2 /* PETFXAssetCatalog.m */; };
-		AC7259CCABDCC2C741139EC655DC /* PETFXPreviewInstance.m in Sources */ = {isa = PBXBuildFile; fileRef = AC7285C65DF61F3849DD9F6CBA4F /* PETFXPreviewInstance.m */; };
-		AC72A5E6F242F7394CCBB25C330B /* PETFXOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = AC720F48DB0689084FC8910369E9 /* PETFXOverlayView.m */; };
-		AC7280D9C7807C784256AADAE433 /* PETClipInspectorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AC729FC608C389DD4FF39820C5B3 /* PETClipInspectorViewController.m */; };
-		AC73A001E8F2A1B4C5D6E7F89012 /* PETSkillEditorRuntimeBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = AC73A011E8F2A1B4C5D6E7F89012 /* PETSkillEditorRuntimeBridge.m */; };
-		AC73A002E8F2A1B4C5D6E7F89012 /* PETSpineSocketRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = AC73A013E8F2A1B4C5D6E7F89012 /* PETSpineSocketRegistry.m */; };
-		AC73A003E8F2A1B4C5D6E7F89012 /* PETShaderOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = AC73A017E8F2A1B4C5D6E7F89012 /* PETShaderOverlayView.m */; };
-		AC73A004E8F2A1B4C5D6E7F89012 /* default.sockets.json in Resources */ = {isa = PBXBuildFile; fileRef = AC73A014E8F2A1B4C5D6E7F89012 /* default.sockets.json */; };
-		AC73A005E8F2A1B4C5D6E7F89012 /* slash_01.timeline.json in Resources */ = {isa = PBXBuildFile; fileRef = AC73A015E8F2A1B4C5D6E7F89012 /* slash_01.timeline.json */; };
-		AC73B001E8F2A1B4C5D6E7F89012 /* PETSkillTimelinePlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = AC73B011E8F2A1B4C5D6E7F89012 /* PETSkillTimelinePlayer.m */; };
-		AC73B002E8F2A1B4C5D6E7F89012 /* PETSkillTimelineUndoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AC73B012E8F2A1B4C5D6E7F89012 /* PETSkillTimelineUndoManager.m */; };
-		AC73B003E8F2A1B4C5D6E7F89012 /* PETSkillTimelineJSONValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = AC73B013E8F2A1B4C5D6E7F89012 /* PETSkillTimelineJSONValidator.m */; };
-		AC73B004E8F2A1B4C5D6E7F89012 /* skill-timeline-v1.schema.json in Resources */ = {isa = PBXBuildFile; fileRef = AC73B014E8F2A1B4C5D6E7F89012 /* skill-timeline-v1.schema.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -290,6 +265,12 @@
 		AA6000000000000000001017 /* PETMovementSystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETMovementSystem.m; sourceTree = "<group>"; };
 		AA6000000000000000001018 /* PETGamePresentationBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETGamePresentationBridge.h; sourceTree = "<group>"; };
 		AA6000000000000000001019 /* PETGamePresentationBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETGamePresentationBridge.m; sourceTree = "<group>"; };
+		AC8100000000000000001000 /* PETTargetReactionRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETTargetReactionRuntime.h; sourceTree = "<group>"; };
+		AC8100000000000000001001 /* PETTargetReactionRuntime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETTargetReactionRuntime.m; sourceTree = "<group>"; };
+		AC8100000000000000001002 /* PETTargetMotionRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETTargetMotionRuntime.h; sourceTree = "<group>"; };
+		AC8100000000000000001003 /* PETTargetMotionRuntime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETTargetMotionRuntime.m; sourceTree = "<group>"; };
+		AC8100000000000000001004 /* PETSkillRuntimeExecutor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillRuntimeExecutor.h; sourceTree = "<group>"; };
+		AC8100000000000000001005 /* PETSkillRuntimeExecutor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillRuntimeExecutor.m; sourceTree = "<group>"; };
 		AB6100000000000000001001 /* PETAttackDefinition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAttackDefinition.h; sourceTree = "<group>"; };
 		AB6100000000000000001002 /* PETAttackDefinition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAttackDefinition.m; sourceTree = "<group>"; };
 		AB6100000000000000001003 /* PETCombatStateComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETCombatStateComponent.h; sourceTree = "<group>"; };
@@ -322,34 +303,6 @@
 		AB7300000000000000001010 /* char_soul_ark_default.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = char_soul_ark_default.json; sourceTree = "<group>"; };
 		AB7300000000000000001011 /* char_munjoong_vacation.combat-bindings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "char_munjoong_vacation.combat-bindings.json"; sourceTree = "<group>"; };
 		AB7300000000000000001012 /* char_yangjeon_SGB.combat-bindings.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "char_yangjeon_SGB.combat-bindings.json"; sourceTree = "<group>"; };
-		AC710578F85CB32649899EC687B2 /* PETSkillTimelineEnums.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineEnums.m; sourceTree = "<group>"; };
-		AC711A4C28BC6A964F39AAEA77E0 /* PETHitboxOverlayView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETHitboxOverlayView.h; sourceTree = "<group>"; };
-		AC712536902560DB4FB0A2827D5E /* PETSkillEditorWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillEditorWindowController.m; sourceTree = "<group>"; };
-		AC712FE2305D003D4416BA9BAB1F /* PETSkillTimelineJSONSerializer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineJSONSerializer.m; sourceTree = "<group>"; };
-		AC71366FA8B990BF42DC8E172C9A /* PETSkillEditorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillEditorViewController.h; sourceTree = "<group>"; };
-		AC7138CA3DAEAB2541709C11DB0F /* PETSkillTimelineJSONSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineJSONSerializer.h; sourceTree = "<group>"; };
-		AC7147CA2A604FD6414680CB28E3 /* PETSkillTimelineEnums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineEnums.h; sourceTree = "<group>"; };
-		AC714AADF41A99FF4A1691CBFF99 /* PETSkillTimelineCompiler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineCompiler.h; sourceTree = "<group>"; };
-		AC714F0606AB52834E80A14EA7AF /* PETAssetBrowserViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETAssetBrowserViewController.m; sourceTree = "<group>"; };
-		AC7152045ED0DBDC46B0B6C89BAD /* PETSkillEditorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillEditorViewController.m; sourceTree = "<group>"; };
-		AC715FEB7EB2771F4F1DA2FEFDE1 /* PETSpineBoneTransform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSpineBoneTransform.h; sourceTree = "<group>"; };
-		AC7161848CF3B0CE46C7B821410C /* PETAssetBrowserViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETAssetBrowserViewController.h; sourceTree = "<group>"; };
-		AC71703A597D4C4C48FE88D66C36 /* PETHitboxOverlayView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETHitboxOverlayView.m; sourceTree = "<group>"; };
-		AC7185432760B8D545B6A5AD9744 /* PETTimelineLayoutEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETTimelineLayoutEngine.m; sourceTree = "<group>"; };
-		AC718BE2C879B91849BBB23B7174 /* PETSpineBoneTransform.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSpineBoneTransform.m; sourceTree = "<group>"; };
-		AC71912B0733157D45978695FF87 /* PETSkillTimelineDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineDocument.h; sourceTree = "<group>"; };
-		AC719A2B90DF20174C969C0E4ABD /* PETSkillTimelineTrack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineTrack.h; sourceTree = "<group>"; };
-		AC719D8A4D1371604DCDBF07BDBD /* PETSkillTimelineTrack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineTrack.m; sourceTree = "<group>"; };
-		AC71A327E8745D124FDDAAF5728C /* PETTimelineView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETTimelineView.m; sourceTree = "<group>"; };
-		AC71A5354894B82F43C7A37A3226 /* PETSkillTimelineClip.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineClip.m; sourceTree = "<group>"; };
-		AC71A646779068E840EA8C972836 /* PETSkillPreviewDirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillPreviewDirector.h; sourceTree = "<group>"; };
-		AC71AA22AD1CFA034701AD199045 /* PETTimelineLayoutEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETTimelineLayoutEngine.h; sourceTree = "<group>"; };
-		AC71B8A3D25105004B4790B017ED /* PETSkillTimelineClip.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineClip.h; sourceTree = "<group>"; };
-		AC71CE634DF3332544E79B7F5B38 /* PETSkillPreviewDirector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillPreviewDirector.m; sourceTree = "<group>"; };
-		AC71CFC660AC25FA4D8893477379 /* PETSkillEditorWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillEditorWindowController.h; sourceTree = "<group>"; };
-		AC71FAF78918A052467EB3579E87 /* PETSkillTimelineDocument.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineDocument.m; sourceTree = "<group>"; };
-		AC71FC3B2D9EE3324DB88C696922 /* PETTimelineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETTimelineView.h; sourceTree = "<group>"; };
-		AC71FDD0E3D025AA48E685B43E4E /* PETSkillTimelineCompiler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineCompiler.m; sourceTree = "<group>"; };
 		C0DEC0DE00000001 /* PETToolbarImport.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PETToolbarImport.png; sourceTree = "<group>"; };
 		C0DEC0DE00000002 /* PETToolbarSave.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PETToolbarSave.png; sourceTree = "<group>"; };
 		C0DEC0DE00000003 /* PETToolbarSpine.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PETToolbarSpine.png; sourceTree = "<group>"; };
@@ -364,31 +317,6 @@
 		C0DEC0DE0000000C /* PETToolbarGIF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PETToolbarGIF.png; sourceTree = "<group>"; };
 		C0DEC0DE0000000D /* Icons8Attribution.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Icons8Attribution.txt; sourceTree = "<group>"; };
 		CB1246E2966462CDC376139D /* Pods_DesktopPet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DesktopPet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AC7264C50B5FAA9042149BD12D2C /* PETSpineLayoutHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSpineLayoutHelper.h; sourceTree = "<group>"; };
-		AC727654594679CB4AFCA74B3A4E /* PETFXAssetCatalog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETFXAssetCatalog.h; sourceTree = "<group>"; };
-		AC7228B62DECF782487F9E3AE3C7 /* PETFXPreviewInstance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETFXPreviewInstance.h; sourceTree = "<group>"; };
-		AC72818F4FB35F84454886E38350 /* PETFXOverlayView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETFXOverlayView.h; sourceTree = "<group>"; };
-		AC72DD9F6F89CB2146079EDA3A02 /* PETClipInspectorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETClipInspectorViewController.h; sourceTree = "<group>"; };
-		AC72C0C42CD6CC294F4D9F6408E6 /* PETSpineLayoutHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSpineLayoutHelper.m; sourceTree = "<group>"; };
-		AC72CAE29D95DF8D49B582EA1FB2 /* PETFXAssetCatalog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETFXAssetCatalog.m; sourceTree = "<group>"; };
-		AC7285C65DF61F3849DD9F6CBA4F /* PETFXPreviewInstance.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETFXPreviewInstance.m; sourceTree = "<group>"; };
-		AC720F48DB0689084FC8910369E9 /* PETFXOverlayView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETFXOverlayView.m; sourceTree = "<group>"; };
-		AC729FC608C389DD4FF39820C5B3 /* PETClipInspectorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETClipInspectorViewController.m; sourceTree = "<group>"; };
-		AC73A010E8F2A1B4C5D6E7F89012 /* PETSkillEditorRuntimeBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillEditorRuntimeBridge.h; sourceTree = "<group>"; };
-		AC73A011E8F2A1B4C5D6E7F89012 /* PETSkillEditorRuntimeBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillEditorRuntimeBridge.m; sourceTree = "<group>"; };
-		AC73A012E8F2A1B4C5D6E7F89012 /* PETSpineSocketRegistry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSpineSocketRegistry.h; sourceTree = "<group>"; };
-		AC73A013E8F2A1B4C5D6E7F89012 /* PETSpineSocketRegistry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSpineSocketRegistry.m; sourceTree = "<group>"; };
-		AC73A014E8F2A1B4C5D6E7F89012 /* default.sockets.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = default.sockets.json; sourceTree = "<group>"; };
-		AC73A015E8F2A1B4C5D6E7F89012 /* slash_01.timeline.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = slash_01.timeline.json; sourceTree = "<group>"; };
-		AC73A016E8F2A1B4C5D6E7F89012 /* PETShaderOverlayView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETShaderOverlayView.h; sourceTree = "<group>"; };
-		AC73A017E8F2A1B4C5D6E7F89012 /* PETShaderOverlayView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETShaderOverlayView.m; sourceTree = "<group>"; };
-		AC73B010E8F2A1B4C5D6E7F89012 /* PETSkillTimelinePlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelinePlayer.h; sourceTree = "<group>"; };
-		AC73B011E8F2A1B4C5D6E7F89012 /* PETSkillTimelinePlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelinePlayer.m; sourceTree = "<group>"; };
-		AC73B012E8F2A1B4C5D6E7F89012 /* PETSkillTimelineUndoManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineUndoManager.m; sourceTree = "<group>"; };
-		AC73B013E8F2A1B4C5D6E7F89012 /* PETSkillTimelineJSONValidator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PETSkillTimelineJSONValidator.m; sourceTree = "<group>"; };
-		AC73B015E8F2A1B4C5D6E7F89012 /* PETSkillTimelineUndoManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineUndoManager.h; sourceTree = "<group>"; };
-		AC73B016E8F2A1B4C5D6E7F89012 /* PETSkillTimelineJSONValidator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PETSkillTimelineJSONValidator.h; sourceTree = "<group>"; };
-		AC73B014E8F2A1B4C5D6E7F89012 /* skill-timeline-v1.schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "skill-timeline-v1.schema.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -436,7 +364,6 @@
 				001122334455667788993005 /* Models */,
 				AA6000000000000000003000 /* GameEngine */,
 				001122334455667788993006 /* Services */,
-				AC71D2C0AC1D83714E56A07998B4 /* SkillEditor */,
 				001122334455667788993007 /* UI */,
 				001122334455667788993008 /* Resources */,
 			);
@@ -513,8 +440,6 @@
 				AA1000000000000000001003 /* PETAnimationExporter.m */,
 				AA3000000000000000001001 /* PETSpineRuntime.h */,
 				AA3000000000000000001002 /* PETSpineRuntime.mm */,
-				AC715FEB7EB2771F4F1DA2FEFDE1 /* PETSpineBoneTransform.h */,
-				AC718BE2C879B91849BBB23B7174 /* PETSpineBoneTransform.m */,
 				AA3000000000000000001003 /* PETSpineRuntimeCompilationUnit.mm */,
 				001122334455667788991013 /* PETOCRService.h */,
 				001122334455667788991012 /* PETOCRService.m */,
@@ -572,8 +497,6 @@
 				AA2000000000000000001002 /* pixi.min.js */,
 				AA2000000000000000001003 /* pixi-spine-3.8.umd.js */,
 				AB7200000000000000003001 /* Skills */,
-				AC73A022E8F2A1B4C5D6E7F89012 /* SkillTimelines */,
-				AC73B020E8F2A1B4C5D6E7F89012 /* Schemas */,
 				AB7300000000000000003001 /* Combat */,
 				C0DEC0DE000000F0 /* ManagerToolbar */,
 			);
@@ -689,6 +612,12 @@
 				AA6000000000000000001007 /* PETGameTickDriver.m */,
 				AA6000000000000000001008 /* PETGameEngine.h */,
 				AA6000000000000000001009 /* PETGameEngine.m */,
+				AC8100000000000000001000 /* PETTargetReactionRuntime.h */,
+				AC8100000000000000001001 /* PETTargetReactionRuntime.m */,
+				AC8100000000000000001002 /* PETTargetMotionRuntime.h */,
+				AC8100000000000000001003 /* PETTargetMotionRuntime.m */,
+				AC8100000000000000001004 /* PETSkillRuntimeExecutor.h */,
+				AC8100000000000000001005 /* PETSkillRuntimeExecutor.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -756,8 +685,6 @@
 				AB7100000000000000001006 /* PETActiveSkillInstance.m */,
 				AB7100000000000000001007 /* PETSkillLibrary.h */,
 				AB7100000000000000001008 /* PETSkillLibrary.m */,
-				AC73B010E8F2A1B4C5D6E7F89012 /* PETSkillTimelinePlayer.h */,
-				AC73B011E8F2A1B4C5D6E7F89012 /* PETSkillTimelinePlayer.m */,
 			);
 			path = Skill;
 			sourceTree = "<group>";
@@ -790,134 +717,8 @@
 			children = (
 				AB7300000000000000001001 /* combat-keybindings.json */,
 				AB7300000000000000001008 /* pets */,
-				AC73A021E8F2A1B4C5D6E7F89012 /* sockets */,
 			);
 			path = Combat;
-			sourceTree = "<group>";
-		};
-		AC73A021E8F2A1B4C5D6E7F89012 /* sockets */ = {
-			isa = PBXGroup;
-			children = (
-				AC73A014E8F2A1B4C5D6E7F89012 /* default.sockets.json */,
-			);
-			path = sockets;
-			sourceTree = "<group>";
-		};
-		AC73A022E8F2A1B4C5D6E7F89012 /* SkillTimelines */ = {
-			isa = PBXGroup;
-			children = (
-				AC73A015E8F2A1B4C5D6E7F89012 /* slash_01.timeline.json */,
-			);
-			path = SkillTimelines;
-			sourceTree = "<group>";
-		};
-		AC73B020E8F2A1B4C5D6E7F89012 /* Schemas */ = {
-			isa = PBXGroup;
-			children = (
-				AC73B014E8F2A1B4C5D6E7F89012 /* skill-timeline-v1.schema.json */,
-			);
-			path = Schemas;
-			sourceTree = "<group>";
-		};
-		AC710D9228306D724830BBB7FBBA /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				AC72DD9F6F89CB2146079EDA3A02 /* PETClipInspectorViewController.h */,
-				AC729FC608C389DD4FF39820C5B3 /* PETClipInspectorViewController.m */,
-				AC7161848CF3B0CE46C7B821410C /* PETAssetBrowserViewController.h */,
-				AC71366FA8B990BF42DC8E172C9A /* PETSkillEditorViewController.h */,
-				AC71CFC660AC25FA4D8893477379 /* PETSkillEditorWindowController.h */,
-				AC714F0606AB52834E80A14EA7AF /* PETAssetBrowserViewController.m */,
-				AC7152045ED0DBDC46B0B6C89BAD /* PETSkillEditorViewController.m */,
-				AC712536902560DB4FB0A2827D5E /* PETSkillEditorWindowController.m */,
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
-		AC71426FC4AA99194660922EBFC2 /* Preview */ = {
-			isa = PBXGroup;
-			children = (
-				AC7264C50B5FAA9042149BD12D2C /* PETSpineLayoutHelper.h */,
-				AC727654594679CB4AFCA74B3A4E /* PETFXAssetCatalog.h */,
-				AC7228B62DECF782487F9E3AE3C7 /* PETFXPreviewInstance.h */,
-				AC72818F4FB35F84454886E38350 /* PETFXOverlayView.h */,
-				AC73A016E8F2A1B4C5D6E7F89012 /* PETShaderOverlayView.h */,
-				AC72C0C42CD6CC294F4D9F6408E6 /* PETSpineLayoutHelper.m */,
-				AC72CAE29D95DF8D49B582EA1FB2 /* PETFXAssetCatalog.m */,
-				AC7285C65DF61F3849DD9F6CBA4F /* PETFXPreviewInstance.m */,
-				AC720F48DB0689084FC8910369E9 /* PETFXOverlayView.m */,
-				AC73A017E8F2A1B4C5D6E7F89012 /* PETShaderOverlayView.m */,
-				AC711A4C28BC6A964F39AAEA77E0 /* PETHitboxOverlayView.h */,
-				AC71A646779068E840EA8C972836 /* PETSkillPreviewDirector.h */,
-				AC71703A597D4C4C48FE88D66C36 /* PETHitboxOverlayView.m */,
-				AC71CE634DF3332544E79B7F5B38 /* PETSkillPreviewDirector.m */,
-			);
-			path = Preview;
-			sourceTree = "<group>";
-		};
-		AC71D2C0AC1D83714E56A07998B4 /* SkillEditor */ = {
-			isa = PBXGroup;
-			children = (
-				AC71D686B7921C874FE7BD753E97 /* Model */,
-				AC71EAF5E9A1B70946F39335C457 /* Compiler */,
-				AC73A020E8F2A1B4C5D6E7F89012 /* Spine */,
-				AC71DF0544DA1D694430B6CFBA7C /* TimelineUI */,
-				AC71426FC4AA99194660922EBFC2 /* Preview */,
-				AC710D9228306D724830BBB7FBBA /* UI */,
-			);
-			path = SkillEditor;
-			sourceTree = "<group>";
-		};
-		AC73A020E8F2A1B4C5D6E7F89012 /* Spine */ = {
-			isa = PBXGroup;
-			children = (
-				AC73A012E8F2A1B4C5D6E7F89012 /* PETSpineSocketRegistry.h */,
-				AC73A013E8F2A1B4C5D6E7F89012 /* PETSpineSocketRegistry.m */,
-			);
-			path = Spine;
-			sourceTree = "<group>";
-		};
-		AC71D686B7921C874FE7BD753E97 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				AC7147CA2A604FD6414680CB28E3 /* PETSkillTimelineEnums.h */,
-				AC71B8A3D25105004B4790B017ED /* PETSkillTimelineClip.h */,
-				AC719A2B90DF20174C969C0E4ABD /* PETSkillTimelineTrack.h */,
-				AC71912B0733157D45978695FF87 /* PETSkillTimelineDocument.h */,
-				AC710578F85CB32649899EC687B2 /* PETSkillTimelineEnums.m */,
-				AC71A5354894B82F43C7A37A3226 /* PETSkillTimelineClip.m */,
-				AC719D8A4D1371604DCDBF07BDBD /* PETSkillTimelineTrack.m */,
-				AC71FAF78918A052467EB3579E87 /* PETSkillTimelineDocument.m */,
-				AC73B015E8F2A1B4C5D6E7F89012 /* PETSkillTimelineUndoManager.h */,
-				AC73B012E8F2A1B4C5D6E7F89012 /* PETSkillTimelineUndoManager.m */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		AC71DF0544DA1D694430B6CFBA7C /* TimelineUI */ = {
-			isa = PBXGroup;
-			children = (
-				AC71AA22AD1CFA034701AD199045 /* PETTimelineLayoutEngine.h */,
-				AC71FC3B2D9EE3324DB88C696922 /* PETTimelineView.h */,
-				AC7185432760B8D545B6A5AD9744 /* PETTimelineLayoutEngine.m */,
-				AC71A327E8745D124FDDAAF5728C /* PETTimelineView.m */,
-			);
-			path = TimelineUI;
-			sourceTree = "<group>";
-		};
-		AC71EAF5E9A1B70946F39335C457 /* Compiler */ = {
-			isa = PBXGroup;
-			children = (
-				AC7138CA3DAEAB2541709C11DB0F /* PETSkillTimelineJSONSerializer.h */,
-				AC714AADF41A99FF4A1691CBFF99 /* PETSkillTimelineCompiler.h */,
-				AC73A010E8F2A1B4C5D6E7F89012 /* PETSkillEditorRuntimeBridge.h */,
-				AC712FE2305D003D4416BA9BAB1F /* PETSkillTimelineJSONSerializer.m */,
-				AC71FDD0E3D025AA48E685B43E4E /* PETSkillTimelineCompiler.m */,
-				AC73A011E8F2A1B4C5D6E7F89012 /* PETSkillEditorRuntimeBridge.m */,
-				AC73B016E8F2A1B4C5D6E7F89012 /* PETSkillTimelineJSONValidator.h */,
-				AC73B013E8F2A1B4C5D6E7F89012 /* PETSkillTimelineJSONValidator.m */,
-			);
-			path = Compiler;
 			sourceTree = "<group>";
 		};
 		C0DEC0DE000000F0 /* ManagerToolbar */ = {
@@ -1059,9 +860,6 @@
 				C0DEFACE0000000B /* PETToolbarStackPhotos.png in Resources */,
 				C0DEFACE0000000C /* PETToolbarGIF.png in Resources */,
 				C0DEFACE0000000D /* Icons8Attribution.txt in Resources */,
-				AC73A004E8F2A1B4C5D6E7F89012 /* default.sockets.json in Resources */,
-				AC73A005E8F2A1B4C5D6E7F89012 /* slash_01.timeline.json in Resources */,
-				AC73B004E8F2A1B4C5D6E7F89012 /* skill-timeline-v1.schema.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1180,6 +978,9 @@
 				AA6000000000000000000003 /* PETGameSession.m in Sources */,
 				AA6000000000000000000004 /* PETGameTickDriver.m in Sources */,
 				AA6000000000000000000005 /* PETGameEngine.m in Sources */,
+				AC8100000000000000000001 /* PETTargetReactionRuntime.m in Sources */,
+				AC8100000000000000000002 /* PETTargetMotionRuntime.m in Sources */,
+				AC8100000000000000000003 /* PETSkillRuntimeExecutor.m in Sources */,
 				AA6000000000000000000006 /* PETGameInputState.m in Sources */,
 				AA6000000000000000000007 /* PETKeyboardInputRouter.m in Sources */,
 				AB7300000000000000000002 /* PETCombatKeyboardBinding.m in Sources */,
@@ -1196,31 +997,6 @@
 				AB7100000000000000000002 /* PETSkillDefinition.m in Sources */,
 				AB7100000000000000000003 /* PETActiveSkillInstance.m in Sources */,
 				AB7100000000000000000004 /* PETSkillLibrary.m in Sources */,
-				AC71C747BC3E69C34570B4772AE4 /* PETSpineBoneTransform.m in Sources */,
-				AC71629053D73F754F788669BC7E /* PETSkillTimelineEnums.m in Sources */,
-				AC71F29B248A502C4237AAD1EC7B /* PETSkillTimelineClip.m in Sources */,
-				AC71F2ADEB9A8916448B96F97A17 /* PETSkillTimelineTrack.m in Sources */,
-				AC71BAB60AA341F84C328AED04B9 /* PETSkillTimelineDocument.m in Sources */,
-				AC7130226E42BD094E2BB2576B60 /* PETSkillTimelineJSONSerializer.m in Sources */,
-				AC7152B1112AF0A64E65B5F63D5E /* PETSkillTimelineCompiler.m in Sources */,
-				AC711131B74B041F4ACC938070F6 /* PETTimelineLayoutEngine.m in Sources */,
-				AC71B702A74609C64CF9BBCE638A /* PETTimelineView.m in Sources */,
-				AC71FE6755ED10BB4A7F85E62529 /* PETHitboxOverlayView.m in Sources */,
-				AC71CCF29855C413436BB36A17EA /* PETSkillPreviewDirector.m in Sources */,
-				AC71DFBD325B43794C6AA7F48CF6 /* PETAssetBrowserViewController.m in Sources */,
-				AC7178C7F1612610492D91F05E46 /* PETSkillEditorViewController.m in Sources */,
-				AC71A3867E2A98B540DD9DE66643 /* PETSkillEditorWindowController.m in Sources */,
-				AC7291A855EF2C0C49FCAA494D0F /* PETSpineLayoutHelper.m in Sources */,
-				AC729D683D08847749389C43DF53 /* PETFXAssetCatalog.m in Sources */,
-				AC7259CCABDCC2C741139EC655DC /* PETFXPreviewInstance.m in Sources */,
-				AC72A5E6F242F7394CCBB25C330B /* PETFXOverlayView.m in Sources */,
-				AC7280D9C7807C784256AADAE433 /* PETClipInspectorViewController.m in Sources */,
-				AC73A001E8F2A1B4C5D6E7F89012 /* PETSkillEditorRuntimeBridge.m in Sources */,
-				AC73A002E8F2A1B4C5D6E7F89012 /* PETSpineSocketRegistry.m in Sources */,
-				AC73A003E8F2A1B4C5D6E7F89012 /* PETShaderOverlayView.m in Sources */,
-				AC73B001E8F2A1B4C5D6E7F89012 /* PETSkillTimelinePlayer.m in Sources */,
-				AC73B002E8F2A1B4C5D6E7F89012 /* PETSkillTimelineUndoManager.m in Sources */,
-				AC73B003E8F2A1B4C5D6E7F89012 /* PETSkillTimelineJSONValidator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

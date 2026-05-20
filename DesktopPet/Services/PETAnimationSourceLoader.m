@@ -27,6 +27,23 @@ static NSString * const PETActionDragMoveRight = @"drag.move.right";
 static NSString * const PETActionDragIdle = @"drag.idle";
 static NSString * const PETActionDragRelease = @"drag.release";
 
+static NSString *PETInferCombatSourceStemFromURLs(NSArray<NSURL *> *urls) {
+    for (NSURL *url in urls) {
+        if (url == nil) {
+            continue;
+        }
+        NSArray<NSString *> *pathComponents = url.path.pathComponents ?: @[];
+        for (NSString *component in [pathComponents reverseObjectEnumerator]) {
+            NSString *stem = component.stringByDeletingPathExtension ?: @"";
+            NSString *normalizedStem = stem.lowercaseString ?: @"";
+            if ([normalizedStem hasPrefix:@"char_"] && normalizedStem.length > 5) {
+                return stem;
+            }
+        }
+    }
+    return nil;
+}
+
 @interface PETAnimationSourceLoader ()
 
 @property (nonatomic, strong) PETPetAssetLoader *petAssetLoader;
@@ -527,6 +544,7 @@ static NSString * const PETActionDragRelease = @"drag.release";
     NSMutableDictionary<NSString *, NSString *> *interactionAliases = [[self inferredInteractionAliasesFromAnimationNames:names
                                                                                                                stateAliases:stateAliases] mutableCopy];
     BOOL soulArkEnabled = [self isSoulArkSpineRuntimeJSONURL:jsonURL atlasURL:atlasURL imageURL:imageURL];
+    NSString *combatSourceStem = PETInferCombatSourceStemFromURLs(@[jsonURL ?: NSURL.new, atlasURL ?: NSURL.new, imageURL ?: NSURL.new]);
     if (soulArkEnabled) {
         NSDictionary<NSString *, NSString *> *combatAliases = [self inferredSoulArkCombatInteractionAliasesFromAnimationNames:names];
         [combatAliases enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
@@ -549,6 +567,7 @@ static NSString * const PETActionDragRelease = @"drag.release";
         @"directionPairs": directionPairs.copy,
         @"stateAliases": stateAliases ?: @{},
         @"baseInteractionAliases": interactionAliases ?: @{},
+        @"combatSourceStem": combatSourceStem ?: @"",
         @"interactionAliases": @{}
     };
 }

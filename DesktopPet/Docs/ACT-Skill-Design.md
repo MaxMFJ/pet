@@ -1,5 +1,7 @@
 # DesktopPet ACT / Skill Design
 
+相关阶段目标文档见：[ACT-Rebuild-Roadmap.md](/Users/lzz/Desktop/桌面天堂/DesktopPet/Docs/ACT-Rebuild-Roadmap.md)
+
 ## Goal
 
 Build an ACT-style combat core for desktop pets that supports:
@@ -35,19 +37,36 @@ This document is the stable design anchor for combat progress.
 - `skills.json` loader wired into `PETGameEngine`
 - skill hit windows resolved by the same pixel collision pipeline
 - manager panel combat debug + collision debug snapshot
+- manager panel per-pet combat debug controls:
+  - manual primary
+  - manual skill
+  - manual ultimate
+  - manual cancel
 - skill `onHit` phase transition runtime path
 - keyboard combat trigger path for `j / k / l / u / i / o`
 - skill phase change presentation bridge and cancel-end presentation recovery
+- phase `effects` execution v1 scaffold:
+  - timed `emitDebugMarker`
+  - hit-triggered `launchTarget`
+  - hit-triggered `airSuspendTarget`
+  - hit-triggered `knockdownTarget`
+  - synthetic effect hits routed through the same target combat pipeline
+- `PETSkillReactionDefinition` runtime model
+- reaction-driven animation mapping:
+  - hit reactions can use authored `animationState`
+  - launched / knockeddown reactions now route through the same presentation bridge
+- projectile placeholder runtime:
+  - timed `spawnProjectile`
+  - timed `returnProjectile`
+  - `onProjectileReturn` phase transitions
+  - projectile ids exposed in active skill debug snapshot
 
 ### In Progress
 
-- reaction effect execution beyond hit result generation
-- richer skill panel controls in manager UI
-- projectile placeholder support
+- none
 
 ### Not Started
 
-- reaction-driven animation mapping
 - combo chain system
 - damage / hp / poise model
 - editor or in-app skill inspection UI
@@ -289,6 +308,9 @@ Effect types planned for v1:
 - `launchTarget`
 - `airSuspendTarget`
 - `knockdownTarget`
+- `lockTargetPoint`
+- `followTargetRoot`
+- `releaseTarget`
 - `spawnProjectile`
 - `returnProjectile`
 - `dealDamage`
@@ -373,16 +395,24 @@ Use JSON as a data table, not as a scripting language.
    - attack start
    - skill phase change
    - attack / skill end
+9. Phase `effects` now partially execute at runtime:
+   - timed `emitDebugMarker` fires once per phase trigger
+   - hit-triggered `launchTarget` / `airSuspendTarget` / `knockdownTarget` generate synthetic `PETHitResult`
+   - synthetic effect hits are distributed through `PETGameEngine` into target session combat state updates
+10. Reaction definitions now execute as first-class runtime data:
+   - typed `PETSkillReactionDefinition` objects are loaded from JSON
+   - reaction `animationState` is forwarded into hit presentation
+   - launched reactions are no longer dropped by the presentation bridge
+11. Projectile placeholders now participate in the skill state machine:
+   - `spawnProjectile` registers an active projectile id
+   - `returnProjectile` resolves that id
+   - `onProjectileReturn` can advance the skill phase declaratively
 
-### Recommended Next Step
+### Optional Next Step
 
-1. Start executing phase `effects` with a narrow v1 list:
-   - `emitDebugMarker`
-   - `launchTarget`
-   - `airSuspendTarget`
-   - `knockdownTarget`
-2. Add manager debug controls for manual skill / ultimate cast and cancel per pet.
-3. Finish reaction-driven animation mapping so reaction definitions can actively drive presentation instead of only contributing hit-state data.
+1. Build a true projectile runtime with visual paths and collision ownership.
+2. Add combo / damage / poise semantics on top of the existing ACT phase system.
+3. Expand the manager panel into a richer combat scenario inspector.
 
 ## JSON v1 Scope
 
@@ -434,7 +464,7 @@ Phase suggestion:
 
 - [x] `PETSkillDefinition`
 - [x] `PETSkillPhase`
-- [ ] `PETSkillReactionDefinition`
+- [x] `PETSkillReactionDefinition`
 - [x] `PETActiveSkillInstance`
 - [x] skill library JSON loader
 
@@ -442,14 +472,15 @@ Phase suggestion:
 
 - [x] first sample skill from JSON
 - [x] runtime phase transitions
-- [ ] reaction application from skill data
-- [ ] projectile placeholder support
+- [x] narrow v1 phase `effects` execution scaffold
+- [x] reaction application from skill data
+- [x] projectile placeholder support
 
 ### Phase D
 
-- [ ] combat test panel
+- [x] combat test panel
 - [x] in-panel phase and hit inspection
-- [ ] animation mapping for launched / knocked down
+- [x] animation mapping for launched / knocked down
 
 ## Progress Notes
 

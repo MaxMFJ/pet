@@ -1,6 +1,7 @@
 #import "PETManagerViewController.h"
 
 #import "../Config/PETAppConfig.h"
+#import "../GameEngine/Core/PETGameCommand.h"
 #import "../Managers/PETAssetImportManager.h"
 #import "../Managers/PETPetManager.h"
 #import "../Models/PETPetProfile.h"
@@ -29,6 +30,10 @@
 @property (nonatomic, strong) NSTextField *currentStateLabel;
 @property (nonatomic, strong) NSTextField *combatDebugLabel;
 @property (nonatomic, strong) NSTextField *collisionDebugLabel;
+@property (nonatomic, strong) NSButton *combatPrimaryButton;
+@property (nonatomic, strong) NSButton *combatSkillButton;
+@property (nonatomic, strong) NSButton *combatUltimateButton;
+@property (nonatomic, strong) NSButton *combatCancelButton;
 @property (nonatomic, strong) NSTableView *interactionMappingTableView;
 @property (nonatomic, copy) NSArray<NSString *> *interactionMappingActionKeys;
 @property (nonatomic, strong) NSSplitView *listDetailSplitView;
@@ -321,6 +326,28 @@ static void PETSetToolbarTemplateImage(NSButton *button, NSString * _Nullable na
     self.currentStateLabel.textColor = NSColor.secondaryLabelColor;
     self.combatDebugLabel = [self multilineLabel];
     self.collisionDebugLabel = [self multilineLabel];
+    self.combatPrimaryButton = [NSButton buttonWithTitle:@"Primary" target:self action:@selector(triggerCombatPrimary:)];
+    self.combatSkillButton = [NSButton buttonWithTitle:@"Skill" target:self action:@selector(triggerCombatSkill:)];
+    self.combatUltimateButton = [NSButton buttonWithTitle:@"Ultimate" target:self action:@selector(triggerCombatUltimate:)];
+    self.combatCancelButton = [NSButton buttonWithTitle:@"Cancel" target:self action:@selector(triggerCombatCancel:)];
+    NSArray<NSButton *> *combatButtons = @[
+        self.combatPrimaryButton,
+        self.combatSkillButton,
+        self.combatUltimateButton,
+        self.combatCancelButton
+    ];
+    for (NSButton *button in combatButtons) {
+        PETApplyToolbarChromeToButton(button);
+    }
+    NSStackView *combatControlsStack = [[NSStackView alloc] initWithFrame:NSZeroRect];
+    combatControlsStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    combatControlsStack.spacing = 8.0;
+    combatControlsStack.alignment = NSLayoutAttributeCenterY;
+    combatControlsStack.distribution = NSStackViewDistributionFillEqually;
+    [combatControlsStack addArrangedSubview:self.combatPrimaryButton];
+    [combatControlsStack addArrangedSubview:self.combatSkillButton];
+    [combatControlsStack addArrangedSubview:self.combatUltimateButton];
+    [combatControlsStack addArrangedSubview:self.combatCancelButton];
 
     self.interactionMappingTableView = [[NSTableView alloc] initWithFrame:NSZeroRect];
     self.interactionMappingTableView.delegate = self;
@@ -355,7 +382,7 @@ static void PETSetToolbarTemplateImage(NSButton *button, NSString * _Nullable na
         @[[self labelWithString:@"动作" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.statePopUpButton, self.previewStateButton],
         @[[self labelWithString:@"交互映射" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], interactionMappingScrollView, [NSView new]],
         @[[self labelWithString:@"状态" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.currentStateLabel, self.resumeAmbientButton],
-        @[[self labelWithString:@"战斗调试" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.combatDebugLabel, [NSView new]],
+        @[[self labelWithString:@"战斗调试" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.combatDebugLabel, combatControlsStack],
         @[[self labelWithString:@"触碰检测" font:[NSFont systemFontOfSize:13.0 weight:NSFontWeightMedium]], self.collisionDebugLabel, [NSView new]]
     ]];
     grid.rowSpacing = 10.0;
@@ -471,6 +498,7 @@ static void PETSetToolbarTemplateImage(NSButton *button, NSString * _Nullable na
     self.previewStateButton.enabled = hasSelection;
     self.resumeAmbientButton.enabled = hasSelection;
     self.interactionMappingTableView.enabled = hasSelection;
+    [self refreshCombatControlButtonsForProfile:selectedProfile];
 
     if (!hasSelection) {
         self.nameField.stringValue = @"";
@@ -502,6 +530,42 @@ static void PETSetToolbarTemplateImage(NSButton *button, NSString * _Nullable na
     [self reloadInteractionMappingTableForProfile:selectedProfile];
     self.currentStateLabel.stringValue = [self.petManager characterRuntimeSummaryForPetProfile:selectedProfile];
     [self refreshCombatDebugPanelForProfile:selectedProfile];
+}
+
+- (void)refreshCombatButton:(NSButton *)button
+             descriptorKey:(NSString *)descriptorKey
+                 forProfile:(PETPetProfile *)profile
+               defaultTitle:(NSString *)defaultTitle {
+    NSDictionary<NSString *, id> *descriptor = profile != nil
+        ? [self.petManager combatDebugBindingDescriptorForKey:descriptorKey forPetProfile:profile]
+        : nil;
+    NSString *label = [descriptor[@"label"] isKindOfClass:NSString.class] ? descriptor[@"label"] : nil;
+    NSString *skillIdentifier = [descriptor[@"skillId"] isKindOfClass:NSString.class] ? descriptor[@"skillId"] : nil;
+    NSString *commandType = [descriptor[@"commandType"] isKindOfClass:NSString.class] ? descriptor[@"commandType"] : nil;
+
+    button.enabled = (descriptor != nil);
+    button.title = label.length > 0 ? label : defaultTitle;
+    if (descriptor == nil) {
+        button.toolTip = defaultTitle;
+        return;
+    }
+
+    NSMutableArray<NSString *> *tooltipLines = [NSMutableArray array];
+    [tooltipLines addObject:[NSString stringWithFormat:@"key: %@", descriptorKey]];
+    if (commandType.length > 0) {
+        [tooltipLines addObject:[NSString stringWithFormat:@"command: %@", commandType]];
+    }
+    if (skillIdentifier.length > 0) {
+        [tooltipLines addObject:[NSString stringWithFormat:@"skill: %@", skillIdentifier]];
+    }
+    button.toolTip = [tooltipLines componentsJoinedByString:@"\n"];
+}
+
+- (void)refreshCombatControlButtonsForProfile:(PETPetProfile *)profile {
+    [self refreshCombatButton:self.combatPrimaryButton descriptorKey:@"j" forProfile:profile defaultTitle:@"Primary"];
+    [self refreshCombatButton:self.combatSkillButton descriptorKey:@"l" forProfile:profile defaultTitle:@"Skill"];
+    [self refreshCombatButton:self.combatUltimateButton descriptorKey:@"u" forProfile:profile defaultTitle:@"Ultimate"];
+    [self refreshCombatButton:self.combatCancelButton descriptorKey:@"o" forProfile:profile defaultTitle:@"Cancel"];
 }
 
 - (PETPetProfile * _Nullable)selectedProfile {
@@ -636,6 +700,36 @@ static void PETSetToolbarTemplateImage(NSButton *button, NSString * _Nullable na
 
     [self.petManager resumeAmbientBehaviorForPetProfile:profile];
     [self refreshPetSettings];
+}
+
+- (void)triggerCombatBindingForKey:(NSString *)key {
+    PETPetProfile *profile = [self selectedProfile];
+    if (profile == nil || key.length == 0) {
+        return;
+    }
+    if ([self.petManager triggerCombatDebugBindingForKey:key forPetProfile:profile]) {
+        [self refreshCombatDebugPanelForProfile:profile];
+    }
+}
+
+- (void)triggerCombatPrimary:(id)sender {
+    (void)sender;
+    [self triggerCombatBindingForKey:@"j"];
+}
+
+- (void)triggerCombatSkill:(id)sender {
+    (void)sender;
+    [self triggerCombatBindingForKey:@"l"];
+}
+
+- (void)triggerCombatUltimate:(id)sender {
+    (void)sender;
+    [self triggerCombatBindingForKey:@"u"];
+}
+
+- (void)triggerCombatCancel:(id)sender {
+    (void)sender;
+    [self triggerCombatBindingForKey:@"o"];
 }
 
 - (void)interactionAliasSelectionChanged:(NSPopUpButton *)sender {

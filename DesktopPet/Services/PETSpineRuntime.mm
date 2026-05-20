@@ -1,6 +1,5 @@
 #import "PETSpineRuntime.h"
 
-#import "PETSpineBoneTransform.h"
 
 #import <ImageIO/ImageIO.h>
 #import <TargetConditionals.h>
@@ -687,106 +686,6 @@ static CGRect PETDesktopPetDisplayBoundsFromSpineJSONURL(NSURL *jsonURL) {
     _animationState->update(clampedDelta);
     _animationState->apply(*_skeleton);
     _skeleton->updateWorldTransform();
-}
-
-- (NSArray<NSString *> *)boneNames {
-    if (_skeleton == nullptr) {
-        return @[];
-    }
-    NSMutableArray<NSString *> *names = [NSMutableArray array];
-    spine::Vector<spine::Bone *> &bones = _skeleton->getBones();
-    for (size_t index = 0; index < bones.size(); ++index) {
-        spine::Bone *bone = bones[index];
-        if (bone == nullptr) {
-            continue;
-        }
-        NSString *name = [NSString stringWithUTF8String:bone->getData().getName().buffer()] ?: @"";
-        if (name.length > 0) {
-            [names addObject:name];
-        }
-    }
-    return names.copy;
-}
-
-- (NSArray<NSString *> *)slotNames {
-    if (_skeleton == nullptr) {
-        return @[];
-    }
-    NSMutableArray<NSString *> *names = [NSMutableArray array];
-    spine::Vector<spine::Slot *> &slots = _skeleton->getSlots();
-    for (size_t index = 0; index < slots.size(); ++index) {
-        spine::Slot *slot = slots[index];
-        if (slot == nullptr) {
-            continue;
-        }
-        NSString *name = [NSString stringWithUTF8String:slot->getData().getName().buffer()] ?: @"";
-        if (name.length > 0) {
-            [names addObject:name];
-        }
-    }
-    return names.copy;
-}
-
-- (nullable PETSpineBoneTransform *)boneTransformNamed:(NSString *)boneName {
-    if (boneName.length == 0 || _skeleton == nullptr) {
-        return nil;
-    }
-    spine::Bone *bone = _skeleton->findBone(boneName.UTF8String);
-    if (bone == nullptr || !bone->isActive()) {
-        return nil;
-    }
-    return [[PETSpineBoneTransform alloc] initWithBoneName:boneName
-                                             worldPosition:(vector_float2){bone->getWorldX(), bone->getWorldY()}
-                                      worldRotationRadians:(float)(bone->getWorldRotationX() * M_PI / 180.0)
-                                                worldScale:(vector_float2){bone->getWorldScaleX(), bone->getWorldScaleY()}
-                                                    active:YES];
-}
-
-- (vector_float2)worldPositionForBoneNamed:(NSString *)boneName
-                               localOffset:(vector_float2)localOffset
-                            localRotation:(float)localRotationRadians
-                                    flipX:(BOOL)flipX {
-    PETSpineBoneTransform *bone = [self boneTransformNamed:boneName];
-    if (bone == nil) {
-        return (vector_float2){0.0f, 0.0f};
-    }
-    float offsetX = localOffset.x * (flipX ? -1.0f : 1.0f);
-    float offsetY = localOffset.y;
-    float rotation = localRotationRadians + bone.worldRotationRadians;
-    float cosR = cosf(rotation);
-    float sinR = sinf(rotation);
-    float rotatedX = (offsetX * cosR) - (offsetY * sinR);
-    float rotatedY = (offsetX * sinR) + (offsetY * cosR);
-    return (vector_float2){bone.worldPosition.x + rotatedX, bone.worldPosition.y + rotatedY};
-}
-
-- (void)setAnimationTime:(NSTimeInterval)time {
-    if (_animationState == nullptr || _skeleton == nullptr) {
-        return;
-    }
-    spine::TrackEntry *entry = _animationState->getCurrent(0);
-    if (entry == nullptr) {
-        return;
-    }
-    float duration = entry->getAnimation() != nullptr ? entry->getAnimation()->getDuration() : 0.0f;
-    float clampedTime = duration > 0.0f ? (float)MAX(0.0, MIN(time, duration)) : (float)MAX(0.0, time);
-    entry->setTrackTime(clampedTime);
-    _animationState->apply(*_skeleton);
-    if (self.currentAnimationName.length > 0) {
-        [self applyExperimentalEffectSlotSuppressionForAnimationNamed:self.currentAnimationName];
-    }
-    _skeleton->updateWorldTransform();
-}
-
-- (NSTimeInterval)currentAnimationTime {
-    if (_animationState == nullptr) {
-        return 0.0;
-    }
-    spine::TrackEntry *entry = _animationState->getCurrent(0);
-    if (entry == nullptr) {
-        return 0.0;
-    }
-    return MAX(0.0, (NSTimeInterval)entry->getTrackTime());
 }
 
 - (CGRect)currentContentBounds {

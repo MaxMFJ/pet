@@ -469,58 +469,16 @@ static BOOL PETAlphaMaskHasVisibleAlphaAtUV(PETSpineTextureAlphaMask *alphaMask,
     return self.runtime;
 }
 
-- (void)seekToAnimationTime:(NSTimeInterval)time {
-    [self.runtime setAnimationTime:time];
-    [self setNeedsDisplay:YES];
-}
-
-- (void)redrawSpineFrame {
-    [self setNeedsDisplay:YES];
-}
-
-- (NSData *)vertexDataByApplyingShaderPayload:(NSData *)sourceData vertexCount:(NSUInteger)vertexCount {
-    if (self.activeShaderPayload.count == 0 || sourceData.length == 0 || vertexCount == 0) {
-        return sourceData;
-    }
-    NSDictionary *params = [self.activeShaderPayload[@"params"] isKindOfClass:NSDictionary.class] ? self.activeShaderPayload[@"params"] : @{};
-    float intensity = [params[@"intensity"] respondsToSelector:@selector(floatValue)] ? (float)[params[@"intensity"] floatValue] : 1.0f;
-    intensity = MAX(0.0f, MIN(intensity, 3.0f));
-    NSString *shaderName = [self.activeShaderPayload[@"shader"] isKindOfClass:NSString.class] ? self.activeShaderPayload[@"shader"] : @"glow";
-
-    vector_float4 tint = {1.0f, 1.0f, 1.0f, 1.0f};
-    if ([shaderName isEqualToString:@"glow"] || [shaderName isEqualToString:@"outline"]) {
-        float boost = 0.25f * intensity;
-        tint = (vector_float4){1.0f + boost, 1.0f + (boost * 0.35f), 1.0f + (boost * 1.2f), 1.0f};
-    } else if ([shaderName isEqualToString:@"desaturate"]) {
-        tint = (vector_float4){0.85f, 0.85f, 0.85f, 1.0f};
-    }
-
-    NSMutableData *mutableData = [sourceData mutableCopy];
-    PETSpineMetalVertex *vertices = (PETSpineMetalVertex *)mutableData.mutableBytes;
-    for (NSUInteger index = 0; index < vertexCount; index++) {
-        vector_float4 color = vertices[index].color;
-        vertices[index].color = (vector_float4){
-            MIN(color.x * tint.x, 1.0f),
-            MIN(color.y * tint.y, 1.0f),
-            MIN(color.z * tint.z, 1.0f),
-            color.w
-        };
-    }
-    return mutableData;
-}
-
 - (void)drawInMTKView:(MTKView *)view {
     if (view.currentDrawable == nil || view.currentRenderPassDescriptor == nil) {
         return;
     }
 
-    if (!self.editorPlaybackEnabled) {
-        CFTimeInterval now = CACurrentMediaTime();
-        CFTimeInterval deltaTime = self.lastFrameTimestamp > 0.0 ? (now - self.lastFrameTimestamp) : (1.0 / 60.0);
-        self.lastFrameTimestamp = now;
-        deltaTime = MAX(1.0 / 120.0, MIN(deltaTime, 1.0 / 12.0));
-        [self.runtime advanceTime:deltaTime];
-    }
+    CFTimeInterval now = CACurrentMediaTime();
+    CFTimeInterval deltaTime = self.lastFrameTimestamp > 0.0 ? (now - self.lastFrameTimestamp) : (1.0 / 60.0);
+    self.lastFrameTimestamp = now;
+    deltaTime = MAX(1.0 / 120.0, MIN(deltaTime, 1.0 / 12.0));
+    [self.runtime advanceTime:deltaTime];
 
     NSError *error = nil;
     NSArray<PETSpineRenderBatch *> *batches = [self.runtime currentRenderBatchesWithError:&error];
@@ -562,10 +520,9 @@ static BOOL PETAlphaMaskHasVisibleAlphaAtUV(PETSpineTextureAlphaMask *alphaMask,
             continue;
         }
 
-        NSData *vertexData = [self vertexDataByApplyingShaderPayload:batch.vertexData vertexCount:batch.vertexCount];
         [encoder setRenderPipelineState:pipelineState];
-        id<MTLBuffer> vertexBuffer = [self.device newBufferWithBytes:vertexData.bytes
-                                                              length:vertexData.length
+        id<MTLBuffer> vertexBuffer = [self.device newBufferWithBytes:batch.vertexData.bytes
+                                                              length:batch.vertexData.length
                                                              options:MTLResourceStorageModeShared];
         [encoder setVertexBuffer:vertexBuffer offset:0 atIndex:0];
         [encoder setFragmentTexture:texture atIndex:0];

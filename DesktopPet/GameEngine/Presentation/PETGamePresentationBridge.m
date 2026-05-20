@@ -7,6 +7,26 @@ static NSTimeInterval const PETGameHitReactionPresentationDelay = 0.5;
 
 @implementation PETGamePresentationBridge
 
+- (void)logMovementContext:(NSDictionary<NSString *, id> *)context
+             petIdentifier:(NSString *)petIdentifier
+                    source:(NSString *)source
+                     label:(NSString *)label {
+    NSDictionary<NSString *, id> *position = [context[@"position"] isKindOfClass:NSDictionary.class] ? context[@"position"] : nil;
+    NSDictionary<NSString *, id> *velocity = [context[@"velocity"] isKindOfClass:NSDictionary.class] ? context[@"velocity"] : nil;
+    NSString *movementState = [context[@"movementState"] isKindOfClass:NSString.class] ? context[@"movementState"] : @"";
+    NSNumber *facingRight = [context[@"facingRight"] isKindOfClass:NSNumber.class] ? context[@"facingRight"] : nil;
+    NSLog(@"[DesktopPet] %@ pet=%@ source=%@ pos=(%.2f, %.2f) vel=(%.2f, %.2f) facingRight=%@ movementState=%@",
+          label ?: @"Movement",
+          petIdentifier ?: @"",
+          source ?: @"",
+          [position[@"x"] doubleValue],
+          [position[@"y"] doubleValue],
+          [velocity[@"dx"] doubleValue],
+          [velocity[@"dy"] doubleValue],
+          facingRight != nil ? (facingRight.boolValue ? @"YES" : @"NO") : @"<nil>",
+          movementState ?: @"");
+}
+
 - (void)applyGameEvents:(NSArray<PETGameEvent *> *)events {
     for (PETGameEvent *event in events) {
         PETPetWindow *window = self.windowProvider != nil ? self.windowProvider(event.petIdentifier) : nil;
@@ -41,6 +61,10 @@ static NSTimeInterval const PETGameHitReactionPresentationDelay = 0.5;
         if (position == nil) {
             continue;
         }
+        [self logMovementContext:event.context
+                   petIdentifier:event.petIdentifier
+                          source:event.source
+                           label:@"Movement event"];
         NSPoint origin = NSMakePoint([position[@"x"] doubleValue], [position[@"y"] doubleValue]);
         origin = [window presentedFrameOriginForStableOrigin:origin];
         origin = [window constrainedFrameOriginForVisibleContentFromOrigin:origin];
@@ -94,6 +118,13 @@ static NSTimeInterval const PETGameHitReactionPresentationDelay = 0.5;
     NSDictionary<NSString *, id> *context = event.context ?: @{};
     NSString *animationState = [context[@"animationState"] isKindOfClass:NSString.class] ? context[@"animationState"] : nil;
     NSString *actionKey = [context[@"actionKey"] isKindOfClass:NSString.class] ? context[@"actionKey"] : nil;
+    NSDictionary<NSString *, id> *movement = [context[@"movement"] isKindOfClass:NSDictionary.class] ? context[@"movement"] : nil;
+    if (movement.count > 0) {
+        [self logMovementContext:movement
+                   petIdentifier:event.petIdentifier
+                          source:event.source
+                           label:@"Combat start"];
+    }
 
     NSTimeInterval duration = [context[@"phaseDuration"] doubleValue];
     if (duration <= 0.0) {
@@ -110,9 +141,19 @@ static NSTimeInterval const PETGameHitReactionPresentationDelay = 0.5;
 
 - (void)applyCombatStatePresentationForEvent:(PETGameEvent *)event window:(PETPetWindow *)window {
     NSDictionary<NSString *, id> *context = event.context ?: @{};
+    NSDictionary<NSString *, id> *movement = [context[@"movement"] isKindOfClass:NSDictionary.class] ? context[@"movement"] : nil;
+    if (movement.count > 0) {
+        [self logMovementContext:movement
+                   petIdentifier:event.petIdentifier
+                          source:event.source
+                           label:@"Combat state"];
+    }
     NSDictionary<NSString *, id> *activeSkill = [context[@"activeSkill"] isKindOfClass:NSDictionary.class] ? context[@"activeSkill"] : nil;
     if (activeSkill.count > 0 && ![activeSkill[@"finished"] boolValue]) {
         NSString *animationState = [activeSkill[@"animationState"] isKindOfClass:NSString.class] ? activeSkill[@"animationState"] : nil;
+        if (animationState.length > 0 && [window.currentState isEqualToString:animationState]) {
+            return;
+        }
         NSTimeInterval duration = [activeSkill[@"phaseDuration"] doubleValue];
         if (duration <= 0.0) {
             duration = 0.2;
@@ -126,6 +167,9 @@ static NSTimeInterval const PETGameHitReactionPresentationDelay = 0.5;
     NSDictionary<NSString *, id> *activeAttack = [context[@"activeAttack"] isKindOfClass:NSDictionary.class] ? context[@"activeAttack"] : nil;
     NSString *animationState = [activeAttack[@"animationState"] isKindOfClass:NSString.class] ? activeAttack[@"animationState"] : nil;
     if (animationState.length == 0) {
+        return;
+    }
+    if ([window.currentState isEqualToString:animationState]) {
         return;
     }
 
@@ -150,16 +194,14 @@ static NSTimeInterval const PETGameHitReactionPresentationDelay = 0.5;
     CGVector launchVector = CGVectorMake([launchVectorDictionary[@"dx"] doubleValue],
                                          [launchVectorDictionary[@"dy"] doubleValue]);
     NSString *combatState = [context[@"combatState"] isKindOfClass:NSString.class] ? context[@"combatState"] : nil;
+    NSString *reactionState = [context[@"reactionState"] isKindOfClass:NSString.class] ? context[@"reactionState"] : nil;
+    NSString *reactionAnimationState = [context[@"reactionAnimationState"] isKindOfClass:NSString.class] ? context[@"reactionAnimationState"] : nil;
     if (combatState.length == 0) {
         combatState = causesKnockdown ? @"combat.knockeddown" : (fabs(launchVector.dy) > 1.0 ? @"combat.launched" : @"combat.hitstun");
     }
     NSTimeInterval duration = causesKnockdown ? [context[@"knockdownDuration"] doubleValue] : [context[@"hitStunDuration"] doubleValue];
     if (duration <= 0.0) {
         duration = causesKnockdown ? 0.45 : 0.2;
-    }
-
-    if ([combatState isEqualToString:@"combat.launched"]) {
-        return;
     }
 
     __weak PETPetWindow *weakWindow = window;
@@ -169,7 +211,11 @@ static NSTimeInterval const PETGameHitReactionPresentationDelay = 0.5;
         if (strongWindow == nil) {
             return;
         }
-        [strongWindow playHitReactionForCombatState:combatState launchVector:launchVector duration:duration];
+        [strongWindow playHitReactionForCombatState:combatState
+                                      reactionState:reactionState
+                            preferredAnimationState:reactionAnimationState
+                                       launchVector:launchVector
+                                           duration:duration];
     });
 }
 

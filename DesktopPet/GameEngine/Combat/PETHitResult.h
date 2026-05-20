@@ -15,6 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) NSTimeInterval knockdownDuration;
 @property (nonatomic, assign, readonly) CGVector launchVector;
 @property (nonatomic, copy, readonly, nullable) NSString *combatState;
+@property (nonatomic, copy, readonly, nullable) NSString *reactionState;
+@property (nonatomic, copy, readonly, nullable) NSString *reactionIdentifier;
+@property (nonatomic, copy, readonly, nullable) NSString *reactionAnimationState;
+@property (nonatomic, assign, readonly) CGFloat reactionGravityScale;
+@property (nonatomic, assign, readonly) BOOL reactionLocksHorizontal;
+@property (nonatomic, assign, readonly) BOOL reactionLocksVertical;
 @property (nonatomic, assign, readonly) BOOL causesKnockdown;
 @property (nonatomic, copy, readonly) NSDictionary<NSString *, id> *collisionSnapshot;
 
@@ -26,6 +32,12 @@ NS_ASSUME_NONNULL_BEGIN
                          knockdownDuration:(NSTimeInterval)knockdownDuration
                                launchVector:(CGVector)launchVector
                                 combatState:(nullable NSString *)combatState
+                              reactionState:(nullable NSString *)reactionState
+                           reactionIdentifier:(nullable NSString *)reactionIdentifier
+                       reactionAnimationState:(nullable NSString *)reactionAnimationState
+                         reactionGravityScale:(CGFloat)reactionGravityScale
+                       reactionLocksHorizontal:(BOOL)reactionLocksHorizontal
+                         reactionLocksVertical:(BOOL)reactionLocksVertical
                            causesKnockdown:(BOOL)causesKnockdown
                           collisionSnapshot:(nullable NSDictionary<NSString *, id> *)collisionSnapshot NS_DESIGNATED_INITIALIZER;
 

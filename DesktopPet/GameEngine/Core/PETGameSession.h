@@ -9,6 +9,7 @@
 @class PETPetProfile;
 @class PETHitResult;
 @class PETSkillLibrary;
+@class PETSkillReactionDefinition;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,11 +40,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setPaused:(BOOL)paused reason:(nullable NSString *)reason;
 - (NSArray<PETGameEvent *> *)applyResolvedHitResult:(PETHitResult *)hitResult;
 - (NSDictionary<NSString *, id> *)combatDebugSnapshot;
+- (CGPoint)movementPosition;
+- (BOOL)isFacingRight;
+- (nullable NSString *)activeConstraintSourcePetIdentifier;
 - (NSArray<NSDictionary<NSString *, id> *> *)activeSkillHitWindows;
-- (nullable NSDictionary<NSString *, id> *)reactionDefinitionForActiveSkillHitWindow:(NSDictionary<NSString *, id> *)hitWindow;
+- (nullable PETSkillReactionDefinition *)reactionDefinitionForActiveSkillHitWindow:(NSDictionary<NSString *, id> *)hitWindow;
 - (BOOL)activeSkillCanHitTargetIdentifier:(NSString *)targetIdentifier hitWindow:(NSDictionary<NSString *, id> *)hitWindow;
 - (NSArray<PETGameEvent *> *)drainPendingSkillEffectEvents;
 - (NSArray<PETHitResult *> *)drainPendingSkillEffectHitResults;
+- (NSArray<NSDictionary<NSString *, id> *> *)drainPendingSkillMotionDirectives;
+- (NSArray<PETGameEvent *> *)applyMotionDirective:(NSDictionary<NSString *, id> *)directive
+                                   sourcePosition:(CGPoint)sourcePosition
+                                 sourceFacingRight:(BOOL)sourceFacingRight;
+- (NSArray<PETGameEvent *> *)syncConstraintFromSourcePosition:(CGPoint)sourcePosition
+                                            sourceFacingRight:(BOOL)sourceFacingRight;
 - (void)registerActiveSkillHitTargetIdentifier:(NSString *)targetIdentifier hitWindow:(NSDictionary<NSString *, id> *)hitWindow;
 - (nullable PETHitResult *)hitResultForActiveSkillHitWindow:(NSDictionary<NSString *, id> *)hitWindow
                                         targetPetIdentifier:(NSString *)targetPetIdentifier

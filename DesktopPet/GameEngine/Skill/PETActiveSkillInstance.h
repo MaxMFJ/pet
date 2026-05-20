@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) NSTimeInterval elapsedTime;
 @property (nonatomic, assign, readonly) NSTimeInterval phaseElapsedTime;
 @property (nonatomic, assign, readonly, getter=isFinished) BOOL finished;
+@property (nonatomic, copy, readonly, nullable) NSString *lastHitTargetIdentifier;
 
 - (instancetype)initWithSkillDefinition:(PETSkillDefinition *)skillDefinition
                     casterPetIdentifier:(NSString *)casterPetIdentifier NS_DESIGNATED_INITIALIZER;
@@ -29,6 +30,10 @@ NS_ASSUME_NONNULL_BEGIN
                                                                    fromTime:(NSTimeInterval)fromTime
                                                                     toPhase:(nullable PETSkillPhase *)toPhase
                                                                      toTime:(NSTimeInterval)toTime;
+- (void)registerSpawnedProjectileIdentifier:(NSString *)projectileIdentifier;
+- (BOOL)hasActiveProjectileIdentifier:(NSString *)projectileIdentifier;
+- (BOOL)registerReturnedProjectileIdentifier:(NSString *)projectileIdentifier;
+- (BOOL)handleProjectileReturnIdentifier:(NSString *)projectileIdentifier;
 - (BOOL)shouldExecuteHitEffect:(NSDictionary<NSString *, id> *)effect
                targetIdentifier:(NSString *)targetIdentifier
                           phase:(nullable PETSkillPhase *)phase

@@ -34,12 +34,15 @@ FOUNDATION_EXPORT NSNotificationName const PETPetManagerDidUpdateRuntimeDebugNot
 - (NSDictionary<NSString *, id> *)characterSnapshotForPetProfile:(PETPetProfile *)profile;
 - (NSDictionary<NSString *, id> *)gameStateForPetProfile:(PETPetProfile *)profile;
 - (NSDictionary<NSString *, id> *)combatDebugSnapshotForPetProfile:(PETPetProfile *)profile;
+- (nullable NSDictionary<NSString *, id> *)combatDebugBindingDescriptorForKey:(NSString *)key
+                                                                 forPetProfile:(PETPetProfile *)profile;
 - (nullable NSDictionary<NSString *, id> *)lastCollisionSnapshotForPetProfile:(PETPetProfile *)profile;
 - (NSArray<NSDictionary<NSString *, id> *> *)recentGameEvents;
 - (NSString *)characterRuntimeSummaryForPetProfile:(PETPetProfile *)profile;
 - (void)restoreCharacterSnapshot:(NSDictionary<NSString *, id> *)snapshot forPetProfile:(PETPetProfile *)profile;
 - (void)restoreGameState:(NSDictionary<NSString *, id> *)state forPetProfile:(PETPetProfile *)profile;
 - (void)submitGameCommand:(PETGameCommand *)command;
+- (BOOL)triggerCombatDebugBindingForKey:(NSString *)key forPetProfile:(PETPetProfile *)profile;
 - (void)setSelectedPetProfile:(nullable PETPetProfile *)profile;
 - (nullable PETPetProfile *)selectedPetProfile;
 - (void)previewState:(NSString *)state forPetProfile:(PETPetProfile *)profile;

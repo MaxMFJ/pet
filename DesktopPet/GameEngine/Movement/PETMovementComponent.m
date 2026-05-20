@@ -24,6 +24,7 @@ NSString * const PETMovementStateLocked = @"locked";
         _bodySize = CGSizeMake(160.0, 160.0);
         _jumpInitialVelocity = 520.0;
         _gravity = 1600.0;
+        _gravityScale = 1.0;
         _jumpTakeoffDuration = 0.12;
         _landingTriggerHeight = 26.0;
         _landingDuration = 0.18;
@@ -56,6 +57,9 @@ NSString * const PETMovementStateLocked = @"locked";
         @"jumping": @(self.isJumping),
         @"jumpVelocity": @(self.jumpVelocity),
         @"jumpGroundY": @(self.jumpGroundY),
+        @"gravityScale": @(self.gravityScale),
+        @"horizontalMotionLocked": @(self.isHorizontalMotionLocked),
+        @"verticalMotionLocked": @(self.isVerticalMotionLocked),
         @"jumpTakeoffTimeRemaining": @(self.jumpTakeoffTimeRemaining),
         @"landingTimeRemaining": @(self.landingTimeRemaining),
         @"jumpAirTimeRemaining": @(self.jumpAirTimeRemaining)
@@ -88,6 +92,10 @@ NSString * const PETMovementStateLocked = @"locked";
     self.jumping = [state[@"jumping"] boolValue];
     self.jumpVelocity = [state[@"jumpVelocity"] doubleValue];
     self.jumpGroundY = [state[@"jumpGroundY"] doubleValue];
+    NSNumber *gravityScale = [state[@"gravityScale"] respondsToSelector:@selector(doubleValue)] ? state[@"gravityScale"] : nil;
+    self.gravityScale = gravityScale != nil ? MAX(0.0, gravityScale.doubleValue) : 1.0;
+    self.horizontalMotionLocked = [state[@"horizontalMotionLocked"] boolValue];
+    self.verticalMotionLocked = [state[@"verticalMotionLocked"] boolValue];
     self.jumpTakeoffTimeRemaining = [state[@"jumpTakeoffTimeRemaining"] doubleValue];
     self.landingTimeRemaining = [state[@"landingTimeRemaining"] doubleValue];
     self.jumpAirTimeRemaining = [state[@"jumpAirTimeRemaining"] doubleValue];
